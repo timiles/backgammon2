@@ -4,6 +4,7 @@
     "slug": "backgammon2",
     "privacy": "public",
     "sdkVersion": "35.0.0",
+    "entryPoint": "./src/index.tsx",
     "platforms": [
       "ios",
       "android",
