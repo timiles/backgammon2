@@ -14,7 +14,10 @@ export default StyleSheet.create({
   } as ViewStyle,
 
   point: {
+    flex: 1,
     flexGrow: 1,
+    paddingHorizontal: 5,
+    alignItems: 'center',
   } as ViewStyle,
 
   oddPoint: {
@@ -25,12 +28,18 @@ export default StyleSheet.create({
     backgroundColor: '#999',
   } as ViewStyle,
 
+  bottomPoint: {
+    justifyContent: 'flex-end',
+  } as ViewStyle,
+
   bar: {
+    flex: 1,
     flexGrow: 1,
     backgroundColor: 'brown',
   } as ViewStyle,
 
   home: {
+    flex: 1,
     flexGrow: 1,
     borderColor: 'brown',
     borderLeftWidth: 5,
