@@ -11,6 +11,7 @@ export default StyleSheet.create({
   boardHalf: {
     flexGrow: 1,
     flexDirection: 'row',
+    zIndex: 0,
   } as ViewStyle,
 
   point: {
@@ -18,6 +19,7 @@ export default StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 5,
     alignItems: 'center',
+    zIndex: 0,
   } as ViewStyle,
 
   oddPoint: {
@@ -45,4 +47,7 @@ export default StyleSheet.create({
     borderLeftWidth: 5,
   } as ViewStyle,
 
+  draggableSource: {
+    zIndex: 1,
+  } as ViewStyle,
 });
