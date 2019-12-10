@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import { Reducer } from 'redux';
-import { CounterContainerModel } from '../models/CounterConatinerModel';
+import { CounterContainerModel } from '../models/CounterContainerModel';
 
 export interface BoardState {
   points: CounterContainerModel[];
