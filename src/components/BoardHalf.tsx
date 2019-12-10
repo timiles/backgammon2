@@ -27,9 +27,9 @@ export default class BoardHalf extends React.Component<IProps, IState> {
 
   render() {
     const { side } = this.props;
-    // Top side starts at point 12 on the left and goes down to point 1 on the right
-    // Bottom side starts at point 13 on the left and goes up to point 24 on the right
-    const startingPointNumber = (side === 'top') ? 12 : 13;
+    // Top side:    11|10| 9| 8| 7| 6|bar| 5| 4| 3| 2| 1| 0
+    // Bottom side: 12|13|14|15|16|17|bar|18|19|20|21|22|23
+    const startingPointIndex = (side === 'top') ? 11 : 12;
     const direction = (side === 'top') ? -1 : 1;
 
     const { sourceCount } = this.state;
@@ -38,18 +38,18 @@ export default class BoardHalf extends React.Component<IProps, IState> {
     const leftHandPoints: JSX.Element[] = [];
     const rightHandPoints: JSX.Element[] = [];
     for (let i = 0; i < 6; i += 1) {
-      const number = startingPointNumber + (i * direction);
+      const pointIndex = startingPointIndex + (i * direction);
       leftHandPoints.push(
         <Point
           key={i}
-          number={number}
+          index={pointIndex}
           onSourceChange={this.handleSourceChange}
         />,
       );
       rightHandPoints.push(
         <Point
           key={i}
-          number={number + (6 * direction)}
+          index={pointIndex + (6 * direction)}
           onSourceChange={this.handleSourceChange}
         />,
       );

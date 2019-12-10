@@ -6,7 +6,7 @@ import styles from '../styles';
 import Counter from './Counter';
 
 interface IProps {
-  number: number;
+  index: number;
   onSourceChange: (active: boolean) => void;
 }
 
@@ -32,11 +32,11 @@ class Point extends React.Component<Props, IState> {
   };
 
   render() {
-    const { number, player1Count, player2Count } = this.props;
+    const { index, player1Count, player2Count } = this.props;
     const { sourceCount } = this.state;
 
-    const evenOddStyle = (number % 2 === 0) ? styles.evenPoint : styles.oddPoint;
-    const topBottomStyle = (number <= 12) ? null : styles.bottomPoint;
+    const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
+    const topBottomStyle = (index < 12) ? null : styles.bottomPoint;
     const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
     const pointStyle = [styles.counterContainer, evenOddStyle, topBottomStyle, sourceStyle];
 
@@ -53,7 +53,7 @@ class Point extends React.Component<Props, IState> {
 }
 
 const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => (
-  board.points[ownProps.number - 1]
+  board.points[ownProps.index]
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
 
