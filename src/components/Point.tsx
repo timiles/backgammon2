@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
+import { BoxModel } from '../models/BoxModel';
 import { ApplicationState } from '../store';
+import * as BoardStore from '../store/Board';
 import styles from '../styles';
 import Counter from './Counter';
 
@@ -10,17 +12,35 @@ interface IProps {
   onSourceChange: (active: boolean) => void;
 }
 
-type Props = IProps & StateProps;
+type Props = IProps & StateProps & DispatchProps;
 
 interface IState {
   sourceCount: number;
 }
 
 class Point extends React.Component<Props, IState> {
+  readonly ref: React.RefObject<View>;
+
   constructor(props: Props) {
     super(props);
 
     this.state = { sourceCount: 0 };
+
+    this.ref = React.createRef<View>();
+  }
+
+  componentDidMount() {
+    const { registerPointBox, index } = this.props;
+
+    this.ref.current.measure((x, y, width, height, pageX, pageY) => {
+      const box: BoxModel = {
+        top: pageY,
+        right: pageX + width,
+        bottom: pageY + height,
+        left: pageX,
+      };
+      registerPointBox(index, box);
+    });
   }
 
   handleSourceChange = (isSource: boolean) => {
@@ -48,7 +68,7 @@ class Point extends React.Component<Props, IState> {
       counters.push(<Counter key={i} player={2} onSourceChange={this.handleSourceChange} />);
     }
 
-    return <View style={pointStyle}>{counters}</View>;
+    return <View ref={this.ref} style={pointStyle}>{counters}</View>;
   }
 }
 
@@ -57,4 +77,7 @@ const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => (
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
 
-export default connect(mapStateToProps)(Point);
+const mapDispatchToProps = BoardStore.actionCreators;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Point);
