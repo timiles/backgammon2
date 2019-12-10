@@ -38,7 +38,7 @@ class Point extends React.Component<Props, IState> {
     const evenOddStyle = (number % 2 === 0) ? styles.evenPoint : styles.oddPoint;
     const topBottomStyle = (number <= 12) ? null : styles.bottomPoint;
     const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
-    const pointStyle = [styles.point, evenOddStyle, topBottomStyle, sourceStyle];
+    const pointStyle = [styles.counterContainer, evenOddStyle, topBottomStyle, sourceStyle];
 
     const counters: JSX.Element[] = [];
     for (let i = 0; i < player1Count; i += 1) {

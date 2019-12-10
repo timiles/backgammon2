@@ -14,7 +14,7 @@ export default StyleSheet.create({
     zIndex: 0,
   } as ViewStyle,
 
-  point: {
+  counterContainer: {
     flex: 1,
     flexGrow: 1,
     paddingHorizontal: 5,
@@ -35,16 +35,13 @@ export default StyleSheet.create({
   } as ViewStyle,
 
   bar: {
-    flex: 1,
-    flexGrow: 1,
     backgroundColor: 'brown',
   } as ViewStyle,
 
   home: {
-    flex: 1,
-    flexGrow: 1,
     borderColor: 'brown',
     borderLeftWidth: 5,
+    paddingHorizontal: 0,
   } as ViewStyle,
 
   draggableSource: {
