@@ -1,30 +1,21 @@
 import { CounterContainerModel } from '../models/CounterContainerModel';
 
-const initialBoardLayout: CounterContainerModel[] = [
-  { player1Count: 2, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 5 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 3 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 5, player2Count: 0 },
-  { player1Count: 0, player2Count: 5 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 3, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 5, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 0 },
-  { player1Count: 0, player2Count: 2 },
-];
+const initialBoardLayout: CounterContainerModel[] = [...Array(24)].map(() => ({ counters: [] }));
+
+let id = 1;
+for (let i = 0; i < 2; i += 1) {
+  initialBoardLayout[0].counters.push({ id: id += 1, player: 1 });
+  initialBoardLayout[23].counters.push({ id: id += 1, player: 2 });
+}
+for (let i = 0; i < 3; i += 1) {
+  initialBoardLayout[7].counters.push({ id: id += 1, player: 2 });
+  initialBoardLayout[16].counters.push({ id: id += 1, player: 1 });
+}
+for (let i = 0; i < 5; i += 1) {
+  initialBoardLayout[5].counters.push({ id: id += 1, player: 2 });
+  initialBoardLayout[11].counters.push({ id: id += 1, player: 1 });
+  initialBoardLayout[12].counters.push({ id: id += 1, player: 2 });
+  initialBoardLayout[18].counters.push({ id: id += 1, player: 1 });
+}
 
 export default initialBoardLayout;

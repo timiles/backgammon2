@@ -1,9 +1,14 @@
 import * as React from 'react';
-import { Animated, GestureResponderHandlers, PanResponder } from 'react-native';
+// eslint-disable-next-line
+import { Animated, GestureResponderEvent, GestureResponderHandlers, PanResponder, PanResponderGestureState } from 'react-native';
+import { connect } from 'react-redux';
 import colors from '../colors';
+import { CounterModel } from '../models/CounterModel';
+import { ApplicationState } from '../store';
+import * as BoardStore from '../store/Board';
 
-interface IProps {
-  player: 1 | 2;
+interface IOwnProps extends CounterModel {
+  pointIndex: number;
   onSourceChange: (isSource: boolean) => void;
 }
 
@@ -11,10 +16,12 @@ interface IState {
   counterLocation: Animated.ValueXY;
 }
 
-export default class Counter extends React.Component<IProps, IState> {
+type Props = IOwnProps & StateProps & DispatchProps;
+
+class Counter extends React.Component<Props, IState> {
   readonly gestureResponderHandlers: GestureResponderHandlers;
 
-  constructor(props: IProps) {
+  constructor(props: Props) {
     super(props);
 
     const counterLocation = new Animated.ValueXY({ x: 0, y: 0 });
@@ -26,11 +33,23 @@ export default class Counter extends React.Component<IProps, IState> {
         props.onSourceChange(true);
       },
       onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }]),
-      onPanResponderRelease: () => {
-        Animated.spring(counterLocation, { toValue: { x: 0, y: 0 }, friction: 5 })
-          .start(() => {
-            props.onSourceChange(false);
-          });
+      onPanResponderRelease: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+        const { moveX, moveY } = gestureState;
+        const {
+          id, pointIndex, pointBoxes, moveCounter,
+        } = this.props;
+        const targetIndex = pointBoxes.findIndex(
+          x => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom,
+        );
+        if (targetIndex >= 0 && targetIndex !== pointIndex) {
+          moveCounter(id, pointIndex, targetIndex);
+          props.onSourceChange(false);
+        } else {
+          Animated.spring(counterLocation, { toValue: { x: 0, y: 0 }, friction: 5 })
+            .start(() => {
+              props.onSourceChange(false);
+            });
+        }
       },
     });
     this.gestureResponderHandlers = panResponder.panHandlers;
@@ -53,3 +72,13 @@ export default class Counter extends React.Component<IProps, IState> {
     );
   }
 }
+
+const mapStateToProps = ({ board }: ApplicationState) => (
+  { pointBoxes: board.points.map(x => x.box) }
+);
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+const mapDispatchToProps = BoardStore.actionCreators;
+type DispatchProps = typeof mapDispatchToProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);

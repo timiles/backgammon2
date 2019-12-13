@@ -52,7 +52,7 @@ class Point extends React.Component<Props, IState> {
   };
 
   render() {
-    const { index, player1Count, player2Count } = this.props;
+    const { index, counters } = this.props;
     const { sourceCount } = this.state;
 
     const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
@@ -60,20 +60,24 @@ class Point extends React.Component<Props, IState> {
     const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
     const pointStyle = [styles.counterContainer, evenOddStyle, topBottomStyle, sourceStyle];
 
-    const counters: JSX.Element[] = [];
-    for (let i = 0; i < player1Count; i += 1) {
-      counters.push(<Counter key={i} player={1} onSourceChange={this.handleSourceChange} />);
-    }
-    for (let i = 0; i < player2Count; i += 1) {
-      counters.push(<Counter key={i} player={2} onSourceChange={this.handleSourceChange} />);
-    }
-
-    return <View ref={this.ref} style={pointStyle}>{counters}</View>;
+    return (
+      <View ref={this.ref} style={pointStyle}>
+        {counters.map(x => (
+          <Counter
+            key={x.id}
+            id={x.id}
+            player={x.player}
+            pointIndex={index}
+            onSourceChange={this.handleSourceChange}
+          />
+        ))}
+      </View>
+    );
   }
 }
 
 const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => (
-  board.points[ownProps.index]
+  { counters: board.points[ownProps.index].counters }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
 

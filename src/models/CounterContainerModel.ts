@@ -1,7 +1,7 @@
 import { BoxModel } from './BoxModel';
+import { CounterModel } from './CounterModel';
 
 export interface CounterContainerModel {
-  player1Count: number;
-  player2Count: number;
+  counters: CounterModel[];
   box?: BoxModel;
 }
