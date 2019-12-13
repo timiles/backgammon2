@@ -10,6 +10,7 @@ export default StyleSheet.create({
 
   boardHalf: {
     flexGrow: 1,
+    flexBasis: 0,
     flexDirection: 'row',
     zIndex: 0,
   } as ViewStyle,
@@ -30,8 +31,14 @@ export default StyleSheet.create({
     backgroundColor: '#999',
   } as ViewStyle,
 
+  topPoint: {
+    justifyContent: 'flex-start',
+    paddingBottom: 10,
+  } as ViewStyle,
+
   bottomPoint: {
     justifyContent: 'flex-end',
+    paddingTop: 10,
   } as ViewStyle,
 
   bar: {
@@ -42,6 +49,10 @@ export default StyleSheet.create({
     borderColor: 'brown',
     borderLeftWidth: 5,
     paddingHorizontal: 0,
+  } as ViewStyle,
+
+  counter: {
+    flexShrink: 1,
   } as ViewStyle,
 
   draggableSource: {

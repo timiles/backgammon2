@@ -56,7 +56,7 @@ class Point extends React.Component<Props, IState> {
     const { sourceCount } = this.state;
 
     const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
-    const topBottomStyle = (index < 12) ? null : styles.bottomPoint;
+    const topBottomStyle = (index < 12) ? styles.topPoint : styles.bottomPoint;
     const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
     const pointStyle = [styles.counterContainer, evenOddStyle, topBottomStyle, sourceStyle];
 
