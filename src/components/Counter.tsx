@@ -57,8 +57,8 @@ class Counter extends React.Component<Props, IState> {
   }
 
   render() {
-    const { player } = this.props;
-    const color = player === 1 ? colors.Player1 : colors.Player2;
+    const { playerId } = this.props;
+    const color = playerId === 1 ? colors.Player1 : colors.Player2;
 
     const { counterLocation } = this.state;
     const counterLocationStyle = { transform: counterLocation.getTranslateTransform() };

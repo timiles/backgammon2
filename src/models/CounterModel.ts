@@ -1,4 +1,6 @@
+import { PlayerId } from './PlayerId';
+
 export interface CounterModel {
   id: number;
-  player: 1 | 2;
+  playerId: PlayerId;
 }
