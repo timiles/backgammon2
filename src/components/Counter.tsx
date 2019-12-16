@@ -67,7 +67,7 @@ class Counter extends React.Component<Props, IState> {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Animated.View style={counterStyle} {...this.gestureResponderHandlers}>
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 100 100" width="100%" xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="48" fill={color} />
         </svg>
       </Animated.View>
