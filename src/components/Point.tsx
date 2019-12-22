@@ -16,6 +16,8 @@ type Props = IProps & StateProps & DispatchProps;
 
 interface IState {
   sourceCount: number;
+  width?: number;
+  height?: number;
 }
 
 class Point extends React.Component<Props, IState> {
@@ -40,6 +42,7 @@ class Point extends React.Component<Props, IState> {
         left: pageX,
       };
       registerPointBox(index, box);
+      this.setState({ width, height });
     });
   }
 
@@ -53,22 +56,25 @@ class Point extends React.Component<Props, IState> {
 
   render() {
     const { index, counters } = this.props;
-    const { sourceCount } = this.state;
+    const { sourceCount, width, height } = this.state;
 
     const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
     const topBottomStyle = (index < 12) ? styles.topPoint : styles.bottomPoint;
     const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
     const pointStyle = [styles.counterContainer, evenOddStyle, topBottomStyle, sourceStyle];
 
+    const counterSize = Math.min(width - 10, (height - 10) / counters.length);
+
     return (
       <View ref={this.ref} style={pointStyle}>
-        {counters.map(x => (
+        {!Number.isNaN(counterSize) && counters.map(x => (
           <Counter
             key={x.id}
             id={x.id}
             playerId={x.playerId}
             pointIndex={index}
             onSourceChange={this.handleSourceChange}
+            size={counterSize}
           />
         ))}
       </View>

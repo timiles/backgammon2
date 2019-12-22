@@ -1,6 +1,11 @@
 import { StyleSheet, ViewStyle } from 'react-native';
 
 export default StyleSheet.create({
+  app: {
+    flex: 1,
+    flexDirection: 'row',
+  } as ViewStyle,
+
   board: {
     flexGrow: 1,
     flexDirection: 'column',
@@ -17,8 +22,6 @@ export default StyleSheet.create({
 
   counterContainer: {
     flex: 1,
-    flexGrow: 1,
-    paddingHorizontal: 5,
     alignItems: 'center',
     zIndex: 0,
   } as ViewStyle,
@@ -33,12 +36,10 @@ export default StyleSheet.create({
 
   topPoint: {
     justifyContent: 'flex-start',
-    paddingBottom: 10,
   } as ViewStyle,
 
   bottomPoint: {
     justifyContent: 'flex-end',
-    paddingTop: 10,
   } as ViewStyle,
 
   bar: {
@@ -57,5 +58,11 @@ export default StyleSheet.create({
 
   draggableSource: {
     zIndex: 1,
+  } as ViewStyle,
+
+  diceRollArea: {
+    flexShrink: 1,
+    backgroundColor: 'lightblue',
+    padding: 5,
   } as ViewStyle,
 });
