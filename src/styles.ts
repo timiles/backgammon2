@@ -1,7 +1,19 @@
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
 export default StyleSheet.create({
   app: {
+    flex: 1,
+    borderColor: 'gray',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: 'lightblue',
+  } as ViewStyle,
+
+  player2Rotation: {
+    transform: [{ rotate: '180deg' }],
+  } as ViewStyle,
+
+  game: {
     flex: 1,
     flexDirection: 'row',
   } as ViewStyle,
@@ -47,6 +59,7 @@ export default StyleSheet.create({
   } as ViewStyle,
 
   home: {
+    backgroundColor: 'white',
     borderColor: 'brown',
     borderLeftWidth: 5,
     paddingHorizontal: 0,
@@ -62,7 +75,14 @@ export default StyleSheet.create({
 
   diceRollArea: {
     flexShrink: 1,
-    backgroundColor: 'lightblue',
     padding: 5,
   } as ViewStyle,
+
+  statusText: {
+    textAlign: 'center',
+  } as TextStyle,
+
+  playerText: {
+    fontWeight: 'bold',
+  } as TextStyle,
 });
