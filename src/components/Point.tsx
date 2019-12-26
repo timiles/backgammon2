@@ -71,7 +71,7 @@ class Point extends React.Component<Props, IState> {
           <Counter
             key={x.id}
             id={x.id}
-            playerId={x.playerId}
+            player={x.player}
             pointIndex={index}
             onSourceChange={this.handleSourceChange}
             size={counterSize}

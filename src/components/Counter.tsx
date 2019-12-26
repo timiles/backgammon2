@@ -4,6 +4,7 @@ import { Animated, GestureResponderEvent, GestureResponderHandlers, PanResponder
 import { connect } from 'react-redux';
 import colors from '../colors';
 import { CounterModel } from '../models/CounterModel';
+import Player from '../models/Player';
 import { ApplicationState } from '../store';
 import * as BoardStore from '../store/Board';
 import styles from '../styles';
@@ -58,9 +59,9 @@ class Counter extends React.Component<Props, IState> {
   }
 
   render() {
-    const { playerId, size } = this.props;
+    const { player, size } = this.props;
 
-    const color = playerId === 1 ? colors.Player1 : colors.Player2;
+    const color = player === Player.Red ? colors.redPlayer : colors.blackPlayer;
 
     const { counterLocation } = this.state;
     const counterLocationStyle = { transform: counterLocation.getTranslateTransform() };

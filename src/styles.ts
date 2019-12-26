@@ -1,4 +1,5 @@
 import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import colors from './colors';
 
 export default StyleSheet.create({
   app: {
@@ -9,7 +10,15 @@ export default StyleSheet.create({
     backgroundColor: 'lightblue',
   } as ViewStyle,
 
-  player2Rotation: {
+  redPlayer: {
+    color: colors.redPlayer,
+  } as ViewStyle,
+
+  blackPlayer: {
+    color: colors.blackPlayer,
+  } as ViewStyle,
+
+  upsideDown: {
     transform: [{ rotate: '180deg' }],
   } as ViewStyle,
 

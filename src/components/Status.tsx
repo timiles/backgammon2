@@ -1,35 +1,34 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import colors from '../colors';
-import { PlayerId } from '../models/PlayerId';
+import Player from '../models/Player';
 import { ApplicationState } from '../store';
 import styles from '../styles';
 
 interface IOwnProps {
-  playerId: PlayerId;
+  player: Player;
+  upsideDown?: boolean;
 }
 
 type Props = IOwnProps & StateProps;
 
 function Status(props: Props) {
-  const { playerId, recentStatus } = props;
+  const { player, upsideDown, recentStatus } = props;
 
-  const rotation = playerId === 2 ? styles.player2Rotation : null;
-  const color = playerId === 1 ? colors.Player1 : colors.Player2;
+  const colorStyle = player === Player.Red ? styles.redPlayer : styles.blackPlayer;
 
   return (
-    <View style={rotation}>
-      <Text style={[styles.statusText, { color }]}>
+    <View style={upsideDown ? styles.upsideDown : null}>
+      <Text style={[styles.statusText, colorStyle]}>
         {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-        <Text style={styles.playerText}>{color.toUpperCase()}:</Text> {recentStatus}
+        <Text style={styles.playerText}>{Player[player].toUpperCase()}:</Text> {recentStatus}
       </Text>
     </View>
   );
 }
 
 const mapStateToProps = ({ statuses }: ApplicationState, ownProps: IOwnProps) => {
-  const playerStatuses = statuses.statuses[ownProps.playerId - 1];
+  const playerStatuses = statuses.statuses[ownProps.player];
   return ({ recentStatus: playerStatuses[playerStatuses.length - 1] });
 };
 type StateProps = ReturnType<typeof mapStateToProps>;
