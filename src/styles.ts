@@ -88,6 +88,7 @@ export default StyleSheet.create({
   } as ViewStyle,
 
   statusText: {
+    fontSize: 30,
     textAlign: 'center',
   } as TextStyle,
 
