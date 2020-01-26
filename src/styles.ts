@@ -85,6 +85,7 @@ export default StyleSheet.create({
   diceRollArea: {
     flexShrink: 1,
     padding: 5,
+    justifyContent: 'flex-end',
   } as ViewStyle,
 
   statusText: {
@@ -95,4 +96,39 @@ export default StyleSheet.create({
   playerText: {
     fontWeight: 'bold',
   } as TextStyle,
+
+  diceContainer: {
+    flexDirection: 'column',
+  } as ViewStyle,
+
+  die: {
+    borderRadius: 5,
+    color: 'white',
+    margin: 5,
+    width: 30,
+    height: 30,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  } as TextStyle,
+
+  redDie: {
+    backgroundColor: colors.redPlayer,
+    shadowColor: colors.redPlayer,
+  } as ViewStyle,
+
+  blackDie: {
+    backgroundColor: colors.blackPlayer,
+    shadowColor: colors.blackPlayer,
+  } as ViewStyle,
+
+  activeDie: {
+    shadowRadius: 10,
+  } as ViewStyle,
+
+  spentDie: {
+    width: 24,
+    height: 24,
+    fontSize: 16,
+  } as ViewStyle,
 });

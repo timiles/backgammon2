@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Player from '../models/Player';
 import styles from '../styles';
+import Dice from './Dice';
 
 interface IProps {
   player: Player;
@@ -9,10 +10,10 @@ interface IProps {
 }
 
 export default function DiceRollArea(props: IProps) {
-  const { upsideDown } = props;
+  const { player, upsideDown } = props;
   return (
     <View style={[styles.diceRollArea, upsideDown ? styles.upsideDown : null]}>
-      <Text>TODO: dice roll area</Text>
+      <Dice player={player} />
     </View>
   );
 }
