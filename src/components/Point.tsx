@@ -55,7 +55,7 @@ class Point extends React.Component<Props, IState> {
   };
 
   render() {
-    const { index, counters } = this.props;
+    const { index, counters, currentPlayer } = this.props;
     const { sourceCount, width, height } = this.state;
 
     const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
@@ -73,6 +73,7 @@ class Point extends React.Component<Props, IState> {
             id={x.id}
             player={x.player}
             pointIndex={index}
+            canMove={x.player === currentPlayer}
             onSourceChange={this.handleSourceChange}
             size={counterSize}
           />
@@ -82,8 +83,11 @@ class Point extends React.Component<Props, IState> {
   }
 }
 
-const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => (
-  { counters: board.points[ownProps.index].counters }
+const mapStateToProps = ({ board, player }: ApplicationState, ownProps: IProps) => (
+  {
+    counters: board.points[ownProps.index].counters,
+    currentPlayer: player.currentPlayer,
+  }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
 

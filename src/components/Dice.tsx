@@ -20,12 +20,16 @@ class Dice extends React.Component<Props> {
   };
 
   render() {
-    const { player, dice: [die1, die2], requiresReroll } = this.props;
+    const {
+      player, dice: [die1, die2], requiresReroll, currentPlayer,
+    } = this.props;
+
+    const isInitialRoll = (currentPlayer == null);
     return (
       <View style={styles.diceContainer}>
         {die2 != null && <Die player={player} value={die2.value} isSpent={die2.isSpent} />}
         {die1 == null && (
-          <Die player={player} value="?" onPress={this.handleRollDie} />
+          <Die player={player} value="?" onPress={isInitialRoll ? this.handleRollDie : null} />
         )}
         {die1 != null && (
           <Die
@@ -40,10 +44,11 @@ class Dice extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = ({ dice }: ApplicationState, ownProps: IOwnProps) => (
+const mapStateToProps = ({ dice, player }: ApplicationState, ownProps: IOwnProps) => (
   {
     dice: dice.dice[ownProps.player],
     requiresReroll: dice.requiresReroll[ownProps.player],
+    currentPlayer: player.currentPlayer,
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
