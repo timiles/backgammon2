@@ -1,5 +1,4 @@
 import * as React from 'react';
-// eslint-disable-next-line
 import { Animated, GestureResponderEvent, GestureResponderHandlers, PanResponder, PanResponderGestureState } from 'react-native';
 import { connect } from 'react-redux';
 import colors from '../colors';
@@ -8,6 +7,7 @@ import Player from '../models/Player';
 import { ApplicationState } from '../store';
 import * as BoardStore from '../store/Board';
 import styles from '../styles';
+import { getOtherPlayer } from '../utils';
 
 interface IOwnProps extends CounterModel {
   pointIndex: number;
@@ -39,13 +39,11 @@ class Counter extends React.Component<Props, IState> {
       onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }]),
       onPanResponderRelease: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         const { moveX, moveY } = gestureState;
-        const {
-          id, pointIndex, pointBoxes, moveCounter,
-        } = this.props;
-        const targetIndex = pointBoxes.findIndex(
+        const { id, pointIndex, points, moveCounter } = this.props;
+        const targetIndex = points.map(x => x.box).findIndex(
           x => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom,
         );
-        if (targetIndex >= 0 && targetIndex !== pointIndex) {
+        if (targetIndex >= 0 && targetIndex !== pointIndex && this.canMove(targetIndex)) {
           moveCounter(id, pointIndex, targetIndex);
           props.onSourceChange(false);
         } else {
@@ -57,6 +55,16 @@ class Counter extends React.Component<Props, IState> {
       },
     });
     this.gestureResponderHandlers = panResponder.panHandlers;
+  }
+
+  private canMove(targetIndex: number) {
+    const { pointIndex, points, dice, player } = this.props;
+    const otherPlayer = getOtherPlayer(player);
+    if (points[targetIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
+      return false;
+    }
+    const distance = (targetIndex - pointIndex) * (player === Player.Red ? 1 : -1);
+    return dice.some(x => x.value === distance && !x.isSpent);
   }
 
   render() {
@@ -81,8 +89,11 @@ class Counter extends React.Component<Props, IState> {
   }
 }
 
-const mapStateToProps = ({ board }: ApplicationState) => (
-  { pointBoxes: board.points.map(x => x.box) }
+const mapStateToProps = ({ board, dice }: ApplicationState, ownProps: IOwnProps) => (
+  {
+    points: board.points,
+    dice: dice.dice[ownProps.player],
+  }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
 
