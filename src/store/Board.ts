@@ -1,7 +1,7 @@
-/* eslint-disable import/prefer-default-export */
 import { Reducer } from 'redux';
 import { BoxModel } from '../models/BoxModel';
 import { CounterContainerModel } from '../models/CounterContainerModel';
+import Player from '../models/Player';
 import initialBoardLayout from './initialBoardLayout';
 
 export interface BoardState {
@@ -15,10 +15,11 @@ interface RegisterPointBoxAction {
     box: BoxModel;
   };
 }
-interface MoveCounterAction {
+export interface MoveCounterAction {
   type: 'MoveCounterAction';
   payload: {
     id: number;
+    player: Player;
     sourceIndex: number;
     targetIndex: number;
   };
@@ -30,9 +31,9 @@ export const actionCreators = {
     type: 'RegisterPointBoxAction',
     payload: { index, box },
   }),
-  moveCounter: (id: number, sourceIndex: number, targetIndex: number) => ({
+  moveCounter: (id: number, player: Player, sourceIndex: number, targetIndex: number) => ({
     type: 'MoveCounterAction',
-    payload: { id, sourceIndex, targetIndex },
+    payload: { id, player, sourceIndex, targetIndex },
   }),
 };
 

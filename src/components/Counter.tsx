@@ -7,7 +7,7 @@ import Player from '../models/Player';
 import { ApplicationState } from '../store';
 import * as BoardStore from '../store/Board';
 import styles from '../styles';
-import { getOtherPlayer } from '../utils';
+import { getDistance, getOtherPlayer } from '../utils';
 
 interface IOwnProps extends CounterModel {
   pointIndex: number;
@@ -39,12 +39,12 @@ class Counter extends React.Component<Props, IState> {
       onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }]),
       onPanResponderRelease: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         const { moveX, moveY } = gestureState;
-        const { id, pointIndex, points, moveCounter } = this.props;
+        const { id, player, pointIndex, points, moveCounter } = this.props;
         const targetIndex = points.map(x => x.box).findIndex(
           x => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom,
         );
         if (targetIndex >= 0 && targetIndex !== pointIndex && this.canMove(targetIndex)) {
-          moveCounter(id, pointIndex, targetIndex);
+          moveCounter(id, player, pointIndex, targetIndex);
           props.onSourceChange(false);
         } else {
           Animated.spring(counterLocation, { toValue: { x: 0, y: 0 }, friction: 5 })
@@ -63,7 +63,7 @@ class Counter extends React.Component<Props, IState> {
     if (points[targetIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
       return false;
     }
-    const distance = (targetIndex - pointIndex) * (player === Player.Red ? 1 : -1);
+    const distance = getDistance(player, pointIndex, targetIndex);
     return dice.some(x => x.value === distance && !x.isSpent);
   }
 

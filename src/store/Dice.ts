@@ -1,9 +1,9 @@
-/* eslint-disable import/prefer-default-export */
 import { Reducer } from 'redux';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
-import { getOtherPlayer } from '../utils';
+import { getDistance, getOtherPlayer } from '../utils';
+import { MoveCounterAction } from './Board';
 import { AppThunkAction } from './index';
 
 export interface DiceState {
@@ -25,7 +25,7 @@ export interface InitialDiceWinnerAction {
     winner: Player;
   };
 }
-type KnownAction = RollInitialDieAction | InitialDiceWinnerAction;
+type KnownAction = RollInitialDieAction | InitialDiceWinnerAction | MoveCounterAction;
 
 export const actionCreators = {
   rollInitialDie: (player: Player): AppThunkAction<KnownAction> => (dispatch, getState) => (
@@ -87,6 +87,15 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
 
       diceNext[winner] = [diceNext[winner][0], loserDie];
       diceNext[loser] = [];
+      return { ...state, dice: diceNext };
+    }
+    case 'MoveCounterAction': {
+      const { player, sourceIndex, targetIndex } = action.payload;
+
+      const distance = getDistance(player, sourceIndex, targetIndex);
+      const diceNext = state.dice.slice();
+      diceNext[player] = diceNext[player].slice();
+      diceNext[player].filter(x => x.value === distance && !x.isSpent)[0].isSpent = true;
       return { ...state, dice: diceNext };
     }
     default: {
