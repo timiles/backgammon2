@@ -20,8 +20,11 @@ function Status(props: Props) {
   return (
     <View style={upsideDown ? styles.upsideDown : null}>
       <Text style={[styles.statusText, colorStyle]}>
-        {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-        <Text style={styles.playerText}>{Player[player].toUpperCase()}:</Text> {recentStatus}
+        <Text style={styles.playerText}>
+          {recentStatus && `${Player[player].toUpperCase()}:`}
+          {' '}
+        </Text>
+        {recentStatus}
       </Text>
     </View>
   );

@@ -2,13 +2,18 @@
 import { Reducer } from 'redux';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
-import { InitialDiceWinnerAction, RollInitialDieAction } from './Dice';
+import { MoveCounterAction } from './Board';
+import { InitialDiceWinnerAction, RollDiceAction, RollInitialDieAction } from './Dice';
 
 export interface StatusesState {
   statuses: string[][];
 }
 
-type KnownAction = RollInitialDieAction | InitialDiceWinnerAction;
+type KnownAction =
+  RollInitialDieAction |
+  InitialDiceWinnerAction |
+  MoveCounterAction |
+  RollDiceAction;
 
 const defaultState = { statuses: [['Roll dice to begin'], ['Roll dice to begin']] };
 
@@ -30,6 +35,22 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
       const statusesNext = state.statuses.slice();
       statusesNext[winner].push('You win the initial roll.');
       statusesNext[getOtherPlayer(winner)].push(`${Player[winner]} wins the initial roll.`);
+      return { ...state, statuses: statusesNext };
+    }
+    case 'MoveCounterAction': {
+      const { player, isEndOfTurn } = action.payload;
+      if (!isEndOfTurn) {
+        return state;
+      }
+      const statusesNext = state.statuses.slice();
+      statusesNext[player].push('');
+      statusesNext[getOtherPlayer(player)].push('Your turn to roll.');
+      return { ...state, statuses: statusesNext };
+    }
+    case 'RollDiceAction': {
+      const { player } = action.payload;
+      const statusesNext = state.statuses.slice();
+      statusesNext[player].push('Your move.');
       return { ...state, statuses: statusesNext };
     }
     default: {

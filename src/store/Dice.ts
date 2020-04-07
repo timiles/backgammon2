@@ -25,7 +25,7 @@ export interface InitialDiceWinnerAction {
     winner: Player;
   };
 }
-interface RollDiceAction {
+export interface RollDiceAction {
   type: 'RollDiceAction';
   payload: {
     player: Player;
