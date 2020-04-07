@@ -25,7 +25,18 @@ export interface InitialDiceWinnerAction {
     winner: Player;
   };
 }
-type KnownAction = RollInitialDieAction | InitialDiceWinnerAction | MoveCounterAction;
+interface RollDiceAction {
+  type: 'RollDiceAction';
+  payload: {
+    player: Player;
+    dieValues: DieValue[];
+  };
+}
+type KnownAction =
+  RollInitialDieAction |
+  InitialDiceWinnerAction |
+  RollDiceAction |
+  MoveCounterAction;
 
 export const actionCreators = {
   rollInitialDie: (player: Player): AppThunkAction<KnownAction> => (dispatch, getState) => (
@@ -57,6 +68,10 @@ export const actionCreators = {
         }, 1000);
       }
     })(),
+  rollDice: (player: Player) => ({
+    type: 'RollDiceAction',
+    payload: { player, dieValues: [getRandomDie(), getRandomDie()] },
+  }),
 };
 
 const defaultState = { dice: [[], []], requiresReroll: [] };
@@ -89,13 +104,26 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       diceNext[loser] = [];
       return { ...state, dice: diceNext };
     }
-    case 'MoveCounterAction': {
-      const { player, sourceIndex, targetIndex } = action.payload;
+    case 'RollDiceAction': {
+      const { player, dieValues } = action.payload;
 
-      const distance = getDistance(player, sourceIndex, targetIndex);
+      const diceNext = state.dice.slice();
+      diceNext[player] = dieValues.map(x => ({ value: x }));
+
+      return { ...state, dice: diceNext };
+    }
+    case 'MoveCounterAction': {
+      const { player, sourceIndex, targetIndex, isEndOfTurn } = action.payload;
+
       const diceNext = state.dice.slice();
       diceNext[player] = diceNext[player].slice();
+      const distance = getDistance(player, sourceIndex, targetIndex);
       diceNext[player].filter(x => x.value === distance && !x.isSpent)[0].isSpent = true;
+
+      if (isEndOfTurn) {
+        diceNext[getOtherPlayer(player)] = [];
+      }
+
       return { ...state, dice: diceNext };
     }
     default: {

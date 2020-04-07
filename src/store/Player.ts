@@ -1,13 +1,15 @@
 /* eslint-disable import/prefer-default-export */
 import { Reducer } from 'redux';
 import Player from '../models/Player';
+import { getOtherPlayer } from '../utils';
+import { MoveCounterAction } from './Board';
 import { InitialDiceWinnerAction } from './Dice';
 
 export interface PlayerState {
   currentPlayer?: Player;
 }
 
-type KnownAction = InitialDiceWinnerAction;
+type KnownAction = InitialDiceWinnerAction | MoveCounterAction;
 
 const defaultState = {};
 
@@ -15,6 +17,14 @@ export const reducer: Reducer<PlayerState> = (state: PlayerState, action: KnownA
   switch (action.type) {
     case 'InitialDiceWinnerAction': {
       return { ...state, currentPlayer: action.payload.winner };
+    }
+    case 'MoveCounterAction': {
+      const { player, isEndOfTurn } = action.payload;
+
+      if (isEndOfTurn) {
+        return { ...state, currentPlayer: getOtherPlayer(player) };
+      }
+      return { ...state, currentPlayer: player };
     }
     default: {
       break;

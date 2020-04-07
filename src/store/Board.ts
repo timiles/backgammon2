@@ -1,4 +1,5 @@
 import { Reducer } from 'redux';
+import { AppThunkAction } from '.';
 import { BoxModel } from '../models/BoxModel';
 import { CounterContainerModel } from '../models/CounterContainerModel';
 import Player from '../models/Player';
@@ -22,6 +23,7 @@ export interface MoveCounterAction {
     player: Player;
     sourceIndex: number;
     targetIndex: number;
+    isEndOfTurn: boolean;
   };
 }
 type KnownAction = RegisterPointBoxAction | MoveCounterAction;
@@ -31,10 +33,19 @@ export const actionCreators = {
     type: 'RegisterPointBoxAction',
     payload: { index, box },
   }),
-  moveCounter: (id: number, player: Player, sourceIndex: number, targetIndex: number) => ({
-    type: 'MoveCounterAction',
-    payload: { id, player, sourceIndex, targetIndex },
-  }),
+  moveCounter: (
+    id: number,
+    player: Player,
+    sourceIndex: number,
+    targetIndex: number,
+  ): AppThunkAction<KnownAction> => (dispatch, getState) => (async () => {
+    const remainingDice = getState().dice.dice[player].filter(x => !x.isSpent);
+    const isEndOfTurn = remainingDice.length === 1;
+    dispatch({
+      type: 'MoveCounterAction',
+      payload: { id, player, sourceIndex, targetIndex, isEndOfTurn },
+    });
+  })(),
 };
 
 const defaultState = { points: initialBoardLayout };

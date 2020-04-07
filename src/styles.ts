@@ -127,8 +127,6 @@ export default StyleSheet.create({
   } as ViewStyle,
 
   spentDie: {
-    width: 24,
-    height: 24,
-    fontSize: 16,
+    backgroundColor: 'gray',
   } as ViewStyle,
 });
