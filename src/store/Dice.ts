@@ -2,7 +2,7 @@ import { Reducer } from 'redux';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
-import { getDistance, getOtherPlayer } from '../utils';
+import { getOtherPlayer } from '../utils';
 import { MoveCounterAction } from './Board';
 import { AppThunkAction } from './index';
 
@@ -113,14 +113,12 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       return { ...state, dice: diceNext };
     }
     case 'MoveCounterAction': {
-      const { player, sourceIndex, targetIndex, isEndOfTurn } = action.payload;
+      const { player, resultingDice } = action.payload;
 
       const diceNext = state.dice.slice();
-      diceNext[player] = diceNext[player].slice();
-      const distance = getDistance(player, sourceIndex, targetIndex);
-      diceNext[player].filter(x => x.value === distance && !x.isSpent)[0].isSpent = true;
+      diceNext[player] = resultingDice;
 
-      if (isEndOfTurn) {
+      if (!resultingDice.some(x => !x.isSpent)) {
         diceNext[getOtherPlayer(player)] = [];
       }
 

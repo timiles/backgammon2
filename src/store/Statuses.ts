@@ -38,8 +38,8 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
       return { ...state, statuses: statusesNext };
     }
     case 'MoveCounterAction': {
-      const { player, isEndOfTurn } = action.payload;
-      if (!isEndOfTurn) {
+      const { player, resultingDice } = action.payload;
+      if (resultingDice.some(x => !x.isSpent)) {
         return state;
       }
       const statusesNext = state.statuses.slice();

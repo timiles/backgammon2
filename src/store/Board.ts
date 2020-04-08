@@ -2,7 +2,9 @@ import { Reducer } from 'redux';
 import { AppThunkAction } from '.';
 import { BoxModel } from '../models/BoxModel';
 import { CounterContainerModel } from '../models/CounterContainerModel';
+import { DieModel } from '../models/DieModel';
 import Player from '../models/Player';
+import { getDistance } from '../utils';
 import initialBoardLayout from './initialBoardLayout';
 
 export interface BoardState {
@@ -23,7 +25,7 @@ export interface MoveCounterAction {
     player: Player;
     sourceIndex: number;
     targetIndex: number;
-    isEndOfTurn: boolean;
+    resultingDice: DieModel[];
   };
 }
 type KnownAction = RegisterPointBoxAction | MoveCounterAction;
@@ -39,11 +41,13 @@ export const actionCreators = {
     sourceIndex: number,
     targetIndex: number,
   ): AppThunkAction<KnownAction> => (dispatch, getState) => (async () => {
-    const remainingDice = getState().dice.dice[player].filter(x => !x.isSpent);
-    const isEndOfTurn = remainingDice.length === 1;
+    const distance = getDistance(player, sourceIndex, targetIndex);
+    const resultingDice = getState().dice.dice[player].slice();
+    resultingDice.filter(x => x.value === distance && !x.isSpent)[0].isSpent = true;
+
     dispatch({
       type: 'MoveCounterAction',
-      payload: { id, player, sourceIndex, targetIndex, isEndOfTurn },
+      payload: { id, player, sourceIndex, targetIndex, resultingDice },
     });
   })(),
 };

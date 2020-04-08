@@ -19,12 +19,12 @@ export const reducer: Reducer<PlayerState> = (state: PlayerState, action: KnownA
       return { ...state, currentPlayer: action.payload.winner };
     }
     case 'MoveCounterAction': {
-      const { player, isEndOfTurn } = action.payload;
+      const { player, resultingDice } = action.payload;
 
-      if (isEndOfTurn) {
-        return { ...state, currentPlayer: getOtherPlayer(player) };
+      if (resultingDice.some(x => !x.isSpent)) {
+        return { ...state, currentPlayer: player };
       }
-      return { ...state, currentPlayer: player };
+      return { ...state, currentPlayer: getOtherPlayer(player) };
     }
     default: {
       break;
