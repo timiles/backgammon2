@@ -23,12 +23,8 @@ function Dice(props: Props) {
       ? () => props.rollInitialDie(player) : null;
     return (
       <View style={styles.diceContainer}>
-        {die2 != null && <Die player={player} value={die2.value} isSpent />}
-        <Die
-          player={player}
-          value={die1 ? die1.value : '?'}
-          onPress={handlePress}
-        />
+        {die2 != null && <Die player={player} die={die2} />}
+        <Die player={player} die={die1} onPress={handlePress} />
       </View>
     );
   }
@@ -37,11 +33,11 @@ function Dice(props: Props) {
   return (
     <View style={styles.diceContainer}>
       {die1 == null
-        ? <Die player={player} value="?" onPress={handlePress} />
-        : <Die player={player} value={die1.value} isSpent={die1.isSpent} />}
+        ? <Die player={player} onPress={handlePress} />
+        : <Die player={player} die={die1} />}
       {die2 == null
-        ? <Die player={player} value="?" onPress={handlePress} />
-        : <Die player={player} value={die2.value} isSpent={die2.isSpent} />}
+        ? <Die player={player} onPress={handlePress} />
+        : <Die player={player} die={die2} />}
     </View>
   );
 }

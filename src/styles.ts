@@ -126,7 +126,11 @@ export default StyleSheet.create({
     shadowRadius: 10,
   } as ViewStyle,
 
+  halfSpentDie: {
+    opacity: 0.5,
+  } as ViewStyle,
+
   spentDie: {
-    backgroundColor: 'gray',
+    opacity: 0.2,
   } as ViewStyle,
 });

@@ -1,26 +1,22 @@
 import * as React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
-import { DieValue } from '../models/DieValue';
+import { DieModel } from '../models/DieModel';
 import Player from '../models/Player';
 import styles from '../styles';
 
 interface IProps {
   player: Player;
-  value: DieValue | '?';
-  isSpent?: boolean;
+  die?: DieModel;
   onPress?: () => void;
 }
 
 export default function Die(props: IProps) {
-  const {
-    player,
-    value,
-    isSpent,
-    onPress,
-  } = props;
+  const { player, die: dieModel, onPress } = props;
+  const { value, isHalfSpent = false, isSpent = false } = dieModel || { value: '?' };
 
   const colorStyle = player === Player.Red ? styles.redDie : styles.blackDie;
-  const spentStyle = isSpent ? styles.spentDie : null;
+  // eslint-disable-next-line no-nested-ternary
+  const spentStyle = isSpent ? styles.spentDie : isHalfSpent ? styles.halfSpentDie : null;
   const activeStyle = onPress ? styles.activeDie : null;
   const style = [styles.die, colorStyle, spentStyle, activeStyle];
 

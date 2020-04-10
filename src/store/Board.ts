@@ -43,7 +43,22 @@ export const actionCreators = {
   ): AppThunkAction<KnownAction> => (dispatch, getState) => (async () => {
     const distance = getDistance(player, sourceIndex, targetIndex);
     const resultingDice = getState().dice.dice[player].slice();
-    resultingDice.filter(x => x.value === distance && !x.isSpent)[0].isSpent = true;
+
+    const [die1, die2] = resultingDice;
+    const isDouble = die1.value === die2.value;
+    if (isDouble) {
+      if (!die1.isHalfSpent) {
+        die1.isHalfSpent = true;
+      } else if (!die1.isSpent) {
+        die1.isSpent = true;
+      } else if (!die2.isHalfSpent) {
+        die2.isHalfSpent = true;
+      } else {
+        die2.isSpent = true;
+      }
+    } else {
+      resultingDice.find(x => x.value === distance).isSpent = true;
+    }
 
     dispatch({
       type: 'MoveCounterAction',
