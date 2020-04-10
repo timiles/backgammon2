@@ -118,7 +118,7 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       const diceNext = state.dice.slice();
       diceNext[player] = resultingDice;
 
-      if (!resultingDice.some(x => !x.isSpent)) {
+      if (resultingDice.every(x => x.isSpent)) {
         diceNext[getOtherPlayer(player)] = [];
       }
 
