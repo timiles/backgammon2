@@ -15,12 +15,11 @@ type Props = IOwnProps & StateProps & DispatchProps;
 
 function Dice(props: Props) {
   const {
-    player, dice: [die1, die2], requiresReroll, currentPlayer,
+    player, dice: [die1, die2], isInitialRoll, currentPlayer,
   } = props;
 
   if (currentPlayer == null) {
-    const handlePress = (die1 == null || requiresReroll)
-      ? () => props.rollInitialDie(player) : null;
+    const handlePress = isInitialRoll ? () => props.rollInitialDie(player) : null;
     return (
       <View style={styles.diceContainer}>
         {die2 != null && <Die player={player} die={die2} />}
@@ -45,7 +44,7 @@ function Dice(props: Props) {
 const mapStateToProps = ({ dice, player }: ApplicationState, ownProps: IOwnProps) => (
   {
     dice: dice.dice[ownProps.player],
-    requiresReroll: dice.requiresReroll[ownProps.player],
+    isInitialRoll: dice.isInitialRoll,
     currentPlayer: player.currentPlayer,
   }
 );

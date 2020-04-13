@@ -8,7 +8,7 @@ import { AppThunkAction } from './index';
 
 export interface DiceState {
   dice: DieModel[][];
-  requiresReroll: boolean[];
+  isInitialRoll: boolean;
 }
 
 export interface RollInitialDieAction {
@@ -74,24 +74,26 @@ export const actionCreators = {
   }),
 };
 
-const defaultState = { dice: [[], []], requiresReroll: [] };
+const defaultState = { dice: [[], []], isInitialRoll: true };
 
 export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownAction) => {
   switch (action.type) {
     case 'RollInitialDieAction': {
-      const { player, dieValue, requiresReroll } = action.payload;
-      const diceNext = state.dice.slice();
-      const requiresRerollNext = state.requiresReroll.slice();
-      if (requiresReroll) {
+      const { player, dieValue } = action.payload;
+      const { dice } = state;
+
+      const otherPlayer = getOtherPlayer(player);
+      const diceNext = dice.slice();
+
+      if (diceNext[otherPlayer][0]?.value === dieValue) {
+        // Initial roll was a draw. Set value as second die and reset first.
         diceNext[player] = [null, { value: dieValue, isSpent: true }];
-        diceNext[getOtherPlayer(player)] = [null, { value: dieValue, isSpent: true }];
-        requiresRerollNext[Player.Red] = true;
-        requiresRerollNext[Player.Black] = true;
+        diceNext[otherPlayer] = [null, { value: dieValue, isSpent: true }];
       } else {
-        diceNext[player][0] = { value: dieValue };
-        requiresRerollNext[player] = false;
+        diceNext[player] = [{ value: dieValue }, diceNext[player][1]];
       }
-      return { ...state, dice: diceNext, requiresReroll: requiresRerollNext };
+
+      return { ...state, dice: diceNext };
     }
     case 'InitialDiceWinnerAction': {
       const { winner } = action.payload;
@@ -102,7 +104,7 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
 
       diceNext[winner] = [diceNext[winner][0], loserDie];
       diceNext[loser] = [];
-      return { ...state, dice: diceNext };
+      return { ...state, dice: diceNext, isInitialRoll: false };
     }
     case 'RollDiceAction': {
       const { player, dieValues } = action.payload;
