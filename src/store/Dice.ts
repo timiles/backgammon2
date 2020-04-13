@@ -1,4 +1,5 @@
 import { Reducer } from 'redux';
+import { KeyPressAction } from '..';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
@@ -36,7 +37,8 @@ type KnownAction =
   RollInitialDieAction |
   InitialDiceWinnerAction |
   RollDiceAction |
-  MoveCounterAction;
+  MoveCounterAction |
+  KeyPressAction;
 
 export const actionCreators = {
   rollInitialDie: (player: Player): AppThunkAction<KnownAction> => (dispatch, getState) => (
@@ -125,6 +127,33 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       }
 
       return { ...state, dice: diceNext };
+    }
+    case 'KeyPressAction': {
+      const { dice, isInitialRoll } = state;
+
+      if (isInitialRoll) {
+        return state;
+      }
+
+      const { event } = action.payload;
+      const eventKeyNumber = Number(event.key);
+      if (eventKeyNumber >= 1 && eventKeyNumber <= 6) {
+        const dieValue = eventKeyNumber as DieValue;
+        const diceNext = dice.slice();
+
+        for (let player = 0; player < 2; player += 1) {
+          for (let dieIndex = 0; dieIndex < diceNext[player].length; dieIndex += 1) {
+            if (!diceNext[player][dieIndex].isSpent) {
+              diceNext[player] = diceNext[player].slice();
+              diceNext[player][dieIndex].value = dieValue;
+              break;
+            }
+          }
+        }
+
+        return { ...state, dice: diceNext };
+      }
+      return state;
     }
     default: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
