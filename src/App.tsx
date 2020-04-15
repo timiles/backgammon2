@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { hot } from 'react-hot-loader';
 import { View } from 'react-native';
 import Board from './components/Board';
 import DiceRollArea from './components/DiceRollArea';
@@ -6,7 +7,7 @@ import Status from './components/Status';
 import Player from './models/Player';
 import styles from './styles';
 
-export default function App() {
+function App() {
   return (
     <View style={styles.app}>
       <Status player={Player.Black} upsideDown />
@@ -19,3 +20,5 @@ export default function App() {
     </View>
   );
 }
+
+export default hot(module)(App);

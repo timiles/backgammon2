@@ -25,6 +25,15 @@ function Root() {
     });
   }
 
+  // Enable Webpack hot module replacement for reducers
+  if (module.hot) {
+    module.hot.accept('./store', () => {
+      // eslint-disable-next-line global-require
+      const nextRootReducer = require<typeof StoreModule>('./store');
+      store.replaceReducer(combineReducers<StoreModule.ApplicationState>(nextRootReducer.reducers));
+    });
+  }
+
   return (
     <Provider store={store}>
       <View style={styles.mobileSize}>
