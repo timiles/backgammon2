@@ -1,7 +1,7 @@
 import { CounterContainerModel } from '../models/CounterContainerModel';
 import Player from '../models/Player';
 
-const initialBoardLayout: CounterContainerModel[] = [...Array(24)].map(() => ({ counters: [] }));
+const initialBoardLayout: CounterContainerModel[] = [...Array(26)].map(() => ({ counters: [] }));
 
 let id = 1;
 for (let i = 0; i < 2; i += 1) {

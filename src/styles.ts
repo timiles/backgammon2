@@ -65,6 +65,7 @@ export default StyleSheet.create({
 
   bar: {
     backgroundColor: 'brown',
+    justifyContent: 'center',
   } as ViewStyle,
 
   home: {

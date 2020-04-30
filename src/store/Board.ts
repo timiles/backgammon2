@@ -7,6 +7,10 @@ import Player from '../models/Player';
 import { getDistance } from '../utils';
 import initialBoardLayout from './initialBoardLayout';
 
+export const BarIndexes = [];
+BarIndexes[Player.Red] = 24;
+BarIndexes[Player.Black] = 25;
+
 export interface BoardState {
   points: CounterContainerModel[];
 }
@@ -78,11 +82,19 @@ export const reducer: Reducer<BoardState> = (state: BoardState, action: KnownAct
     }
     case 'MoveCounterAction': {
       const pointsNext = state.points.slice();
-      const { id, sourceIndex, targetIndex } = action.payload;
+      const { id, player, sourceIndex, targetIndex } = action.payload;
       // Create new arrays to trigger change detection
       pointsNext[sourceIndex].counters = pointsNext[sourceIndex].counters.slice();
       pointsNext[targetIndex].counters = pointsNext[targetIndex].counters.slice();
 
+      // If we've hit other player's blot, put it on the bar
+      if (pointsNext[targetIndex].counters.length === 1
+        && pointsNext[targetIndex].counters[0].player !== player) {
+        const blot = pointsNext[targetIndex].counters.splice(0, 1)[0];
+        pointsNext[BarIndexes[blot.player]].counters.push(blot);
+      }
+
+      // Move counter
       const counterIndex = pointsNext[sourceIndex].counters.findIndex(x => x.id === id);
       const counter = pointsNext[sourceIndex].counters.splice(counterIndex, 1)[0];
       pointsNext[targetIndex].counters.push(counter);

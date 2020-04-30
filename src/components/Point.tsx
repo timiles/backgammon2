@@ -7,7 +7,10 @@ import * as BoardStore from '../store/Board';
 import styles from '../styles';
 import Counter from './Counter';
 
+type PointType = 'Point' | 'Bar' | 'Home';
+
 interface IProps {
+  type: PointType;
   index: number;
   onSourceChange: (active: boolean) => void;
 }
@@ -55,18 +58,29 @@ class Point extends React.Component<Props, IState> {
   };
 
   render() {
-    const { index, counters, currentPlayer } = this.props;
+    const { type, index, counters, currentPlayer } = this.props;
     const { sourceCount, width, height } = this.state;
 
-    const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
-    const topBottomStyle = (index < 12) ? styles.topPoint : styles.bottomPoint;
-    const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
-    const pointStyle = [styles.counterContainer, evenOddStyle, topBottomStyle, sourceStyle];
+    const getStyle = () => {
+      switch (type) {
+        case 'Bar':
+          return styles.bar;
+        case 'Point': {
+          const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
+          const topBottomStyle = (index < 12) ? styles.topPoint : styles.bottomPoint;
+          return [evenOddStyle, topBottomStyle];
+        }
+        default:
+          return null;
+      }
+    };
 
+    const pointStyle = getStyle();
+    const sourceStyle = (sourceCount > 0) ? styles.draggableSource : null;
     const counterSize = Math.min(width - 10, (height - 10) / counters.length);
 
     return (
-      <View ref={this.ref} style={pointStyle}>
+      <View ref={this.ref} style={[styles.counterContainer, pointStyle, sourceStyle]}>
         {!Number.isNaN(counterSize) && counters.map(x => (
           <Counter
             key={x.id}
