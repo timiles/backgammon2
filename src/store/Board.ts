@@ -28,7 +28,7 @@ export interface MoveCounterAction {
     id: number;
     player: Player;
     sourceIndex: number;
-    targetIndex: number;
+    destinationIndex: number;
     resultingDice: DieModel[];
   };
 }
@@ -43,9 +43,9 @@ export const actionCreators = {
     id: number,
     player: Player,
     sourceIndex: number,
-    targetIndex: number,
+    destinationIndex: number,
   ): AppThunkAction<KnownAction> => (dispatch, getState) => (async () => {
-    const distance = getDistance(player, sourceIndex, targetIndex);
+    const distance = getDistance(player, sourceIndex, destinationIndex);
     const resultingDice = getState().dice.dice[player].slice();
 
     const [die1, die2] = resultingDice;
@@ -66,7 +66,7 @@ export const actionCreators = {
 
     dispatch({
       type: 'MoveCounterAction',
-      payload: { id, player, sourceIndex, targetIndex, resultingDice },
+      payload: { id, player, sourceIndex, destinationIndex, resultingDice },
     });
   })(),
 };
@@ -82,22 +82,22 @@ export const reducer: Reducer<BoardState> = (state: BoardState, action: KnownAct
     }
     case 'MoveCounterAction': {
       const pointsNext = state.points.slice();
-      const { id, player, sourceIndex, targetIndex } = action.payload;
+      const { id, player, sourceIndex, destinationIndex } = action.payload;
       // Create new arrays to trigger change detection
       pointsNext[sourceIndex].counters = pointsNext[sourceIndex].counters.slice();
-      pointsNext[targetIndex].counters = pointsNext[targetIndex].counters.slice();
+      pointsNext[destinationIndex].counters = pointsNext[destinationIndex].counters.slice();
 
       // If we've hit other player's blot, put it on the bar
-      if (pointsNext[targetIndex].counters.length === 1
-        && pointsNext[targetIndex].counters[0].player !== player) {
-        const blot = pointsNext[targetIndex].counters.splice(0, 1)[0];
+      if (pointsNext[destinationIndex].counters.length === 1
+        && pointsNext[destinationIndex].counters[0].player !== player) {
+        const blot = pointsNext[destinationIndex].counters.splice(0, 1)[0];
         pointsNext[BarIndexes[blot.player]].counters.push(blot);
       }
 
       // Move counter
       const counterIndex = pointsNext[sourceIndex].counters.findIndex(x => x.id === id);
       const counter = pointsNext[sourceIndex].counters.splice(counterIndex, 1)[0];
-      pointsNext[targetIndex].counters.push(counter);
+      pointsNext[destinationIndex].counters.push(counter);
 
       return { ...state, points: pointsNext };
     }

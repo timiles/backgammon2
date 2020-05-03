@@ -40,11 +40,11 @@ class Counter extends React.Component<Props, IState> {
       onPanResponderRelease: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         const { moveX, moveY } = gestureState;
         const { id, player, pointIndex, points, moveCounter } = this.props;
-        const targetIndex = points.map(x => x.box).findIndex(
+        const destinationIndex = points.map(x => x.box).findIndex(
           x => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom,
         );
-        if (targetIndex >= 0 && targetIndex !== pointIndex && this.canMove(targetIndex)) {
-          moveCounter(id, player, pointIndex, targetIndex);
+        if (destinationIndex >= 0 && this.canMove(destinationIndex)) {
+          moveCounter(id, player, pointIndex, destinationIndex);
           props.onSourceChange(false);
         } else {
           Animated.spring(counterLocation, { toValue: { x: 0, y: 0 }, friction: 5 })
@@ -57,13 +57,19 @@ class Counter extends React.Component<Props, IState> {
     this.gestureResponderHandlers = panResponder.panHandlers;
   }
 
-  private canMove(targetIndex: number) {
+  private canMove(destinationIndex: number) {
     const { pointIndex, points, dice, player } = this.props;
-    const otherPlayer = getOtherPlayer(player);
-    if (points[targetIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
+
+    if (destinationIndex === pointIndex) {
       return false;
     }
-    const distance = getDistance(player, pointIndex, targetIndex);
+
+    const otherPlayer = getOtherPlayer(player);
+    if (points[destinationIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
+      return false;
+    }
+
+    const distance = getDistance(player, pointIndex, destinationIndex);
     return dice.some(x => x.value === distance && !x.isSpent);
   }
 
