@@ -81,9 +81,9 @@ export const reducer: Reducer<BoardState> = (state: BoardState, action: KnownAct
       return { ...state, points: pointsNext };
     }
     case 'MoveCounterAction': {
-      const pointsNext = state.points.slice();
       const { id, player, sourceIndex, destinationIndex } = action.payload;
       // Create new arrays to trigger change detection
+      const pointsNext = state.points.slice();
       pointsNext[sourceIndex].counters = pointsNext[sourceIndex].counters.slice();
       pointsNext[destinationIndex].counters = pointsNext[destinationIndex].counters.slice();
 
@@ -91,7 +91,9 @@ export const reducer: Reducer<BoardState> = (state: BoardState, action: KnownAct
       if (pointsNext[destinationIndex].counters.length === 1
         && pointsNext[destinationIndex].counters[0].player !== player) {
         const blot = pointsNext[destinationIndex].counters.splice(0, 1)[0];
-        pointsNext[BarIndexes[blot.player]].counters.push(blot);
+        const barIndex = BarIndexes[blot.player];
+        pointsNext[barIndex].counters = pointsNext[barIndex].counters.slice();
+        pointsNext[barIndex].counters.push(blot);
       }
 
       // Move counter
