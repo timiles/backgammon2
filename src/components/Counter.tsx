@@ -11,7 +11,6 @@ import { getDistance, getOtherPlayer } from '../utils';
 
 interface IOwnProps extends CounterModel {
   pointIndex: number;
-  canMove: boolean;
   onSourceChange: (isSource: boolean) => void;
   size: number;
 }
@@ -57,24 +56,43 @@ class Counter extends React.Component<Props, IState> {
     this.gestureResponderHandlers = panResponder.panHandlers;
   }
 
-  private canMove(destinationIndex: number) {
-    const { pointIndex, points, dice, player } = this.props;
+  private canMove(destinationIndex?: number) {
+    const { pointIndex, points, dice, player, currentPlayer } = this.props;
 
-    if (destinationIndex === pointIndex) {
+    if (player !== currentPlayer) {
       return false;
     }
 
-    const otherPlayer = getOtherPlayer(player);
-    if (points[destinationIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
+    const barIndex = BoardStore.BarIndexes[player];
+    if (points[barIndex].counters.length > 0 && barIndex !== pointIndex) {
+      // Player has counters on the bar, and this is not their bar
       return false;
     }
 
-    const distance = getDistance(player, pointIndex, destinationIndex);
-    return dice.some(x => x.value === distance && !x.isSpent);
+    if (destinationIndex != null) {
+      if (destinationIndex === pointIndex) {
+        // Can't move to the same point
+        return false;
+      }
+
+      const otherPlayer = getOtherPlayer(player);
+      if (points[destinationIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
+        // Destination is blocked by other player
+        return false;
+      }
+
+      const distance = getDistance(player, pointIndex, destinationIndex);
+      if (!dice.some(x => x.value === distance && !x.isSpent)) {
+        // Don't have the dice roll available
+        return false;
+      }
+    }
+
+    return true;
   }
 
   render() {
-    const { player, canMove, size } = this.props;
+    const { player, size } = this.props;
 
     const color = player === Player.Red ? colors.redPlayer : colors.blackPlayer;
 
@@ -82,7 +100,7 @@ class Counter extends React.Component<Props, IState> {
     const counterLocationStyle = { transform: counterLocation.getTranslateTransform() };
     const counterStyle = [styles.counter, counterLocationStyle];
 
-    const animatedViewProps = canMove ? this.gestureResponderHandlers : null;
+    const animatedViewProps = this.canMove() ? this.gestureResponderHandlers : null;
 
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
@@ -95,10 +113,11 @@ class Counter extends React.Component<Props, IState> {
   }
 }
 
-const mapStateToProps = ({ board, dice }: ApplicationState, ownProps: IOwnProps) => (
+const mapStateToProps = ({ board, dice, player }: ApplicationState, ownProps: IOwnProps) => (
   {
     points: board.points,
     dice: dice.dice[ownProps.player],
+    currentPlayer: player.currentPlayer,
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;

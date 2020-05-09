@@ -58,7 +58,7 @@ class Point extends React.Component<Props, IState> {
   };
 
   render() {
-    const { type, index, counters, currentPlayer } = this.props;
+    const { type, index, counters } = this.props;
     const { sourceCount, width, height } = this.state;
 
     const getStyle = () => {
@@ -87,7 +87,6 @@ class Point extends React.Component<Props, IState> {
             id={x.id}
             player={x.player}
             pointIndex={index}
-            canMove={x.player === currentPlayer}
             onSourceChange={this.handleSourceChange}
             size={counterSize}
           />
@@ -97,10 +96,9 @@ class Point extends React.Component<Props, IState> {
   }
 }
 
-const mapStateToProps = ({ board, player }: ApplicationState, ownProps: IProps) => (
+const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => (
   {
     counters: board.points[ownProps.index].counters,
-    currentPlayer: player.currentPlayer,
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;
