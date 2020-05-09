@@ -8,7 +8,7 @@ import { getDistance } from '../utils';
 import initialBoardLayout from './initialBoardLayout';
 
 export const BarIndexes = [];
-BarIndexes[Player.Red] = 24;
+BarIndexes[Player.Red] = 0;
 BarIndexes[Player.Black] = 25;
 
 export interface BoardState {

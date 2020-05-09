@@ -5,18 +5,18 @@ const initialBoardLayout: CounterContainerModel[] = [...Array(26)].map(() => ({ 
 
 let id = 1;
 for (let i = 0; i < 2; i += 1) {
-  initialBoardLayout[0].counters.push({ id: id += 1, player: Player.Red });
-  initialBoardLayout[23].counters.push({ id: id += 1, player: Player.Black });
+  initialBoardLayout[1].counters.push({ id: id += 1, player: Player.Red });
+  initialBoardLayout[24].counters.push({ id: id += 1, player: Player.Black });
 }
 for (let i = 0; i < 3; i += 1) {
-  initialBoardLayout[7].counters.push({ id: id += 1, player: Player.Black });
-  initialBoardLayout[16].counters.push({ id: id += 1, player: Player.Red });
+  initialBoardLayout[8].counters.push({ id: id += 1, player: Player.Black });
+  initialBoardLayout[17].counters.push({ id: id += 1, player: Player.Red });
 }
 for (let i = 0; i < 5; i += 1) {
-  initialBoardLayout[5].counters.push({ id: id += 1, player: Player.Black });
-  initialBoardLayout[11].counters.push({ id: id += 1, player: Player.Red });
-  initialBoardLayout[12].counters.push({ id: id += 1, player: Player.Black });
-  initialBoardLayout[18].counters.push({ id: id += 1, player: Player.Red });
+  initialBoardLayout[6].counters.push({ id: id += 1, player: Player.Black });
+  initialBoardLayout[12].counters.push({ id: id += 1, player: Player.Red });
+  initialBoardLayout[13].counters.push({ id: id += 1, player: Player.Black });
+  initialBoardLayout[19].counters.push({ id: id += 1, player: Player.Red });
 }
 
 export default initialBoardLayout;
