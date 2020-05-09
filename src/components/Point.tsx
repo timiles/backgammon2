@@ -5,6 +5,7 @@ import { BoxModel } from '../models/BoxModel';
 import { ApplicationState } from '../store';
 import * as BoardStore from '../store/Board';
 import styles from '../styles';
+import { Side } from '../types';
 import Counter from './Counter';
 
 type PointType = 'Point' | 'Bar' | 'Home';
@@ -12,6 +13,7 @@ type PointType = 'Point' | 'Bar' | 'Home';
 interface IProps {
   type: PointType;
   index: number;
+  side: Side;
   onSourceChange: (active: boolean) => void;
 }
 
@@ -58,7 +60,7 @@ class Point extends React.Component<Props, IState> {
   };
 
   render() {
-    const { type, index, counters } = this.props;
+    const { type, index, side, counters } = this.props;
     const { sourceCount, width, height } = this.state;
 
     const getStyle = () => {
@@ -67,7 +69,7 @@ class Point extends React.Component<Props, IState> {
           return styles.bar;
         case 'Point': {
           const evenOddStyle = ((index + 1) % 2 === 0) ? styles.evenPoint : styles.oddPoint;
-          const topBottomStyle = (index < 12) ? styles.topPoint : styles.bottomPoint;
+          const topBottomStyle = (side === 'top') ? styles.topPoint : styles.bottomPoint;
           return [evenOddStyle, topBottomStyle];
         }
         default:

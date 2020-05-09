@@ -3,11 +3,12 @@ import { View } from 'react-native';
 import Player from '../models/Player';
 import { BarIndexes } from '../store/Board';
 import styles from '../styles';
+import { Side } from '../types';
 import Home from './Home';
 import Point from './Point';
 
 interface IProps {
-  side: 'top' | 'bottom';
+  side: Side;
 }
 
 interface IState {
@@ -46,6 +47,7 @@ export default class BoardHalf extends React.Component<IProps, IState> {
           key={i}
           type="Point"
           index={pointIndex}
+          side={side}
           onSourceChange={this.handleSourceChange}
         />,
       );
@@ -54,6 +56,7 @@ export default class BoardHalf extends React.Component<IProps, IState> {
           key={i}
           type="Point"
           index={pointIndex + (6 * direction)}
+          side={side}
           onSourceChange={this.handleSourceChange}
         />,
       );
@@ -62,7 +65,7 @@ export default class BoardHalf extends React.Component<IProps, IState> {
     return (
       <View style={[styles.boardHalf, sourceStyle]}>
         {leftHandPoints}
-        <Point type="Bar" index={barIndex} onSourceChange={this.handleSourceChange} />
+        <Point type="Bar" index={barIndex} side={side} onSourceChange={this.handleSourceChange} />
         {rightHandPoints}
         <Home />
       </View>
