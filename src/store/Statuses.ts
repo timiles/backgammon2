@@ -6,7 +6,7 @@ import { MoveCounterAction } from './Board';
 import { InitialDiceWinnerAction, RollDiceAction, RollInitialDieAction } from './Dice';
 
 export interface StatusesState {
-  statuses: string[][];
+  statuses: string[];
 }
 
 type KnownAction =
@@ -15,7 +15,7 @@ type KnownAction =
   MoveCounterAction |
   RollDiceAction;
 
-const defaultState = { statuses: [['Roll dice to begin'], ['Roll dice to begin']] };
+const defaultState = { statuses: ['Roll dice to begin', 'Roll dice to begin'] };
 
 export const reducer: Reducer<StatusesState> = (state: StatusesState, action: KnownAction) => {
   switch (action.type) {
@@ -23,35 +23,34 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
       const { player, requiresReroll } = action.payload;
       const statusesNext = state.statuses.slice();
       if (requiresReroll) {
-        statusesNext[Player.Red].push('Re-roll!');
-        statusesNext[Player.Black].push('Re-roll!');
+        statusesNext[Player.Red] = 'Re-roll!';
+        statusesNext[Player.Black] = 'Re-roll!';
       } else {
-        statusesNext[player].push(`Waiting for ${Player[getOtherPlayer(player)]}...`);
+        statusesNext[player] = `Waiting for ${Player[getOtherPlayer(player)]}...`;
       }
-      return { ...state, statuses: statusesNext };
+      return { statuses: statusesNext };
     }
     case 'InitialDiceWinnerAction': {
       const { winner } = action.payload;
       const statusesNext = state.statuses.slice();
-      statusesNext[winner].push('You win the initial roll.');
-      statusesNext[getOtherPlayer(winner)].push(`${Player[winner]} wins the initial roll.`);
-      return { ...state, statuses: statusesNext };
+      statusesNext[winner] = 'You win the initial roll.';
+      statusesNext[getOtherPlayer(winner)] = `${Player[winner]} wins the initial roll.`;
+      return { statuses: statusesNext };
     }
     case 'MoveCounterAction': {
       const { player, resultingDice } = action.payload;
       if (resultingDice.some(x => !x.isSpent)) {
         return state;
       }
-      const statusesNext = state.statuses.slice();
-      statusesNext[player].push('');
-      statusesNext[getOtherPlayer(player)].push('Your turn to roll.');
-      return { ...state, statuses: statusesNext };
+      const statusesNext = [];
+      statusesNext[getOtherPlayer(player)] = 'Your turn to roll.';
+      return { statuses: statusesNext };
     }
     case 'RollDiceAction': {
       const { player } = action.payload;
       const statusesNext = state.statuses.slice();
-      statusesNext[player].push('Your move.');
-      return { ...state, statuses: statusesNext };
+      statusesNext[player] = 'Your move.';
+      return { statuses: statusesNext };
     }
     default: {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

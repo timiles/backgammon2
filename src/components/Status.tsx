@@ -14,7 +14,7 @@ interface IOwnProps {
 type Props = IOwnProps & StateProps;
 
 function Status(props: Props) {
-  const { player, side, recentStatus } = props;
+  const { player, side, status } = props;
 
   const colorStyle = player === Player.Red ? styles.redPlayer : styles.blackPlayer;
 
@@ -22,19 +22,20 @@ function Status(props: Props) {
     <View style={side === 'top' ? styles.upsideDown : null}>
       <Text style={[styles.statusText, colorStyle]}>
         <Text style={styles.playerText}>
-          {recentStatus && `${Player[player].toUpperCase()}:`}
+          {status && `${Player[player].toUpperCase()}:`}
           {' '}
         </Text>
-        {recentStatus}
+        {status}
       </Text>
     </View>
   );
 }
 
-const mapStateToProps = ({ statuses }: ApplicationState, ownProps: IOwnProps) => {
-  const playerStatuses = statuses.statuses[ownProps.player];
-  return ({ recentStatus: playerStatuses[playerStatuses.length - 1] });
-};
+const mapStateToProps = ({ statuses }: ApplicationState, ownProps: IOwnProps) => (
+  {
+    status: statuses.statuses[ownProps.player],
+  }
+);
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 export default connect(mapStateToProps)(Status);
