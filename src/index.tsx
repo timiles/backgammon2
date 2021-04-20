@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import App from './App';
 import * as StoreModule from './store';
@@ -15,7 +16,7 @@ export interface KeyPressAction {
 function Root() {
   const rootReducer = combineReducers<StoreModule.ApplicationState>(StoreModule.reducers);
   const middlewares = applyMiddleware(thunk);
-  const store = createStore(rootReducer, middlewares);
+  const store = createStore(rootReducer, composeWithDevTools(middlewares));
 
   if (Platform.OS === 'web') {
     // eslint-disable-next-line no-undef
