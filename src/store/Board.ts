@@ -82,17 +82,26 @@ export const reducer: Reducer<BoardState> = (state: BoardState, action: KnownAct
     }
     case 'MoveCounterAction': {
       const { id, player, sourceIndex, destinationIndex } = action.payload;
-      // Create new arrays to trigger change detection
+      // Create new arrays for immutability / to trigger change detection
       const pointsNext = state.points.slice();
-      pointsNext[sourceIndex].counters = pointsNext[sourceIndex].counters.slice();
-      pointsNext[destinationIndex].counters = pointsNext[destinationIndex].counters.slice();
+      pointsNext[sourceIndex] = {
+        ...state.points[sourceIndex],
+        counters: state.points[sourceIndex].counters.slice(),
+      };
+      pointsNext[destinationIndex] = {
+        ...state.points[destinationIndex],
+        counters: state.points[destinationIndex].counters.slice(),
+      };
 
       // If we've hit other player's blot, put it on the bar
       if (pointsNext[destinationIndex].counters.length === 1
         && pointsNext[destinationIndex].counters[0].player !== player) {
         const blot = pointsNext[destinationIndex].counters.splice(0, 1)[0];
         const barIndex = BarIndexes[blot.player];
-        pointsNext[barIndex].counters = pointsNext[barIndex].counters.slice();
+        pointsNext[barIndex] = {
+          ...state.points[barIndex],
+          counters: state.points[barIndex].counters.slice(),
+        };
         pointsNext[barIndex].counters.push(blot);
       }
 
