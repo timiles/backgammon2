@@ -45,10 +45,13 @@ export const actionCreators = {
     sourceIndex: number,
     destinationIndex: number,
   ): AppThunkAction<KnownAction> => (dispatch, getState) => (async () => {
+    const currentDice = getState().dice.dice[player];
     const distance = getDistance(player, sourceIndex, destinationIndex);
-    const resultingDice = getState().dice.dice[player].slice();
 
-    const [die1, die2] = resultingDice;
+    // New objects for immutability
+    const die1 = { ...currentDice[0] };
+    const die2 = { ...currentDice[1] };
+
     const isDouble = die1.value === die2.value;
     if (isDouble) {
       if (!die1.isHalfSpent) {
@@ -61,12 +64,12 @@ export const actionCreators = {
         die2.isSpent = true;
       }
     } else {
-      resultingDice.find(x => x.value === distance).isSpent = true;
+      [die1, die2].find(x => x.value === distance).isSpent = true;
     }
 
     dispatch({
       type: 'MoveCounterAction',
-      payload: { id, player, sourceIndex, destinationIndex, resultingDice },
+      payload: { id, player, sourceIndex, destinationIndex, resultingDice: [die1, die2] },
     });
   })(),
 };
