@@ -22,10 +22,9 @@ function Status(props: Props) {
     <View style={side === 'top' ? styles.upsideDown : null}>
       <Text style={[styles.statusText, colorStyle]}>
         <Text style={styles.playerText}>
-          {status && `${Player[player].toUpperCase()}:`}
-          {' '}
+          {status && `${Player[player].toUpperCase()}: `}
         </Text>
-        {status}
+        {status || ' '}
       </Text>
     </View>
   );
