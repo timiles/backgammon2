@@ -83,10 +83,15 @@ export default StyleSheet.create({
     zIndex: 1,
   } as ViewStyle,
 
+  controlsArea: {
+    justifyContent: 'flex-end',
+  },
+
   diceRollArea: {
     flexShrink: 1,
+    borderTopColor: 'brown',
+    borderTopWidth: 5,
     padding: 5,
-    justifyContent: 'flex-end',
   } as ViewStyle,
 
   statusText: {

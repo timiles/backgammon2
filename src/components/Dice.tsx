@@ -22,7 +22,7 @@ function Dice(props: Props) {
     const handlePress = isInitialRoll ? () => props.rollInitialDie(player) : null;
     return (
       <View style={styles.diceContainer}>
-        {die2 != null && <Die player={player} die={die2} />}
+        <Die player={player} die={die2} disabled={die2 == null} />
         <Die player={player} die={die1} onPress={handlePress} />
       </View>
     );

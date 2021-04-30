@@ -10,11 +10,13 @@ interface IProps {
   side: Side;
 }
 
-export default function DiceRollArea(props: IProps) {
+export default function ControlsArea(props: IProps) {
   const { player, side } = props;
   return (
-    <View style={[styles.diceRollArea, side === 'top' ? styles.upsideDown : null]}>
-      <Dice player={player} />
+    <View style={[styles.controlsArea, side === 'top' ? styles.upsideDown : null]}>
+      <View style={styles.diceRollArea}>
+        <Dice player={player} />
+      </View>
     </View>
   );
 }
