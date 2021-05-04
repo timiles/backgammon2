@@ -32,7 +32,7 @@ function Status(props: Props) {
 
 const mapStateToProps = ({ statuses }: ApplicationState, ownProps: IOwnProps) => (
   {
-    status: statuses.statuses[ownProps.player],
+    status: statuses.present.statuses[ownProps.player],
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;

@@ -45,7 +45,7 @@ export const actionCreators = {
     sourceIndex: number,
     destinationIndex: number,
   ): AppThunkAction<KnownAction> => (dispatch, getState) => (async () => {
-    const currentDice = getState().dice.dice[player];
+    const currentDice = getState().dice.present.dice[player];
     const distance = getDistance(player, sourceIndex, destinationIndex);
 
     // New objects for immutability

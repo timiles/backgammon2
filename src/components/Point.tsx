@@ -100,7 +100,7 @@ class Point extends React.Component<Props, IState> {
 
 const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => (
   {
-    counters: board.points[ownProps.index].counters,
+    counters: board.present.points[ownProps.index].counters,
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;

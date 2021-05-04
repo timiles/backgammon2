@@ -43,9 +43,9 @@ function Dice(props: Props) {
 
 const mapStateToProps = ({ dice, player }: ApplicationState, ownProps: IOwnProps) => (
   {
-    dice: dice.dice[ownProps.player],
-    isInitialRoll: dice.isInitialRoll,
-    currentPlayer: player.currentPlayer,
+    dice: dice.present.dice[ownProps.player],
+    isInitialRoll: dice.present.isInitialRoll,
+    currentPlayer: player.present.currentPlayer,
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;

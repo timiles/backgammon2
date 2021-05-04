@@ -87,6 +87,12 @@ export default StyleSheet.create({
     justifyContent: 'flex-end',
   },
 
+  controlContainer: {
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingBottom: 5,
+  } as ViewStyle,
+
   diceRollArea: {
     flexShrink: 1,
     borderTopColor: 'brown',
@@ -137,6 +143,27 @@ export default StyleSheet.create({
   } as ViewStyle,
 
   spentDie: {
+    opacity: 0.2,
+  } as ViewStyle,
+
+  iconButton: {
+    borderRadius: 20,
+    padding: 10,
+  } as ViewStyle,
+
+  iconButtonContent: {
+    alignSelf: 'center',
+  } as ViewStyle,
+
+  redButton: {
+    backgroundColor: colors.redPlayer,
+  } as ViewStyle,
+
+  blackButton: {
+    backgroundColor: colors.blackPlayer,
+  } as ViewStyle,
+
+  disabledButton: {
     opacity: 0.2,
   } as ViewStyle,
 });

@@ -43,7 +43,7 @@ type KnownAction =
 export const actionCreators = {
   rollInitialDie: (player: Player): AppThunkAction<KnownAction> => (dispatch, getState) => (
     async () => {
-      const currentDice = getState().dice.dice;
+      const currentDice = getState().dice.present.dice;
       const otherPlayer = getOtherPlayer(player);
       const otherPlayersDie = currentDice[otherPlayer][0];
       const thisPlayersDie = getRandomDie();

@@ -115,9 +115,9 @@ class Counter extends React.Component<Props, IState> {
 
 const mapStateToProps = ({ board, dice, player }: ApplicationState, ownProps: IOwnProps) => (
   {
-    points: board.points,
-    dice: dice.dice[ownProps.player],
-    currentPlayer: player.currentPlayer,
+    points: board.present.points,
+    dice: dice.present.dice[ownProps.player],
+    currentPlayer: player.present.currentPlayer,
   }
 );
 type StateProps = ReturnType<typeof mapStateToProps>;

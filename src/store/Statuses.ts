@@ -40,7 +40,7 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
     case 'MoveCounterAction': {
       const { player, resultingDice } = action.payload;
       if (resultingDice.some(x => !x.isSpent)) {
-        return state;
+        return { ...state };
       }
       const statusesNext = [];
       statusesNext[getOtherPlayer(player)] = 'Your turn to roll.';
