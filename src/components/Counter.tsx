@@ -46,10 +46,12 @@ class Counter extends React.Component<Props, IState> {
           moveCounter(id, player, pointIndex, destinationIndex);
           props.onSourceChange(false);
         } else {
-          Animated.spring(counterLocation, { toValue: { x: 0, y: 0 }, friction: 5 })
-            .start(() => {
-              props.onSourceChange(false);
-            });
+          const config: Animated.SpringAnimationConfig = {
+            toValue: { x: 0, y: 0 },
+            friction: 5,
+            useNativeDriver: false,
+          };
+          Animated.spring(counterLocation, config).start(() => { props.onSourceChange(false); });
         }
       },
     });

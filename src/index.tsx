@@ -1,10 +1,10 @@
-import * as Expo from 'expo';
+import registerRootComponent from 'expo/build/launch/registerRootComponent';
 import * as React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
+import { composeWithDevTools } from '@redux-devtools/extension';
+import { thunk } from 'redux-thunk';
 import App from './App';
 import * as StoreModule from './store';
 
@@ -26,15 +26,6 @@ function Root() {
     });
   }
 
-  // Enable Webpack hot module replacement for reducers
-  if (module.hot) {
-    module.hot.accept('./store', () => {
-      // eslint-disable-next-line global-require
-      const nextRootReducer = require<typeof StoreModule>('./store');
-      store.replaceReducer(combineReducers<StoreModule.ApplicationState>(nextRootReducer.reducers));
-    });
-  }
-
   return (
     <Provider store={store}>
       <View style={styles.mobileSize}>
@@ -52,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Expo.registerRootComponent(Root);
+export default registerRootComponent(Root);

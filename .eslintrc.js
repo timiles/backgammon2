@@ -1,7 +1,4 @@
 module.exports = {
-  env: {
-    jest: true,
-  },
   extends: ["airbnb-typescript"],
   rules: {
     'import/no-cycle': [0],
