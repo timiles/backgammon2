@@ -1,5 +1,6 @@
 import React from 'react';
 import Svg, { Path } from 'react-native-svg';
+
 import IconProps from './IconProps';
 
 export default function RedoIcon(props: IconProps) {

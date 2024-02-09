@@ -1,9 +1,7 @@
 module.exports = {
-  extends: ["airbnb-typescript"],
+  root: true,
+  extends: ['universe/native'],
   rules: {
-    'import/no-cycle': [0],
-    'linebreak-style': ['error', 'windows'],
-    '@typescript-eslint/no-use-before-define': 'off',
-    'object-curly-newline': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^exhaustiveCheck$' }],
   },
 };

@@ -1,9 +1,9 @@
-/* eslint-disable import/prefer-default-export */
 import { Reducer } from 'redux';
-import Player from '../models/Player';
-import { getOtherPlayer } from '../utils';
+
 import { MoveCounterAction } from './Board';
 import { InitialDiceWinnerAction } from './Dice';
+import Player from '../models/Player';
+import { getOtherPlayer } from '../utils';
 
 export interface PlayerState {
   currentPlayer?: Player;
@@ -21,7 +21,7 @@ export const reducer: Reducer<PlayerState> = (state: PlayerState, action: KnownA
     case 'MoveCounterAction': {
       const { player, resultingDice } = action.payload;
 
-      if (resultingDice.some(x => !x.isSpent)) {
+      if (resultingDice.some((x) => !x.isSpent)) {
         return { ...state, currentPlayer: player };
       }
       return { ...state, currentPlayer: getOtherPlayer(player) };

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+
 import Player from '../models/Player';
 import styles from '../styles';
 
@@ -18,11 +19,8 @@ export default function IconButton(props: TouchableOpacityProps & IOwnProps) {
 
   return (
     <View style={disabledStyle}>
-      {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <TouchableOpacity {...touchableOpacityProps} style={touchableStyle}>
-        <View style={styles.iconButtonContent}>
-          {icon}
-        </View>
+        <View style={styles.iconButtonContent}>{icon}</View>
       </TouchableOpacity>
     </View>
   );

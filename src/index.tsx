@@ -1,16 +1,17 @@
+import { composeWithDevTools } from '@redux-devtools/extension';
 import registerRootComponent from 'expo/build/launch/registerRootComponent';
 import * as React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { composeWithDevTools } from '@redux-devtools/extension';
 import { thunk } from 'redux-thunk';
+
 import App from './App';
 import * as StoreModule from './store';
 
 export interface KeyPressAction {
-  type: 'KeyPressAction',
-  payload: { event: KeyboardEvent },
+  type: 'KeyPressAction';
+  payload: { event: KeyboardEvent };
 }
 
 function Root() {
@@ -19,8 +20,7 @@ function Root() {
   const store = createStore(rootReducer, composeWithDevTools(middlewares));
 
   if (Platform.OS === 'web') {
-    // eslint-disable-next-line no-undef
-    document.addEventListener('keydown', event => {
+    document.addEventListener('keydown', (event) => {
       const action: KeyPressAction = { type: 'KeyPressAction', payload: { event } };
       store.dispatch(action);
     });

@@ -1,6 +1,12 @@
 import * as React from 'react';
-import { Animated, GestureResponderEvent, GestureResponderHandlers, PanResponder, PanResponderGestureState } from 'react-native';
+import {
+  Animated,
+  GestureResponderHandlers,
+  PanResponder,
+  PanResponderGestureState,
+} from 'react-native';
 import { connect } from 'react-redux';
+
 import colors from '../colors';
 import { CounterModel } from '../models/CounterModel';
 import Player from '../models/Player';
@@ -36,12 +42,12 @@ class Counter extends React.Component<Props, IState> {
         props.onSourceChange(true);
       },
       onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }]),
-      onPanResponderRelease: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+      onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
         const { moveX, moveY } = gestureState;
         const { id, player, pointIndex, points, moveCounter } = this.props;
-        const destinationIndex = points.map(x => x.box).findIndex(
-          x => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom,
-        );
+        const destinationIndex = points
+          .map((x) => x.box)
+          .findIndex((x) => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom);
         if (destinationIndex >= 0 && this.canMove(destinationIndex)) {
           moveCounter(id, player, pointIndex, destinationIndex);
           props.onSourceChange(false);
@@ -51,7 +57,9 @@ class Counter extends React.Component<Props, IState> {
             friction: 5,
             useNativeDriver: false,
           };
-          Animated.spring(counterLocation, config).start(() => { props.onSourceChange(false); });
+          Animated.spring(counterLocation, config).start(() => {
+            props.onSourceChange(false);
+          });
         }
       },
     });
@@ -78,13 +86,13 @@ class Counter extends React.Component<Props, IState> {
       }
 
       const otherPlayer = getOtherPlayer(player);
-      if (points[destinationIndex].counters.filter(x => x.player === otherPlayer).length > 1) {
+      if (points[destinationIndex].counters.filter((x) => x.player === otherPlayer).length > 1) {
         // Destination is blocked by other player
         return false;
       }
 
       const distance = getDistance(player, pointIndex, destinationIndex);
-      if (!dice.some(x => x.value === distance && !x.isSpent)) {
+      if (!dice.some((x) => x.value === distance && !x.isSpent)) {
         // Don't have the dice roll available
         return false;
       }
@@ -105,7 +113,6 @@ class Counter extends React.Component<Props, IState> {
     const animatedViewProps = this.canMove() ? this.gestureResponderHandlers : null;
 
     return (
-      // eslint-disable-next-line react/jsx-props-no-spreading
       <Animated.View style={counterStyle} {...animatedViewProps}>
         <svg viewBox="0 0 100 100" width={size} xmlns="http://www.w3.org/2000/svg">
           <circle cx="50" cy="50" r="48" fill={color} />
@@ -115,13 +122,11 @@ class Counter extends React.Component<Props, IState> {
   }
 }
 
-const mapStateToProps = ({ board, dice, player }: ApplicationState, ownProps: IOwnProps) => (
-  {
-    points: board.present.points,
-    dice: dice.present.dice[ownProps.player],
-    currentPlayer: player.present.currentPlayer,
-  }
-);
+const mapStateToProps = ({ board, dice, player }: ApplicationState, ownProps: IOwnProps) => ({
+  points: board.present.points,
+  dice: dice.present.dice[ownProps.player],
+  currentPlayer: player.present.currentPlayer,
+});
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 const mapDispatchToProps = BoardStore.actionCreators;

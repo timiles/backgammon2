@@ -1,19 +1,19 @@
-/* eslint-disable import/prefer-default-export */
 import { Reducer } from 'redux';
-import Player from '../models/Player';
-import { getOtherPlayer } from '../utils';
+
 import { MoveCounterAction } from './Board';
 import { InitialDiceWinnerAction, RollDiceAction, RollInitialDieAction } from './Dice';
+import Player from '../models/Player';
+import { getOtherPlayer } from '../utils';
 
 export interface StatusesState {
   statuses: string[];
 }
 
 type KnownAction =
-  RollInitialDieAction |
-  InitialDiceWinnerAction |
-  MoveCounterAction |
-  RollDiceAction;
+  | RollInitialDieAction
+  | InitialDiceWinnerAction
+  | MoveCounterAction
+  | RollDiceAction;
 
 const defaultState = { statuses: ['Roll dice to begin', 'Roll dice to begin'] };
 
@@ -39,7 +39,7 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
     }
     case 'MoveCounterAction': {
       const { player, resultingDice } = action.payload;
-      if (resultingDice.some(x => !x.isSpent)) {
+      if (resultingDice.some((x) => !x.isSpent)) {
         return { ...state };
       }
       const statusesNext = [];
@@ -53,7 +53,6 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
       return { statuses: statusesNext };
     }
     default: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const exhaustiveCheck: never = action;
     }
   }

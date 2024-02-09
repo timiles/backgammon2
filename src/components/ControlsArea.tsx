@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import Player from '../models/Player';
-import styles from '../styles';
-import { Side } from '../types';
+
 import Dice from './Dice';
 import RedoButton from './RedoButton';
 import UndoButton from './UndoButton';
+import Player from '../models/Player';
+import styles from '../styles';
+import { Side } from '../types';
 
 interface IProps {
   player: Player;

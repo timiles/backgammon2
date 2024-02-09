@@ -1,11 +1,12 @@
 import { Reducer } from 'redux';
+
+import { MoveCounterAction } from './Board';
+import { AppThunkAction } from './index';
 import { KeyPressAction } from '..';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
-import { MoveCounterAction } from './Board';
-import { AppThunkAction } from './index';
 
 export interface DiceState {
   dice: DieModel[][];
@@ -34,42 +35,44 @@ export interface RollDiceAction {
   };
 }
 type KnownAction =
-  RollInitialDieAction |
-  InitialDiceWinnerAction |
-  RollDiceAction |
-  MoveCounterAction |
-  KeyPressAction;
+  | RollInitialDieAction
+  | InitialDiceWinnerAction
+  | RollDiceAction
+  | MoveCounterAction
+  | KeyPressAction;
 
 export const actionCreators = {
-  rollInitialDie: (player: Player): AppThunkAction<KnownAction> => (dispatch, getState) => (
-    async () => {
-      const currentDice = getState().dice.present.dice;
-      const otherPlayer = getOtherPlayer(player);
-      const otherPlayersDie = currentDice[otherPlayer][0];
-      const thisPlayersDie = getRandomDie();
-      const requiresReroll = otherPlayersDie && thisPlayersDie === otherPlayersDie.value;
+  rollInitialDie:
+    (player: Player): AppThunkAction<KnownAction> =>
+    (dispatch, getState) =>
+      (async () => {
+        const currentDice = getState().dice.present.dice;
+        const otherPlayer = getOtherPlayer(player);
+        const otherPlayersDie = currentDice[otherPlayer][0];
+        const thisPlayersDie = getRandomDie();
+        const requiresReroll = otherPlayersDie && thisPlayersDie === otherPlayersDie.value;
 
-      dispatch({
-        type: 'RollInitialDieAction',
-        payload: {
-          player,
-          dieValue: thisPlayersDie,
-          requiresReroll,
-        },
-      });
+        dispatch({
+          type: 'RollInitialDieAction',
+          payload: {
+            player,
+            dieValue: thisPlayersDie,
+            requiresReroll,
+          },
+        });
 
-      // Check if there's a winner of the initial roll
-      if (otherPlayersDie != null && otherPlayersDie.value !== thisPlayersDie) {
-        setTimeout(() => {
-          dispatch({
-            type: 'InitialDiceWinnerAction',
-            payload: {
-              winner: thisPlayersDie > otherPlayersDie.value ? player : otherPlayer,
-            },
-          });
-        }, 1000);
-      }
-    })(),
+        // Check if there's a winner of the initial roll
+        if (otherPlayersDie != null && otherPlayersDie.value !== thisPlayersDie) {
+          setTimeout(() => {
+            dispatch({
+              type: 'InitialDiceWinnerAction',
+              payload: {
+                winner: thisPlayersDie > otherPlayersDie.value ? player : otherPlayer,
+              },
+            });
+          }, 1000);
+        }
+      })(),
   rollDice: (player: Player) => ({
     type: 'RollDiceAction',
     payload: { player, dieValues: [getRandomDie(), getRandomDie()] },
@@ -112,7 +115,7 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       const { player, dieValues } = action.payload;
 
       const diceNext = state.dice.slice();
-      diceNext[player] = dieValues.map(x => ({ value: x }));
+      diceNext[player] = dieValues.map((x) => ({ value: x }));
 
       return { ...state, dice: diceNext };
     }
@@ -122,7 +125,7 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       const diceNext = state.dice.slice();
       diceNext[player] = resultingDice;
 
-      if (resultingDice.every(x => x.isSpent)) {
+      if (resultingDice.every((x) => x.isSpent)) {
         diceNext[getOtherPlayer(player)] = [];
       }
 
@@ -156,7 +159,6 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
       return state;
     }
     default: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const exhaustiveCheck: never = action;
     }
   }

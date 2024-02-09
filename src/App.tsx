@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { View } from 'react-native';
+
 import BoardHalf from './components/BoardHalf';
 import ControlsArea from './components/ControlsArea';
 import Status from './components/Status';
