@@ -123,6 +123,7 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    userSelect: 'none',
   } as TextStyle,
 
   redDie: {

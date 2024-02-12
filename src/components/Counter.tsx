@@ -36,12 +36,15 @@ class Counter extends React.Component<Props, IState> {
     const counterLocation = new Animated.ValueXY({ x: 0, y: 0 });
     this.state = { counterLocation };
 
+    const useNativeDriver = false;
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderStart: () => {
         props.onSourceChange(true);
       },
-      onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }]),
+      onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }], {
+        useNativeDriver,
+      }),
       onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
         const { moveX, moveY } = gestureState;
         const { id, player, pointIndex, points, moveCounter } = this.props;
@@ -55,7 +58,7 @@ class Counter extends React.Component<Props, IState> {
           const config: Animated.SpringAnimationConfig = {
             toValue: { x: 0, y: 0 },
             friction: 5,
-            useNativeDriver: false,
+            useNativeDriver,
           };
           Animated.spring(counterLocation, config).start(() => {
             props.onSourceChange(false);

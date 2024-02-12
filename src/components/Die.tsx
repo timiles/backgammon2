@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 import { DieModel } from '../models/DieModel';
 import Player from '../models/Player';
@@ -22,10 +22,6 @@ export default function Die(props: IProps) {
   const activeStyle = onPress ? styles.activeDie : null;
   const style = [styles.die, colorStyle, spentStyle, disabledStyle, activeStyle];
 
-  const die = (
-    <Text style={style} selectable={false}>
-      {value}
-    </Text>
-  );
-  return onPress ? <TouchableOpacity onPress={onPress}>{die}</TouchableOpacity> : die;
+  const die = <Text style={style}>{value}</Text>;
+  return onPress ? <Pressable onPress={onPress}>{die}</Pressable> : die;
 }
