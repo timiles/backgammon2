@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { GestureResponderEvent, Pressable, View } from 'react-native';
 
 import Player from '../models/Player';

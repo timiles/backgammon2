@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Pressable, Text } from 'react-native';
 
 import { DieModel } from '../models/DieModel';

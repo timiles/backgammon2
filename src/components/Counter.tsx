@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { Component } from 'react';
 import {
   Animated,
   GestureResponderHandlers,
@@ -27,7 +27,7 @@ interface IState {
 
 type Props = IOwnProps & StateProps & DispatchProps;
 
-class Counter extends React.Component<Props, IState> {
+class Counter extends Component<Props, IState> {
   readonly gestureResponderHandlers: GestureResponderHandlers;
 
   constructor(props: Props) {

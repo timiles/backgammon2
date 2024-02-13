@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { Component, RefObject, createRef } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -26,15 +26,15 @@ interface IState {
   height?: number;
 }
 
-class Point extends React.Component<Props, IState> {
-  readonly ref: React.RefObject<View>;
+class Point extends Component<Props, IState> {
+  readonly ref: RefObject<View>;
 
   constructor(props: Props) {
     super(props);
 
     this.state = { sourceCount: 0 };
 
-    this.ref = React.createRef<View>();
+    this.ref = createRef<View>();
   }
 
   componentDidMount() {

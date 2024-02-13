@@ -1,6 +1,5 @@
 import { composeWithDevTools } from '@redux-devtools/extension';
 import registerRootComponent from 'expo/build/launch/registerRootComponent';
-import * as React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { applyMiddleware, combineReducers, createStore } from 'redux';

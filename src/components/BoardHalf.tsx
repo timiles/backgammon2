@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { Component } from 'react';
 import { View } from 'react-native';
 
 import Home from './Home';
@@ -16,7 +16,7 @@ interface IState {
   sourceCount: number;
 }
 
-export default class BoardHalf extends React.Component<IProps, IState> {
+export default class BoardHalf extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
