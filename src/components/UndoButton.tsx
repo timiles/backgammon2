@@ -33,10 +33,10 @@ const mapStateToProps = ({ dice }: ApplicationState, ownProps: IOwnProps) => ({
   showUndo: [...dice.past, dice.present].some(
     (x) => !x.isInitialRoll && x.dice[ownProps.player].length > 0,
   ),
-  // Can undo if: either this Player has dice that haven't been spent yet,
+  // Can undo if: either this Player has dice that have remaining moves,
+  // or the other Player hasn't yet rolled their own dice
   canUndo:
-    dice.present.dice[ownProps.player].some((x) => !x?.isSpent) ||
-    // or the other Player hasn't yet rolled their own dice
+    dice.present.dice[ownProps.player].some((x) => x.remainingMoves > 0) ||
     dice.present.dice[getOtherPlayer(ownProps.player)].length === 0,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;

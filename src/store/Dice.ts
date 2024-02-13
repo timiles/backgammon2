@@ -6,7 +6,7 @@ import { KeyPressAction } from '..';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
-import { getOtherPlayer } from '../utils';
+import { getDistance, getOtherPlayer } from '../utils';
 
 export interface DiceState {
   dice: DieModel[][];
@@ -92,10 +92,10 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
 
       if (diceNext[otherPlayer][0]?.value === dieValue) {
         // Initial roll was a draw. Set value as second die and reset first.
-        diceNext[player] = [null, { value: dieValue, isSpent: true }];
-        diceNext[otherPlayer] = [null, { value: dieValue, isSpent: true }];
+        diceNext[player] = [null, { value: dieValue, remainingMoves: 0 }];
+        diceNext[otherPlayer] = [null, { value: dieValue, remainingMoves: 0 }];
       } else {
-        diceNext[player] = [{ value: dieValue }, diceNext[player][1]];
+        diceNext[player] = [{ value: dieValue, remainingMoves: 1 }, diceNext[player][1]];
       }
 
       return { ...state, dice: diceNext };
@@ -114,18 +114,35 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
     case 'RollDiceAction': {
       const { player, dieValues } = action.payload;
 
+      // If the values are the same, player gets double moves
+      const remainingMoves = dieValues[0] === dieValues[1] ? 2 : 1;
+
       const diceNext = state.dice.slice();
-      diceNext[player] = dieValues.map((x) => ({ value: x }));
+      diceNext[player] = dieValues.map((x) => ({ value: x, remainingMoves }));
 
       return { ...state, dice: diceNext };
     }
     case 'MoveCounterAction': {
-      const { player, resultingDice } = action.payload;
+      const { player, sourceIndex, destinationIndex } = action.payload;
+
+      const currentDice = state.dice[player];
+
+      // New objects for immutability
+      const die1 = { ...currentDice[0] };
+      const die2 = { ...currentDice[1] };
+
+      const distance = getDistance(player, sourceIndex, destinationIndex);
+
+      if (die1.value === distance && die1.remainingMoves > 0) {
+        die1.remainingMoves -= 1;
+      } else {
+        die2.remainingMoves -= 1;
+      }
 
       const diceNext = state.dice.slice();
-      diceNext[player] = resultingDice;
+      diceNext[player] = [die1, die2];
 
-      if (resultingDice.every((x) => x.isSpent)) {
+      if (die1.remainingMoves === 0 && die2.remainingMoves === 0) {
         diceNext[getOtherPlayer(player)] = [];
       }
 
@@ -146,7 +163,7 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
 
         for (let player = 0; player < 2; player += 1) {
           for (let dieIndex = 0; dieIndex < diceNext[player].length; dieIndex += 1) {
-            if (!diceNext[player][dieIndex].isSpent) {
+            if (diceNext[player][dieIndex].remainingMoves > 0) {
               diceNext[player] = diceNext[player].slice();
               diceNext[player][dieIndex].value = dieValue;
               break;

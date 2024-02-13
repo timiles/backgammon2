@@ -30,7 +30,7 @@ export interface MoveCounterAction {
     player: Player;
     sourceIndex: number;
     destinationIndex: number;
-    resultingDice: DieModel[];
+    isLastMove: boolean;
   };
 }
 type KnownAction = RegisterPointBoxAction | MoveCounterAction;
@@ -50,30 +50,17 @@ export const actionCreators = {
     (dispatch, getState) =>
       (async () => {
         const currentDice = getState().dice.present.dice[player];
-        const distance = getDistance(player, sourceIndex, destinationIndex);
-
-        // New objects for immutability
-        const die1 = { ...currentDice[0] };
-        const die2 = { ...currentDice[1] };
-
-        const isDouble = die1.value === die2.value;
-        if (isDouble) {
-          if (!die1.isHalfSpent) {
-            die1.isHalfSpent = true;
-          } else if (!die1.isSpent) {
-            die1.isSpent = true;
-          } else if (!die2.isHalfSpent) {
-            die2.isHalfSpent = true;
-          } else {
-            die2.isSpent = true;
-          }
-        } else {
-          [die1, die2].find((x) => x.value === distance).isSpent = true;
-        }
+        const [die1, die2] = currentDice;
 
         dispatch({
           type: 'MoveCounterAction',
-          payload: { id, player, sourceIndex, destinationIndex, resultingDice: [die1, die2] },
+          payload: {
+            id,
+            player,
+            sourceIndex,
+            destinationIndex,
+            isLastMove: die1.remainingMoves + die2.remainingMoves === 1,
+          },
         });
       })(),
 };

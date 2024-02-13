@@ -22,8 +22,8 @@ const getDiceGroupByKey = (player: Player) => `Dice roll for Player ${player}`;
 const getDiceGroupBy: GroupByFunction<DiceStore.DiceState, AnyAction> = (anyAction: AnyAction) => {
   if (anyAction.type === 'MoveCounterAction') {
     const action = anyAction as BoardStore.MoveCounterAction;
-    // If there are no unspent Dice left, we're waiting for the next Player to roll
-    if (!action.payload.resultingDice.some((x) => !x.isSpent)) {
+    // If this was the Player's last move, we're now waiting for the next Player to roll
+    if (action.payload.isLastMove) {
       return getDiceGroupByKey(getOtherPlayer(action.payload.player));
     }
   }

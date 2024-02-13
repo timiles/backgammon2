@@ -140,11 +140,11 @@ export default StyleSheet.create({
     shadowRadius: 10,
   } as ViewStyle,
 
-  halfSpentDie: {
-    opacity: 0.5,
-  } as ViewStyle,
+  doubleDieText: {
+    fontSize: 10,
+  } as TextStyle,
 
-  spentDie: {
+  disabledDie: {
     opacity: 0.2,
   } as ViewStyle,
 

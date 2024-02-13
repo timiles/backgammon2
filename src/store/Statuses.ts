@@ -38,8 +38,8 @@ export const reducer: Reducer<StatusesState> = (state: StatusesState, action: Kn
       return { statuses: statusesNext };
     }
     case 'MoveCounterAction': {
-      const { player, resultingDice } = action.payload;
-      if (resultingDice.some((x) => !x.isSpent)) {
+      const { player, isLastMove } = action.payload;
+      if (!isLastMove) {
         return { ...state };
       }
       const statusesNext = [];

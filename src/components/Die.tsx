@@ -13,14 +13,18 @@ interface IProps {
 
 export default function Die(props: IProps) {
   const { player, die: dieModel, onPress, disabled } = props;
-  const { value, isHalfSpent = false, isSpent = false } = dieModel || { value: '?' };
+  const { value, remainingMoves } = dieModel || { value: '?', remainingMoves: 1 };
 
   const colorStyle = player === Player.Red ? styles.redDie : styles.blackDie;
-  const spentStyle = isSpent ? styles.spentDie : isHalfSpent ? styles.halfSpentDie : null;
-  const disabledStyle = disabled ? styles.spentDie : null;
+  const disabledStyle = remainingMoves === 0 || disabled ? styles.disabledDie : null;
   const activeStyle = onPress ? styles.activeDie : null;
-  const style = [styles.die, colorStyle, spentStyle, disabledStyle, activeStyle];
+  const style = [styles.die, colorStyle, disabledStyle, activeStyle];
 
-  const die = <Text style={style}>{value}</Text>;
+  const die = (
+    <Text style={style}>
+      {value}
+      {remainingMoves === 2 && <Text style={styles.doubleDieText}>×2</Text>}
+    </Text>
+  );
   return onPress ? <Pressable onPress={onPress}>{die}</Pressable> : die;
 }

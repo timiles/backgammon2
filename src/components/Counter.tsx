@@ -95,7 +95,7 @@ class Counter extends Component<Props, IState> {
       }
 
       const distance = getDistance(player, pointIndex, destinationIndex);
-      if (!dice.some((x) => x.value === distance && !x.isSpent)) {
+      if (!dice.some((x) => x.value === distance && x.remainingMoves > 0)) {
         // Don't have the dice roll available
         return false;
       }

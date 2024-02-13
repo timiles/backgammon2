@@ -19,9 +19,9 @@ export const reducer: Reducer<PlayerState> = (state: PlayerState, action: KnownA
       return { ...state, currentPlayer: action.payload.winner };
     }
     case 'MoveCounterAction': {
-      const { player, resultingDice } = action.payload;
+      const { player, isLastMove } = action.payload;
 
-      if (resultingDice.some((x) => !x.isSpent)) {
+      if (!isLastMove) {
         return { ...state, currentPlayer: player };
       }
       return { ...state, currentPlayer: getOtherPlayer(player) };
