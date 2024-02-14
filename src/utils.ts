@@ -91,11 +91,15 @@ export function findDestinationIndex(
   locationX: number,
   locationY: number,
 ): number {
-  return points
-    .map((x) => x.box)
-    .findIndex(
-      (x) => x.left < locationX && locationX < x.right && x.top < locationY && locationY < x.bottom,
-    );
+  return (
+    points
+      // Expect all boxes to be defined - if not, something bad has happened and we deserve to crash
+      .map(({ box }) => box!)
+      .findIndex(
+        ({ left, right, top, bottom }) =>
+          left < locationX && locationX < right && top < locationY && locationY < bottom,
+      )
+  );
 }
 
 export function getOtherPlayer(player: Player): Player {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -26,24 +26,24 @@ export default function Point(props: IProps) {
   const dispatch = useDispatch();
 
   const [sourceCount, setSourceCount] = useState(0);
-  const [width, setWidth] = useState<number>();
-  const [height, setHeight] = useState<number>();
+  const [dimensions, setDimensions] = useState<{ width: number; height: number }>();
 
-  const ref = useRef<View>();
+  const ref = useRef<View>() as RefObject<View>;
 
   useEffect(() => {
-    ref.current.measure((x, y, width, height, pageX, pageY) => {
-      const box: BoxModel = {
-        top: pageY,
-        right: pageX + width,
-        bottom: pageY + height,
-        left: pageX,
-      };
-      dispatch(registerPointBox({ index, box }));
-      setWidth(width);
-      setHeight(height);
-    });
-  }, []);
+    if (ref.current && !dimensions) {
+      ref.current.measure((x, y, width, height, pageX, pageY) => {
+        const box: BoxModel = {
+          top: pageY,
+          right: pageX + width,
+          bottom: pageY + height,
+          left: pageX,
+        };
+        dispatch(registerPointBox({ index, box }));
+        setDimensions({ width, height });
+      });
+    }
+  }, [ref.current]);
 
   const handleSourceChange = (isSource: boolean) => {
     // Increment or decrement sourceCount, to handle asynchronous UI updates correctly
@@ -68,11 +68,13 @@ export default function Point(props: IProps) {
 
   const pointStyle = getStyle();
   const sourceStyle = sourceCount > 0 ? styles.draggableSource : null;
-  const counterSize = Math.min(width - 10, (height - 10) / counters.length);
+  const counterSize = dimensions
+    ? Math.min(dimensions.width - 10, (dimensions.height - 10) / counters.length)
+    : undefined;
 
   return (
     <View ref={ref} style={[styles.counterContainer, pointStyle, sourceStyle]}>
-      {!Number.isNaN(counterSize) &&
+      {counterSize !== undefined &&
         counters.map((x) => (
           <Counter
             key={x.id}

@@ -5,7 +5,7 @@ import initialBoardLayout from './initialBoardLayout';
 import { CounterContainerModel } from '../models/CounterContainerModel';
 import Player from '../models/Player';
 
-export const BarIndexes = [];
+export const BarIndexes: number[] = [];
 BarIndexes[Player.Red] = 0;
 BarIndexes[Player.Black] = 25;
 
