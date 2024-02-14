@@ -3,14 +3,14 @@ import { GestureResponderEvent, Pressable, View } from 'react-native';
 import Player from '../models/Player';
 import styles from '../styles';
 
-interface IOwnProps {
+interface IProps {
   player: Player;
   icon: JSX.Element;
   onPress: (event: GestureResponderEvent) => void;
   disabled?: boolean;
 }
 
-export default function IconButton(props: IOwnProps) {
+export default function IconButton(props: IProps) {
   const { player, icon, onPress, disabled } = props;
 
   const disabledStyle = disabled ? styles.disabledButton : null;
