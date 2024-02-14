@@ -13,11 +13,11 @@ const defaultState: StatusesState = { statuses: ['Roll dice to begin', 'Roll dic
 export const statusReducer = createReducer(defaultState, (builder) => {
   builder
     .addCase(rollInitialDie, (state, action) => {
-      const { player, requiresReroll } = action.payload;
+      const { player, dieValue, requiresReroll } = action.payload;
 
       if (requiresReroll) {
-        state.statuses[Player.Red] = 'Re-roll!';
-        state.statuses[Player.Black] = 'Re-roll!';
+        state.statuses[Player.Red] = `You both rolled ${dieValue}. Re-roll!`;
+        state.statuses[Player.Black] = `You both rolled ${dieValue}. Re-roll!`;
       } else {
         state.statuses[player] = `Waiting for ${Player[getOtherPlayer(player)]}...`;
       }

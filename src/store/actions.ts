@@ -46,6 +46,8 @@ export const rollInitialDie = createAction<
   'ROLL_INITIAL_DIE'
 >('ROLL_INITIAL_DIE');
 
+export const resetInitialDice = createAction<void, 'RESET_INITIAL_DICE'>('RESET_INITIAL_DICE');
+
 export const rollDice = createAction<
   {
     player: Player;

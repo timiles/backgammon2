@@ -106,6 +106,6 @@ export function getDistance(player: Player, sourceIndex: number, destinationInde
   return (destinationIndex - sourceIndex) * (player === Player.Red ? 1 : -1);
 }
 
-export function getRandomDie(): DieValue {
+export function getRandomDieValue(): DieValue {
   return Math.ceil(Math.random() * 6) as DieValue;
 }

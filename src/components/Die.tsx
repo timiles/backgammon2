@@ -17,7 +17,7 @@ export default function Die(props: IProps) {
 
   const colorStyle = player === Player.Red ? styles.redDie : styles.blackDie;
   const disabledStyle = remainingMoves === 0 || disabled ? styles.disabledDie : null;
-  const activeStyle = onPress ? styles.activeDie : null;
+  const activeStyle = onPress && !disabled ? styles.activeDie : null;
   const style = [styles.die, colorStyle, disabledStyle, activeStyle];
 
   const die = (
@@ -26,5 +26,5 @@ export default function Die(props: IProps) {
       {remainingMoves === 2 && <Text style={styles.doubleDieText}>×2</Text>}
     </Text>
   );
-  return onPress ? <Pressable onPress={onPress}>{die}</Pressable> : die;
+  return onPress && !disabled ? <Pressable onPress={onPress}>{die}</Pressable> : die;
 }

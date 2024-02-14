@@ -1,8 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { initialDiceWinner, keyPress, moveCounter, rollDice, rollInitialDie } from './actions';
+import {
+  initialDiceWinner,
+  keyPress,
+  moveCounter,
+  resetInitialDice,
+  rollDice,
+  rollInitialDie,
+} from './actions';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
+import Player from '../models/Player';
 import { getDistance, getOtherPlayer } from '../utils';
 
 interface DiceState {
@@ -17,15 +25,11 @@ export const diceReducer = createReducer(defaultState, (builder) => {
     .addCase(rollInitialDie, (state, action) => {
       const { player, dieValue } = action.payload;
 
-      const otherPlayer = getOtherPlayer(player);
-
-      if (state.dice[otherPlayer][0]?.value === dieValue) {
-        // Initial roll was a draw. Set value as second die and reset first.
-        state.dice[player] = [null, { value: dieValue, remainingMoves: 0 }];
-        state.dice[otherPlayer] = [null, { value: dieValue, remainingMoves: 0 }];
-      } else {
-        state.dice[player][0] = { value: dieValue, remainingMoves: 1 };
-      }
+      state.dice[player][0] = { value: dieValue, remainingMoves: 1 };
+    })
+    .addCase(resetInitialDice, (state) => {
+      state.dice[Player.Black] = [];
+      state.dice[Player.Red] = [];
     })
     .addCase(initialDiceWinner, (state, action) => {
       const { winner } = action.payload;
