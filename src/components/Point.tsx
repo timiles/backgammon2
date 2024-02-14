@@ -1,11 +1,11 @@
-import { Component, RefObject, createRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Counter from './Counter';
 import { BoxModel } from '../models/BoxModel';
-import { ApplicationState } from '../store';
-import * as BoardStore from '../store/Board';
+import { RootState } from '../store';
+import { registerPointBox } from '../store/actions';
 import styles from '../styles';
 import { Side } from '../types';
 
@@ -18,94 +18,71 @@ interface IProps {
   onSourceChange: (active: boolean) => void;
 }
 
-type Props = IProps & StateProps & DispatchProps;
+export default function Point(props: IProps) {
+  const { type, index, side, onSourceChange } = props;
 
-interface IState {
-  sourceCount: number;
-  width?: number;
-  height?: number;
-}
+  const counters = useSelector((state: RootState) => state.board.present.points[index].counters);
 
-class Point extends Component<Props, IState> {
-  readonly ref: RefObject<View>;
+  const dispatch = useDispatch();
 
-  constructor(props: Props) {
-    super(props);
+  const [sourceCount, setSourceCount] = useState(0);
+  const [width, setWidth] = useState<number>();
+  const [height, setHeight] = useState<number>();
 
-    this.state = { sourceCount: 0 };
+  const ref = useRef<View>();
 
-    this.ref = createRef<View>();
-  }
-
-  componentDidMount() {
-    const { registerPointBox, index } = this.props;
-
-    this.ref.current.measure((x, y, width, height, pageX, pageY) => {
+  useEffect(() => {
+    ref.current.measure((x, y, width, height, pageX, pageY) => {
       const box: BoxModel = {
         top: pageY,
         right: pageX + width,
         bottom: pageY + height,
         left: pageX,
       };
-      registerPointBox(index, box);
-      this.setState({ width, height });
+      dispatch(registerPointBox({ index, box }));
+      setWidth(width);
+      setHeight(height);
     });
-  }
+  }, []);
 
-  handleSourceChange = (isSource: boolean) => {
+  const handleSourceChange = (isSource: boolean) => {
     // Increment or decrement sourceCount, to handle asynchronous UI updates correctly
-    this.setState((prevState) => ({ sourceCount: prevState.sourceCount + (isSource ? 1 : -1) }));
+    setSourceCount((prevSourceCount) => prevSourceCount + (isSource ? 1 : -1));
 
-    const { onSourceChange } = this.props;
     onSourceChange(isSource);
   };
 
-  render() {
-    const { type, index, side, counters } = this.props;
-    const { sourceCount, width, height } = this.state;
-
-    const getStyle = () => {
-      switch (type) {
-        case 'Bar':
-          return styles.bar;
-        case 'Point': {
-          const evenOddStyle = (index + 1) % 2 === 0 ? styles.evenPoint : styles.oddPoint;
-          const topBottomStyle = side === 'top' ? styles.topPoint : styles.bottomPoint;
-          return [evenOddStyle, topBottomStyle];
-        }
-        default:
-          return null;
+  const getStyle = () => {
+    switch (type) {
+      case 'Bar':
+        return styles.bar;
+      case 'Point': {
+        const evenOddStyle = (index + 1) % 2 === 0 ? styles.evenPoint : styles.oddPoint;
+        const topBottomStyle = side === 'top' ? styles.topPoint : styles.bottomPoint;
+        return [evenOddStyle, topBottomStyle];
       }
-    };
+      default:
+        return null;
+    }
+  };
 
-    const pointStyle = getStyle();
-    const sourceStyle = sourceCount > 0 ? styles.draggableSource : null;
-    const counterSize = Math.min(width - 10, (height - 10) / counters.length);
+  const pointStyle = getStyle();
+  const sourceStyle = sourceCount > 0 ? styles.draggableSource : null;
+  const counterSize = Math.min(width - 10, (height - 10) / counters.length);
 
-    return (
-      <View ref={this.ref} style={[styles.counterContainer, pointStyle, sourceStyle]}>
-        {!Number.isNaN(counterSize) &&
-          counters.map((x) => (
-            <Counter
-              key={x.id}
-              id={x.id}
-              player={x.player}
-              pointIndex={index}
-              onSourceChange={this.handleSourceChange}
-              size={counterSize}
-            />
-          ))}
-      </View>
-    );
-  }
+  return (
+    <View ref={ref} style={[styles.counterContainer, pointStyle, sourceStyle]}>
+      {!Number.isNaN(counterSize) &&
+        counters.map((x) => (
+          <Counter
+            key={x.id}
+            id={x.id}
+            player={x.player}
+            pointIndex={index}
+            onSourceChange={handleSourceChange}
+            size={counterSize}
+          />
+        ))}
+    </View>
+  );
 }
-
-const mapStateToProps = ({ board }: ApplicationState, ownProps: IProps) => ({
-  counters: board.present.points[ownProps.index].counters,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = BoardStore.actionCreators;
-type DispatchProps = typeof mapDispatchToProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(Point);

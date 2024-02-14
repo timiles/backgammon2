@@ -1,60 +1,44 @@
-import { Reducer } from 'redux';
+import { createReducer } from '@reduxjs/toolkit';
 
-import { MoveCounterAction } from './Board';
-import { InitialDiceWinnerAction, RollDiceAction, RollInitialDieAction } from './Dice';
+import { initialDiceWinner, moveCounter, rollDice, rollInitialDie } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
-export interface StatusesState {
+interface StatusesState {
   statuses: string[];
 }
 
-type KnownAction =
-  | RollInitialDieAction
-  | InitialDiceWinnerAction
-  | MoveCounterAction
-  | RollDiceAction;
+const defaultState: StatusesState = { statuses: ['Roll dice to begin', 'Roll dice to begin'] };
 
-const defaultState = { statuses: ['Roll dice to begin', 'Roll dice to begin'] };
-
-export const reducer: Reducer<StatusesState> = (state: StatusesState, action: KnownAction) => {
-  switch (action.type) {
-    case 'RollInitialDieAction': {
+export const statusReducer = createReducer(defaultState, (builder) => {
+  builder
+    .addCase(rollInitialDie, (state, action) => {
       const { player, requiresReroll } = action.payload;
-      const statusesNext = state.statuses.slice();
+
       if (requiresReroll) {
-        statusesNext[Player.Red] = 'Re-roll!';
-        statusesNext[Player.Black] = 'Re-roll!';
+        state.statuses[Player.Red] = 'Re-roll!';
+        state.statuses[Player.Black] = 'Re-roll!';
       } else {
-        statusesNext[player] = `Waiting for ${Player[getOtherPlayer(player)]}...`;
+        state.statuses[player] = `Waiting for ${Player[getOtherPlayer(player)]}...`;
       }
-      return { statuses: statusesNext };
-    }
-    case 'InitialDiceWinnerAction': {
+    })
+    .addCase(initialDiceWinner, (state, action) => {
       const { winner } = action.payload;
-      const statusesNext = state.statuses.slice();
-      statusesNext[winner] = 'You win the initial roll.';
-      statusesNext[getOtherPlayer(winner)] = `${Player[winner]} wins the initial roll.`;
-      return { statuses: statusesNext };
-    }
-    case 'MoveCounterAction': {
+
+      state.statuses[winner] = 'You win the initial roll.';
+      state.statuses[getOtherPlayer(winner)] = `${Player[winner]} wins the initial roll.`;
+    })
+    .addCase(moveCounter, (state, action) => {
       const { player, isLastMove } = action.payload;
-      if (!isLastMove) {
-        return { ...state };
+
+      if (isLastMove) {
+        state.statuses[player] = '';
+        state.statuses[getOtherPlayer(player)] = 'Your turn to roll.';
       }
-      const statusesNext = [];
-      statusesNext[getOtherPlayer(player)] = 'Your turn to roll.';
-      return { statuses: statusesNext };
-    }
-    case 'RollDiceAction': {
+    })
+    .addCase(rollDice, (state, action) => {
       const { player } = action.payload;
-      const statusesNext = state.statuses.slice();
-      statusesNext[player] = 'Your move.';
-      return { statuses: statusesNext };
-    }
-    default: {
-      const exhaustiveCheck: never = action;
-    }
-  }
-  return state || defaultState;
-};
+
+      state.statuses[player] = 'Your move.';
+    });
+});

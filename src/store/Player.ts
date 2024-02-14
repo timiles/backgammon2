@@ -1,34 +1,28 @@
-import { Reducer } from 'redux';
+import { createReducer } from '@reduxjs/toolkit';
 
-import { MoveCounterAction } from './Board';
-import { InitialDiceWinnerAction } from './Dice';
+import { initialDiceWinner, moveCounter } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
-export interface PlayerState {
+interface PlayerState {
   currentPlayer?: Player;
 }
 
-type KnownAction = InitialDiceWinnerAction | MoveCounterAction;
+const defaultState: PlayerState = {};
 
-const defaultState = {};
+export const playerReducer = createReducer(defaultState, (builder) => {
+  builder
+    .addCase(initialDiceWinner, (state, action) => {
+      const { winner } = action.payload;
 
-export const reducer: Reducer<PlayerState> = (state: PlayerState, action: KnownAction) => {
-  switch (action.type) {
-    case 'InitialDiceWinnerAction': {
-      return { ...state, currentPlayer: action.payload.winner };
-    }
-    case 'MoveCounterAction': {
+      state.currentPlayer = winner;
+    })
+    .addCase(moveCounter, (state, action) => {
       const { player, isLastMove } = action.payload;
 
-      if (!isLastMove) {
-        return { ...state, currentPlayer: player };
-      }
-      return { ...state, currentPlayer: getOtherPlayer(player) };
-    }
-    default: {
-      break;
-    }
-  }
-  return state || defaultState;
-};
+      const currentPlayer = !isLastMove ? player : getOtherPlayer(player);
+
+      // For undo/redo, we need to return a new state with each move even if Player didn't change
+      return { ...state, currentPlayer };
+    });
+});

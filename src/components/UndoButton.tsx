@@ -1,20 +1,39 @@
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
 
 import IconButton from './IconButton';
 import UndoIcon from '../icons/UndoIcon';
 import Player from '../models/Player';
-import { ApplicationState } from '../store';
+import { RootState } from '../store';
 import { getOtherPlayer } from '../utils';
 
-interface IOwnProps {
+interface IProps {
   player: Player;
 }
 
-type Props = IOwnProps & StateProps & DispatchProps;
+export default function UndoButton(props: IProps) {
+  const { player } = props;
 
-function UndoButton(props: Props) {
-  const { player, showUndo, canUndo, undo } = props;
+  // Show if Player has ever rolled dice that wasn't the initial roll
+  const showUndo = useSelector((state: RootState) =>
+    [...state.dice.past, state.dice.present].some(
+      (x) => !x.isInitialRoll && x.dice[player].length > 0,
+    ),
+  );
+
+  // Can undo if: either this Player has dice that have remaining moves,
+  // or the other Player hasn't yet rolled their own dice
+  const canUndo = useSelector(
+    (state: RootState) =>
+      showUndo &&
+      (state.dice.present.dice[player].some((x) => x.remainingMoves > 0) ||
+        state.dice.present.dice[getOtherPlayer(player)].length === 0),
+  );
+
+  const dispatch = useDispatch();
+
+  const undo = () => dispatch(UndoActionCreators.undo());
+
   if (showUndo) {
     return (
       <IconButton
@@ -27,21 +46,3 @@ function UndoButton(props: Props) {
   }
   return null;
 }
-
-const mapStateToProps = ({ dice }: ApplicationState, ownProps: IOwnProps) => ({
-  // Show if Player has ever rolled dice that wasn't the initial roll
-  showUndo: [...dice.past, dice.present].some(
-    (x) => !x.isInitialRoll && x.dice[ownProps.player].length > 0,
-  ),
-  // Can undo if: either this Player has dice that have remaining moves,
-  // or the other Player hasn't yet rolled their own dice
-  canUndo:
-    dice.present.dice[ownProps.player].some((x) => x.remainingMoves > 0) ||
-    dice.present.dice[getOtherPlayer(ownProps.player)].length === 0,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = { undo: UndoActionCreators.undo };
-type DispatchProps = typeof mapDispatchToProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(UndoButton);

@@ -1,135 +1,55 @@
-import { Reducer } from 'redux';
+import { createReducer } from '@reduxjs/toolkit';
 
-import { MoveCounterAction } from './Board';
-import { AppThunkAction } from './index';
-import { KeyPressAction } from '..';
+import { initialDiceWinner, keyPress, moveCounter, rollDice, rollInitialDie } from './actions';
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
-import Player from '../models/Player';
 import { getDistance, getOtherPlayer } from '../utils';
 
-export interface DiceState {
+interface DiceState {
   dice: DieModel[][];
   isInitialRoll: boolean;
 }
 
-export interface RollInitialDieAction {
-  type: 'RollInitialDieAction';
-  payload: {
-    player: Player;
-    dieValue: DieValue;
-    requiresReroll: boolean;
-  };
-}
-export interface InitialDiceWinnerAction {
-  type: 'InitialDiceWinnerAction';
-  payload: {
-    winner: Player;
-  };
-}
-export interface RollDiceAction {
-  type: 'RollDiceAction';
-  payload: {
-    player: Player;
-    dieValues: DieValue[];
-  };
-}
-type KnownAction =
-  | RollInitialDieAction
-  | InitialDiceWinnerAction
-  | RollDiceAction
-  | MoveCounterAction
-  | KeyPressAction;
+const defaultState: DiceState = { dice: [[], []], isInitialRoll: true };
 
-export const actionCreators = {
-  rollInitialDie:
-    (player: Player): AppThunkAction<KnownAction> =>
-    (dispatch, getState) =>
-      (async () => {
-        const currentDice = getState().dice.present.dice;
-        const otherPlayer = getOtherPlayer(player);
-        const otherPlayersDie = currentDice[otherPlayer][0];
-        const thisPlayersDie = getRandomDie();
-        const requiresReroll = otherPlayersDie && thisPlayersDie === otherPlayersDie.value;
-
-        dispatch({
-          type: 'RollInitialDieAction',
-          payload: {
-            player,
-            dieValue: thisPlayersDie,
-            requiresReroll,
-          },
-        });
-
-        // Check if there's a winner of the initial roll
-        if (otherPlayersDie != null && otherPlayersDie.value !== thisPlayersDie) {
-          setTimeout(() => {
-            dispatch({
-              type: 'InitialDiceWinnerAction',
-              payload: {
-                winner: thisPlayersDie > otherPlayersDie.value ? player : otherPlayer,
-              },
-            });
-          }, 1000);
-        }
-      })(),
-  rollDice: (player: Player) => ({
-    type: 'RollDiceAction',
-    payload: { player, dieValues: [getRandomDie(), getRandomDie()] },
-  }),
-};
-
-const defaultState = { dice: [[], []], isInitialRoll: true };
-
-export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownAction) => {
-  switch (action.type) {
-    case 'RollInitialDieAction': {
+export const diceReducer = createReducer(defaultState, (builder) => {
+  builder
+    .addCase(rollInitialDie, (state, action) => {
       const { player, dieValue } = action.payload;
-      const { dice } = state;
 
       const otherPlayer = getOtherPlayer(player);
-      const diceNext = dice.slice();
 
-      if (diceNext[otherPlayer][0]?.value === dieValue) {
+      if (state.dice[otherPlayer][0]?.value === dieValue) {
         // Initial roll was a draw. Set value as second die and reset first.
-        diceNext[player] = [null, { value: dieValue, remainingMoves: 0 }];
-        diceNext[otherPlayer] = [null, { value: dieValue, remainingMoves: 0 }];
+        state.dice[player] = [null, { value: dieValue, remainingMoves: 0 }];
+        state.dice[otherPlayer] = [null, { value: dieValue, remainingMoves: 0 }];
       } else {
-        diceNext[player] = [{ value: dieValue, remainingMoves: 1 }, diceNext[player][1]];
+        state.dice[player][0] = { value: dieValue, remainingMoves: 1 };
       }
-
-      return { ...state, dice: diceNext };
-    }
-    case 'InitialDiceWinnerAction': {
+    })
+    .addCase(initialDiceWinner, (state, action) => {
       const { winner } = action.payload;
 
-      const diceNext = state.dice.slice();
       const loser = getOtherPlayer(winner);
-      const loserDie = diceNext[loser][0];
+      const loserDie = state.dice[loser][0];
 
-      diceNext[winner] = [diceNext[winner][0], loserDie];
-      diceNext[loser] = [];
-      return { ...state, dice: diceNext, isInitialRoll: false };
-    }
-    case 'RollDiceAction': {
+      state.dice[winner][1] = loserDie;
+      state.dice[loser] = [];
+
+      state.isInitialRoll = false;
+    })
+    .addCase(rollDice, (state, action) => {
       const { player, dieValues } = action.payload;
 
       // If the values are the same, player gets double moves
       const remainingMoves = dieValues[0] === dieValues[1] ? 2 : 1;
 
-      const diceNext = state.dice.slice();
-      diceNext[player] = dieValues.map((x) => ({ value: x, remainingMoves }));
+      state.dice[player] = dieValues.map((x) => ({ value: x, remainingMoves }));
+    })
+    .addCase(moveCounter, (state, action) => {
+      const { player, sourceIndex, destinationIndex, isLastMove } = action.payload;
 
-      return { ...state, dice: diceNext };
-    }
-    case 'MoveCounterAction': {
-      const { player, sourceIndex, destinationIndex } = action.payload;
-
-      const currentDice = state.dice[player];
-
-      // New objects for immutability
-      const die1 = { ...currentDice[0] };
-      const die2 = { ...currentDice[1] };
+      const [die1, die2] = state.dice[player];
 
       const distance = getDistance(player, sourceIndex, destinationIndex);
 
@@ -139,49 +59,29 @@ export const reducer: Reducer<DiceState> = (state: DiceState, action: KnownActio
         die2.remainingMoves -= 1;
       }
 
-      const diceNext = state.dice.slice();
-      diceNext[player] = [die1, die2];
-
-      if (die1.remainingMoves === 0 && die2.remainingMoves === 0) {
-        diceNext[getOtherPlayer(player)] = [];
+      if (isLastMove) {
+        state.dice[getOtherPlayer(player)] = [];
       }
+    })
+    .addCase(keyPress, (state, action) => {
+      const { eventKey } = action.payload;
+      const { isInitialRoll } = state;
 
-      return { ...state, dice: diceNext };
-    }
-    case 'KeyPressAction': {
-      const { dice, isInitialRoll } = state;
+      if (!isInitialRoll) {
+        const eventKeyNumber = Number(eventKey);
+        if (eventKeyNumber >= 1 && eventKeyNumber <= 6) {
+          const dieValue = eventKeyNumber as DieValue;
 
-      if (isInitialRoll) {
-        return state;
-      }
-
-      const { event } = action.payload;
-      const eventKeyNumber = Number(event.key);
-      if (eventKeyNumber >= 1 && eventKeyNumber <= 6) {
-        const dieValue = eventKeyNumber as DieValue;
-        const diceNext = dice.slice();
-
-        for (let player = 0; player < 2; player += 1) {
-          for (let dieIndex = 0; dieIndex < diceNext[player].length; dieIndex += 1) {
-            if (diceNext[player][dieIndex].remainingMoves > 0) {
-              diceNext[player] = diceNext[player].slice();
-              diceNext[player][dieIndex].value = dieValue;
-              break;
+          for (let player = 0; player < 2; player += 1) {
+            for (let dieIndex = 0; dieIndex < state.dice[player].length; dieIndex += 1) {
+              const die = state.dice[player][dieIndex];
+              if (die.remainingMoves > 0) {
+                die.value = dieValue;
+                break;
+              }
             }
           }
         }
-
-        return { ...state, dice: diceNext };
       }
-      return state;
-    }
-    default: {
-      const exhaustiveCheck: never = action;
-    }
-  }
-  return state || defaultState;
-};
-
-function getRandomDie(): DieValue {
-  return Math.ceil(Math.random() * 6) as DieValue;
-}
+    });
+});

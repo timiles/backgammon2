@@ -1,48 +1,43 @@
-import { AnyAction } from 'redux';
-import undoable, { GroupByFunction, StateWithHistory } from 'redux-undo';
+import { Action, configureStore } from '@reduxjs/toolkit';
+import undoable, { GroupByFunction, includeAction } from 'redux-undo';
 
-import * as BoardStore from './Board';
-import * as DiceStore from './Dice';
-import * as PlayerStore from './Player';
-import * as StatusesStore from './Statuses';
+import { boardReducer } from './Board';
+import { diceReducer } from './Dice';
+import { playerReducer } from './Player';
+import { statusReducer } from './Statuses';
+import { initialDiceWinner, moveCounter, rollDice } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
-export interface ApplicationState {
-  board: StateWithHistory<BoardStore.BoardState>;
-  dice: StateWithHistory<DiceStore.DiceState>;
-  player: StateWithHistory<PlayerStore.PlayerState>;
-  statuses: StateWithHistory<StatusesStore.StatusesState>;
-}
-
-const undoableActionTypes = ['InitialDiceWinnerAction', 'RollDiceAction', 'MoveCounterAction'];
-const undoableFilter = (anyAction: AnyAction) => undoableActionTypes.includes(anyAction.type);
+const undoableFilter = includeAction([initialDiceWinner.type, moveCounter.type, rollDice.type]);
 
 const getDiceGroupByKey = (player: Player) => `Dice roll for Player ${player}`;
-const getDiceGroupBy: GroupByFunction<DiceStore.DiceState, AnyAction> = (anyAction: AnyAction) => {
-  if (anyAction.type === 'MoveCounterAction') {
-    const action = anyAction as BoardStore.MoveCounterAction;
+
+type DiceState = ReturnType<typeof diceReducer.getInitialState>;
+const getDiceGroupBy: GroupByFunction<DiceState, Action> = (action: Action) => {
+  if (moveCounter.match(action)) {
+    const { player, isLastMove } = action.payload;
+
     // If this was the Player's last move, we're now waiting for the next Player to roll
-    if (action.payload.isLastMove) {
-      return getDiceGroupByKey(getOtherPlayer(action.payload.player));
+    if (isLastMove) {
+      return getDiceGroupByKey(getOtherPlayer(player));
     }
   }
-  if (anyAction.type === 'RollDiceAction') {
-    const action = anyAction as DiceStore.RollDiceAction;
-    return getDiceGroupByKey(action.payload.player);
+  if (rollDice.match(action)) {
+    const { player } = action.payload;
+
+    return getDiceGroupByKey(player);
   }
   return null;
 };
 
-export const reducers = {
-  board: undoable(BoardStore.reducer, { filter: undoableFilter }),
-  dice: undoable(DiceStore.reducer, { filter: undoableFilter, groupBy: getDiceGroupBy }),
-  player: undoable(PlayerStore.reducer, { filter: undoableFilter }),
-  statuses: undoable(StatusesStore.reducer, { filter: undoableFilter }),
-};
+export const store = configureStore({
+  reducer: {
+    board: undoable(boardReducer, { filter: undoableFilter }),
+    dice: undoable(diceReducer, { filter: undoableFilter, groupBy: getDiceGroupBy }),
+    player: undoable(playerReducer, { filter: undoableFilter }),
+    statuses: undoable(statusReducer, { filter: undoableFilter }),
+  },
+});
 
-// Use on action creators for `dispatch` and `getState` typings
-export type AppThunkAction<TAction> = (
-  dispatch: (action: TAction) => void,
-  getState: () => ApplicationState,
-) => void;
+export type RootState = ReturnType<typeof store.getState>;

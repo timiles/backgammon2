@@ -1,82 +1,46 @@
-import { Component } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   GestureResponderHandlers,
   PanResponder,
   PanResponderGestureState,
 } from 'react-native';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import colors from '../colors';
 import { CounterModel } from '../models/CounterModel';
 import Player from '../models/Player';
-import { ApplicationState } from '../store';
-import * as BoardStore from '../store/Board';
+import { RootState } from '../store';
+import { BarIndexes } from '../store/Board';
+import { moveCounter } from '../store/actions';
 import styles from '../styles';
 import { getDistance, getOtherPlayer } from '../utils';
 
-interface IOwnProps extends CounterModel {
+interface IProps extends CounterModel {
   pointIndex: number;
   onSourceChange: (isSource: boolean) => void;
   size: number;
 }
 
-interface IState {
-  counterLocation: Animated.ValueXY;
-}
+export default function Counter(props: IProps) {
+  const { id, player, pointIndex, onSourceChange, size } = props;
 
-type Props = IOwnProps & StateProps & DispatchProps;
+  const points = useSelector((state: RootState) => state.board.present.points);
+  const dice = useSelector((state: RootState) => state.dice.present.dice[player]);
+  const currentPlayer = useSelector((state: RootState) => state.player.present.currentPlayer);
 
-class Counter extends Component<Props, IState> {
-  readonly gestureResponderHandlers: GestureResponderHandlers;
+  const dispatch = useDispatch();
 
-  constructor(props: Props) {
-    super(props);
+  const counterLocation = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const [gestureResponderHandlers, setGestureResponderHandlers] =
+    useState<GestureResponderHandlers | null>();
 
-    const counterLocation = new Animated.ValueXY({ x: 0, y: 0 });
-    this.state = { counterLocation };
-
-    const useNativeDriver = false;
-    const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderStart: () => {
-        props.onSourceChange(true);
-      },
-      onPanResponderMove: Animated.event([null, { dx: counterLocation.x, dy: counterLocation.y }], {
-        useNativeDriver,
-      }),
-      onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
-        const { moveX, moveY } = gestureState;
-        const { id, player, pointIndex, points, moveCounter } = this.props;
-        const destinationIndex = points
-          .map((x) => x.box)
-          .findIndex((x) => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom);
-        if (destinationIndex >= 0 && this.canMove(destinationIndex)) {
-          moveCounter(id, player, pointIndex, destinationIndex);
-          props.onSourceChange(false);
-        } else {
-          const config: Animated.SpringAnimationConfig = {
-            toValue: { x: 0, y: 0 },
-            friction: 5,
-            useNativeDriver,
-          };
-          Animated.spring(counterLocation, config).start(() => {
-            props.onSourceChange(false);
-          });
-        }
-      },
-    });
-    this.gestureResponderHandlers = panResponder.panHandlers;
-  }
-
-  private canMove(destinationIndex?: number) {
-    const { pointIndex, points, dice, player, currentPlayer } = this.props;
-
+  const canMove = (destinationIndex?: number) => {
     if (player !== currentPlayer) {
       return false;
     }
 
-    const barIndex = BoardStore.BarIndexes[player];
+    const barIndex = BarIndexes[player];
     if (points[barIndex].counters.length > 0 && barIndex !== pointIndex) {
       // Player has counters on the bar, and this is not their bar
       return false;
@@ -102,37 +66,69 @@ class Counter extends Component<Props, IState> {
     }
 
     return true;
-  }
+  };
 
-  render() {
-    const { player, size } = this.props;
+  useEffect(() => {
+    let handlers: GestureResponderHandlers | null = null;
 
-    const color = player === Player.Red ? colors.redPlayer : colors.blackPlayer;
+    if (canMove()) {
+      const useNativeDriver = false;
+      handlers = PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderStart: () => {
+          onSourceChange(true);
+        },
+        onPanResponderMove: Animated.event(
+          [null, { dx: counterLocation.x, dy: counterLocation.y }],
+          {
+            useNativeDriver,
+          },
+        ),
+        onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
+          const { moveX, moveY } = gestureState;
+          const destinationIndex = points
+            .map((x) => x.box)
+            .findIndex(
+              (x) => x.left < moveX && moveX < x.right && x.top < moveY && moveY < x.bottom,
+            );
+          if (destinationIndex >= 0 && canMove(destinationIndex)) {
+            dispatch(
+              moveCounter({
+                id,
+                player,
+                sourceIndex: pointIndex,
+                destinationIndex,
+                isLastMove: dice[0].remainingMoves + dice[1].remainingMoves === 1,
+              }),
+            );
 
-    const { counterLocation } = this.state;
-    const counterLocationStyle = { transform: counterLocation.getTranslateTransform() };
-    const counterStyle = [styles.counter, counterLocationStyle];
+            onSourceChange(false);
+          } else {
+            const config: Animated.SpringAnimationConfig = {
+              toValue: { x: 0, y: 0 },
+              friction: 5,
+              useNativeDriver,
+            };
+            Animated.spring(counterLocation, config).start(() => {
+              onSourceChange(false);
+            });
+          }
+        },
+      }).panHandlers;
+    }
 
-    const animatedViewProps = this.canMove() ? this.gestureResponderHandlers : null;
+    setGestureResponderHandlers(handlers);
+  }, [currentPlayer, points, dice]);
 
-    return (
-      <Animated.View style={counterStyle} {...animatedViewProps}>
-        <svg viewBox="0 0 100 100" width={size} xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="48" fill={color} />
-        </svg>
-      </Animated.View>
-    );
-  }
+  const color = player === Player.Red ? colors.redPlayer : colors.blackPlayer;
+  const counterLocationStyle = { transform: counterLocation.getTranslateTransform() };
+  const counterStyle = [styles.counter, counterLocationStyle];
+
+  return (
+    <Animated.View style={counterStyle} {...gestureResponderHandlers}>
+      <svg viewBox="0 0 100 100" width={size} xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill={color} />
+      </svg>
+    </Animated.View>
+  );
 }
-
-const mapStateToProps = ({ board, dice, player }: ApplicationState, ownProps: IOwnProps) => ({
-  points: board.present.points,
-  dice: dice.present.dice[ownProps.player],
-  currentPlayer: player.present.currentPlayer,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = BoardStore.actionCreators;
-type DispatchProps = typeof mapDispatchToProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);

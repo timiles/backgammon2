@@ -1,20 +1,20 @@
 import { Text, View } from 'react-native';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Player from '../models/Player';
-import { ApplicationState } from '../store';
+import { RootState } from '../store';
 import styles from '../styles';
 import { Side } from '../types';
 
-interface IOwnProps {
+interface IProps {
   player: Player;
   side: Side;
 }
 
-type Props = IOwnProps & StateProps;
+export default function Status(props: IProps) {
+  const { player, side } = props;
 
-function Status(props: Props) {
-  const { player, side, status } = props;
+  const status = useSelector((state: RootState) => state.statuses.present.statuses[player]);
 
   const colorStyle = player === Player.Red ? styles.redPlayer : styles.blackPlayer;
 
@@ -27,10 +27,3 @@ function Status(props: Props) {
     </View>
   );
 }
-
-const mapStateToProps = ({ statuses }: ApplicationState, ownProps: IOwnProps) => ({
-  status: statuses.present.statuses[ownProps.player],
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-export default connect(mapStateToProps)(Status);

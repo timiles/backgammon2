@@ -1,19 +1,27 @@
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
 
 import IconButton from './IconButton';
 import RedoIcon from '../icons/RedoIcon';
 import Player from '../models/Player';
-import { ApplicationState } from '../store';
+import { RootState } from '../store';
 
-interface IOwnProps {
+interface IProps {
   player: Player;
 }
 
-type Props = IOwnProps & StateProps & DispatchProps;
+export default function RedoButton(props: IProps) {
+  const { player } = props;
 
-function RedoButton(props: Props) {
-  const { player, showRedo, redo } = props;
+  const showRedo = useSelector(
+    (state: RootState) =>
+      state.player.future.length > 0 && state.player.present.currentPlayer === player,
+  );
+
+  const dispatch = useDispatch();
+
+  const redo = () => dispatch(UndoActionCreators.redo());
+
   if (showRedo) {
     return (
       <IconButton player={player} onPress={redo} icon={<RedoIcon width={20} fill="white" />} />
@@ -21,13 +29,3 @@ function RedoButton(props: Props) {
   }
   return null;
 }
-
-const mapStateToProps = ({ player }: ApplicationState, ownProps: IOwnProps) => ({
-  showRedo: player.future.length > 0 && player.present.currentPlayer === ownProps.player,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = { redo: UndoActionCreators.redo };
-type DispatchProps = typeof mapDispatchToProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(RedoButton);
