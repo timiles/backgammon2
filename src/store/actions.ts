@@ -18,7 +18,7 @@ export const keyPress = createAction<
   'KEY_PRESS'
 >('KEY_PRESS');
 
-export const moveCounter = createAction<
+export const moveChecker = createAction<
   {
     id: number;
     player: Player;
@@ -26,8 +26,8 @@ export const moveCounter = createAction<
     destinationIndex: number;
     isLastMove: boolean;
   },
-  'MOVE_COUNTER'
->('MOVE_COUNTER');
+  'MOVE_CHECKER'
+>('MOVE_CHECKER');
 
 export const registerPointBox = createAction<
   {

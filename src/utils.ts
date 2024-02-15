@@ -5,22 +5,22 @@ import {
   PanResponderGestureState,
 } from 'react-native';
 
-import { CounterContainerModel } from './models/CounterContainerModel';
+import { CheckerContainerModel } from './models/CheckerContainerModel';
 import { DieModel } from './models/DieModel';
 import { DieValue } from './models/DieValue';
 import Player from './models/Player';
 import { BarIndexes } from './store/Board';
 
-export function canMoveCounter(
+export function canMoveChecker(
   player: Player,
   dice: DieModel[],
-  points: CounterContainerModel[],
+  points: CheckerContainerModel[],
   sourceIndex: number,
   destinationIndex?: number,
 ): boolean {
   const barIndex = BarIndexes[player];
-  if (points[barIndex].counters.length > 0 && barIndex !== sourceIndex) {
-    // Player has counters on the bar, and this is not their bar
+  if (points[barIndex].checkers.length > 0 && barIndex !== sourceIndex) {
+    // Player has checkers on the bar, and this is not their bar
     return false;
   }
 
@@ -31,7 +31,7 @@ export function canMoveCounter(
     }
 
     const otherPlayer = getOtherPlayer(player);
-    if (points[destinationIndex].counters.filter((x) => x.player === otherPlayer).length > 1) {
+    if (points[destinationIndex].checkers.filter((x) => x.player === otherPlayer).length > 1) {
       // Destination is blocked by other player
       return false;
     }
@@ -94,7 +94,7 @@ export function createGestureResponderHandlers<T>(
 }
 
 export function findDestinationIndex(
-  points: CounterContainerModel[],
+  points: CheckerContainerModel[],
   locationX: number,
   locationY: number,
 ): number {

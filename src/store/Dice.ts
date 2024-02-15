@@ -3,7 +3,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   initialDiceWinner,
   keyPress,
-  moveCounter,
+  moveChecker,
   resetInitialDice,
   rollDice,
   rollInitialDie,
@@ -50,7 +50,7 @@ export const diceReducer = createReducer(defaultState, (builder) => {
 
       state.dice[player] = dieValues.map((x) => ({ value: x, remainingMoves }));
     })
-    .addCase(moveCounter, (state, action) => {
+    .addCase(moveChecker, (state, action) => {
       const { player, sourceIndex, destinationIndex, isLastMove } = action.payload;
 
       const [die1, die2] = state.dice[player];

@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { initialDiceWinner, moveCounter } from './actions';
+import { initialDiceWinner, moveChecker } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
@@ -17,7 +17,7 @@ export const playerReducer = createReducer(defaultState, (builder) => {
 
       state.currentPlayer = winner;
     })
-    .addCase(moveCounter, (state, action) => {
+    .addCase(moveChecker, (state, action) => {
       const { player, isLastMove } = action.payload;
 
       const currentPlayer = !isLastMove ? player : getOtherPlayer(player);

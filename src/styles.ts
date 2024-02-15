@@ -42,7 +42,7 @@ export default StyleSheet.create({
     zIndex: 0,
   } as ViewStyle,
 
-  counterContainer: {
+  checkerContainer: {
     flex: 1,
     alignItems: 'center',
     zIndex: 0,
@@ -76,11 +76,11 @@ export default StyleSheet.create({
     paddingHorizontal: 0,
   } as ViewStyle,
 
-  counter: {
+  checker: {
     flexShrink: 1,
   } as ViewStyle,
 
-  draggableSource: {
+  movingCheckerSource: {
     zIndex: 1,
   } as ViewStyle,
 

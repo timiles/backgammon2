@@ -2,7 +2,8 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Counter from './Counter';
+import Checker from './Checker';
+import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
 import { BoxModel } from '../models/BoxModel';
 import { RootState } from '../store';
 import { registerPointBox } from '../store/actions';
@@ -15,17 +16,19 @@ interface IProps {
   type: PointType;
   index: number;
   side: Side;
-  onSourceChange: (active: boolean) => void;
+  onCheckerMoving: (isMoving: boolean) => void;
 }
 
 export default function Point(props: IProps) {
-  const { type, index, side, onSourceChange } = props;
+  const { type, index, side, onCheckerMoving } = props;
 
-  const counters = useSelector((state: RootState) => state.board.present.points[index].counters);
+  const checkers = useSelector((state: RootState) => state.board.present.points[index].checkers);
 
   const dispatch = useDispatch();
 
-  const [sourceCount, setSourceCount] = useState(0);
+  const { handleCheckerMoving, movingCheckerSourceStyle } =
+    useMovingCheckerSourceStyle(onCheckerMoving);
+
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>();
 
   const ref = useRef<View>() as RefObject<View>;
@@ -45,13 +48,6 @@ export default function Point(props: IProps) {
     }
   }, [ref.current]);
 
-  const handleSourceChange = (isSource: boolean) => {
-    // Increment or decrement sourceCount, to handle asynchronous UI updates correctly
-    setSourceCount((prevSourceCount) => prevSourceCount + (isSource ? 1 : -1));
-
-    onSourceChange(isSource);
-  };
-
   const getStyle = () => {
     switch (type) {
       case 'Bar':
@@ -67,22 +63,21 @@ export default function Point(props: IProps) {
   };
 
   const pointStyle = getStyle();
-  const sourceStyle = sourceCount > 0 ? styles.draggableSource : null;
-  const counterSize = dimensions
-    ? Math.min(dimensions.width - 10, (dimensions.height - 10) / counters.length)
+  const checkerSize = dimensions
+    ? Math.min(dimensions.width - 10, (dimensions.height - 10) / checkers.length)
     : undefined;
 
   return (
-    <View ref={ref} style={[styles.counterContainer, pointStyle, sourceStyle]}>
-      {counterSize !== undefined &&
-        counters.map((x) => (
-          <Counter
+    <View ref={ref} style={[styles.checkerContainer, pointStyle, movingCheckerSourceStyle]}>
+      {checkerSize !== undefined &&
+        checkers.map((x) => (
+          <Checker
             key={x.id}
             id={x.id}
             player={x.player}
             pointIndex={index}
-            onSourceChange={handleSourceChange}
-            size={counterSize}
+            onMoving={handleCheckerMoving}
+            size={checkerSize}
           />
         ))}
     </View>

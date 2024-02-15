@@ -1,6 +1,6 @@
 import Player from './Player';
 
-export interface CounterModel {
+export interface CheckerModel {
   id: number;
   player: Player;
 }

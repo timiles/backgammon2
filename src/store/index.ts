@@ -5,17 +5,17 @@ import { boardReducer } from './Board';
 import { diceReducer } from './Dice';
 import { playerReducer } from './Player';
 import { statusReducer } from './Statuses';
-import { initialDiceWinner, moveCounter, rollDice } from './actions';
+import { initialDiceWinner, moveChecker, rollDice } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
-const undoableFilter = includeAction([initialDiceWinner.type, moveCounter.type, rollDice.type]);
+const undoableFilter = includeAction([initialDiceWinner.type, moveChecker.type, rollDice.type]);
 
 const getDiceGroupByKey = (player: Player) => `Dice roll for Player ${player}`;
 
 type DiceState = ReturnType<typeof diceReducer.getInitialState>;
 const getDiceGroupBy: GroupByFunction<DiceState, Action> = (action: Action) => {
-  if (moveCounter.match(action)) {
+  if (moveChecker.match(action)) {
     const { player, isLastMove } = action.payload;
 
     // If this was the Player's last move, we're now waiting for the next Player to roll

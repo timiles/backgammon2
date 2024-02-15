@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { initialDiceWinner, moveCounter, rollDice, rollInitialDie } from './actions';
+import { initialDiceWinner, moveChecker, rollDice, rollInitialDie } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
@@ -28,7 +28,7 @@ export const statusReducer = createReducer(defaultState, (builder) => {
       state.statuses[winner] = 'You win the initial roll.';
       state.statuses[getOtherPlayer(winner)] = `${Player[winner]} wins the initial roll.`;
     })
-    .addCase(moveCounter, (state, action) => {
+    .addCase(moveChecker, (state, action) => {
       const { player, isLastMove } = action.payload;
 
       if (isLastMove) {
