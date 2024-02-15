@@ -104,6 +104,7 @@ export default StyleSheet.create({
   statusText: {
     fontSize: 30,
     textAlign: 'center',
+    userSelect: 'none',
   } as TextStyle,
 
   playerText: {

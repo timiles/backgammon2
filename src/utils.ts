@@ -56,6 +56,18 @@ export function createGestureResponderHandlers<T>(
 ): GestureResponderHandlers {
   const useNativeDriver = false;
 
+  const returnToOriginalLocation = () => {
+    // Otherwise animate back to starting position, then end
+    const config: Animated.SpringAnimationConfig = {
+      toValue: { x: 0, y: 0 },
+      friction: 5,
+      useNativeDriver,
+    };
+    Animated.spring(currentLocation, config).start(() => {
+      onMoveEnd();
+    });
+  };
+
   return PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderStart: () => {
@@ -72,16 +84,11 @@ export function createGestureResponderHandlers<T>(
         onMoveSuccess(locationId);
         onMoveEnd();
       } else {
-        // Otherwise animate back to starting position, then end
-        const config: Animated.SpringAnimationConfig = {
-          toValue: { x: 0, y: 0 },
-          friction: 5,
-          useNativeDriver,
-        };
-        Animated.spring(currentLocation, config).start(() => {
-          onMoveEnd();
-        });
+        returnToOriginalLocation();
       }
+    },
+    onPanResponderTerminate: () => {
+      returnToOriginalLocation();
     },
   }).panHandlers;
 }
