@@ -6,8 +6,8 @@ import { CheckerContainerModel } from '../models/CheckerContainerModel';
 import Player from '../models/Player';
 
 export const BarIndexes: number[] = [];
-BarIndexes[Player.Red] = 0;
-BarIndexes[Player.Black] = 25;
+BarIndexes[Player.Red] = 25;
+BarIndexes[Player.Black] = 0;
 
 interface BoardState {
   points: CheckerContainerModel[];

@@ -114,7 +114,7 @@ export function getOtherPlayer(player: Player): Player {
 }
 
 export function getDistance(player: Player, sourceIndex: number, destinationIndex: number) {
-  return (destinationIndex - sourceIndex) * (player === Player.Red ? 1 : -1);
+  return (destinationIndex - sourceIndex) * (player === Player.Red ? -1 : 1);
 }
 
 export function getRandomDieValue(): DieValue {

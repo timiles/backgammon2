@@ -42,38 +42,73 @@ export default StyleSheet.create({
     zIndex: 0,
   } as ViewStyle,
 
-  checkerContainer: {
+  boardSection: {
     flex: 1,
-    alignItems: 'center',
-    zIndex: 0,
   } as ViewStyle,
 
-  oddPoint: {
+  topPointContainer: {
+    flexDirection: 'column',
+  } as ViewStyle,
+
+  bottomPointContainer: {
+    flexDirection: 'column-reverse',
+  } as ViewStyle,
+
+  oddPointColor: {
     backgroundColor: '#F99',
   } as ViewStyle,
 
-  evenPoint: {
+  evenPointColor: {
     backgroundColor: '#999',
   } as ViewStyle,
 
-  topPoint: {
+  barColor: {
+    backgroundColor: 'brown',
+  } as ViewStyle,
+
+  topPointCheckerContainer: {
     justifyContent: 'flex-start',
   } as ViewStyle,
 
-  bottomPoint: {
+  bottomPointCheckerContainer: {
     justifyContent: 'flex-end',
   } as ViewStyle,
 
-  bar: {
-    backgroundColor: 'brown',
+  barCheckerContainer: {
     justifyContent: 'center',
   } as ViewStyle,
+
+  pointLabelContainer: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 2,
+    backgroundColor: 'brown',
+  } as ViewStyle,
+
+  topPointLabelContainer: {
+    flexDirection: 'row-reverse',
+  } as ViewStyle,
+
+  bottomPointLabelContainer: {
+    flexDirection: 'row',
+  } as ViewStyle,
+
+  pointLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    userSelect: 'none',
+  } as TextStyle,
 
   home: {
     backgroundColor: 'white',
     borderColor: 'brown',
     borderLeftWidth: 5,
     paddingHorizontal: 0,
+  } as ViewStyle,
+
+  checkerContainer: {
+    flex: 1,
+    alignItems: 'center',
+    zIndex: 0,
   } as ViewStyle,
 
   checker: {
