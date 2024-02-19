@@ -5,21 +5,21 @@ import {
   PanResponderGestureState,
 } from 'react-native';
 
+import { BoardModel } from './models/BoardModel';
 import { CheckerContainerModel } from './models/CheckerContainerModel';
 import { DieModel } from './models/DieModel';
 import { DieValue } from './models/DieValue';
 import Player from './models/Player';
-import { BarIndexes } from './store/Board';
+import { CheckerSourceIndex } from './types';
 
 export function canMoveChecker(
   player: Player,
   dice: DieModel[],
-  points: CheckerContainerModel[],
-  sourceIndex: number,
+  board: BoardModel,
+  sourceIndex: CheckerSourceIndex,
   destinationIndex?: number,
 ): boolean {
-  const barIndex = BarIndexes[player];
-  if (points[barIndex].checkers.length > 0 && barIndex !== sourceIndex) {
+  if (board.bar[player].checkers.length > 0 && sourceIndex !== 'bar') {
     // Player has checkers on the bar, and this is not their bar
     return false;
   }
@@ -31,7 +31,9 @@ export function canMoveChecker(
     }
 
     const otherPlayer = getOtherPlayer(player);
-    if (points[destinationIndex].checkers.filter((x) => x.player === otherPlayer).length > 1) {
+    if (
+      board.points[destinationIndex].checkers.filter((x) => x.player === otherPlayer).length > 1
+    ) {
       // Destination is blocked by other player
       return false;
     }
@@ -113,7 +115,14 @@ export function getOtherPlayer(player: Player): Player {
   return ((player + 1) % 2) as Player;
 }
 
-export function getDistance(player: Player, sourceIndex: number, destinationIndex: number) {
+export function getDistance(
+  player: Player,
+  sourceIndex: CheckerSourceIndex,
+  destinationIndex: number,
+) {
+  if (sourceIndex === 'bar') {
+    return player === Player.Red ? 24 - destinationIndex : destinationIndex + 1;
+  }
   return (destinationIndex - sourceIndex) * (player === Player.Red ? -1 : 1);
 }
 

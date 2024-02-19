@@ -4,20 +4,30 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Checker from './Checker';
 import { BoxModel } from '../models/BoxModel';
+import Player from '../models/Player';
 import { RootState } from '../store';
 import { registerPointBox } from '../store/actions';
 import styles from '../styles';
 
 interface IProps {
-  index: number;
   onCheckerMoving: (isMoving: boolean) => void;
   style: StyleProp<ViewStyle>;
 }
 
-export default function CheckerContainer(props: IProps) {
+interface IPointProps extends IProps {
+  index: number;
+}
+
+interface IBarProps extends IProps {
+  index: 'bar';
+  owner: Player;
+}
+
+export default function CheckerContainer(props: IPointProps | IBarProps) {
   const { index, onCheckerMoving, style } = props;
 
-  const checkers = useSelector((state: RootState) => state.board.present.points[index].checkers);
+  const { board } = useSelector((state: RootState) => state.board.present);
+  const { checkers } = index === 'bar' ? board.bar[props.owner] : board.points[index];
 
   const dispatch = useDispatch();
 
@@ -34,7 +44,9 @@ export default function CheckerContainer(props: IProps) {
           bottom: pageY + height,
           left: pageX,
         };
-        dispatch(registerPointBox({ index, box }));
+        if (index !== 'bar') {
+          dispatch(registerPointBox({ index, box }));
+        }
         setDimensions({ width, height });
       });
     }
@@ -52,7 +64,7 @@ export default function CheckerContainer(props: IProps) {
             key={id}
             id={id}
             player={player}
-            pointIndex={index}
+            index={index}
             onMoving={onCheckerMoving}
             size={checkerSize}
           />

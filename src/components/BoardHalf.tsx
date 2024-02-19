@@ -17,12 +17,12 @@ export default function BoardHalf(props: IProps) {
 
   const { handleCheckerMoving, movingCheckerSourceStyle } = useMovingCheckerSourceStyle();
 
-  // Top side:    13|14|15|16|17|18|bar(25)|19|20|21|22|23|24
-  // Bottom side: 12|11|10| 9| 8| 7|bar (0)| 6| 5| 4| 3| 2| 1
+  // Top side:    12|13|14|15|16|17|bar|18|19|20|21|22|23
+  // Bottom side: 11|10| 9| 8| 7| 6|bar| 5| 4| 3| 2| 1| 0
   const { startingPointIndex, direction, barOwner } =
     side === 'top'
-      ? { startingPointIndex: 13, direction: 1, barOwner: Player.Red }
-      : { startingPointIndex: 12, direction: -1, barOwner: Player.Black };
+      ? { startingPointIndex: 12, direction: 1, barOwner: Player.Red }
+      : { startingPointIndex: 11, direction: -1, barOwner: Player.Black };
 
   const leftHandPoints: JSX.Element[] = [];
   const rightHandPoints: JSX.Element[] = [];

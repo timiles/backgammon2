@@ -3,6 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { BoxModel } from '../models/BoxModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
+import { CheckerSourceIndex } from '../types';
 
 export const initialDiceWinner = createAction<
   {
@@ -22,7 +23,7 @@ export const moveChecker = createAction<
   {
     id: number;
     player: Player;
-    sourceIndex: number;
+    sourceIndex: CheckerSourceIndex;
     destinationIndex: number;
     isLastMove: boolean;
   },

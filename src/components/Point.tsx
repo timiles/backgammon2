@@ -18,7 +18,8 @@ export default function Point(props: IProps) {
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
 
-  const colorStyle = index % 2 === 0 ? styles.evenPointColor : styles.oddPointColor;
+  const pointLabelNumber = index + 1;
+  const colorStyle = pointLabelNumber % 2 === 0 ? styles.evenPointColor : styles.oddPointColor;
   const pointContainerStyle =
     side === 'top' ? styles.topPointContainer : styles.bottomPointContainer;
   const checkerContainerStyle =
@@ -26,7 +27,7 @@ export default function Point(props: IProps) {
 
   return (
     <View style={[styles.boardSection, colorStyle, pointContainerStyle, movingCheckerSourceStyle]}>
-      <PointLabel index={index} side={side} />
+      <PointLabel number={pointLabelNumber} side={side} />
       <CheckerContainer
         index={index}
         onCheckerMoving={handleCheckerMoving}
