@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { moveChecker, registerPointBox } from './actions';
+import { moveChecker, registerCheckerContainerBox } from './actions';
 import initialBoardLayout from './initialBoardLayout';
 import { BoardModel } from '../models/BoardModel';
 
@@ -12,7 +12,7 @@ const defaultState: BoardState = { board: initialBoardLayout };
 
 export const boardReducer = createReducer(defaultState, (builder) => {
   builder
-    .addCase(registerPointBox, (state, action) => {
+    .addCase(registerCheckerContainerBox, (state, action) => {
       const { index, box } = action.payload;
 
       state.board.points[index].box = box;
