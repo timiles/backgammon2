@@ -1,3 +1,4 @@
+import { nanoid } from '@reduxjs/toolkit';
 import {
   Animated,
   GestureResponderHandlers,
@@ -7,6 +8,7 @@ import {
 
 import { BoardModel } from './models/BoardModel';
 import { CheckerContainerModel } from './models/CheckerContainerModel';
+import { CheckerModel } from './models/CheckerModel';
 import { DieModel } from './models/DieModel';
 import { DieValue } from './models/DieValue';
 import Player from './models/Player';
@@ -93,6 +95,40 @@ export function createGestureResponderHandlers<T>(
       returnToOriginalLocation();
     },
   }).panHandlers;
+}
+
+export function createInitialBoardLayout(): BoardModel {
+  function black(): CheckerModel {
+    return { id: nanoid(), player: Player.Black };
+  }
+
+  function red(): CheckerModel {
+    return { id: nanoid(), player: Player.Red };
+  }
+
+  const initialBoardLayout: BoardModel = {
+    points: new Array(24).fill(0).map(() => ({ checkers: [] })),
+    bar: [{ checkers: [] }, { checkers: [] }],
+  };
+
+  // Black 24-point (Red 1-point)
+  initialBoardLayout.points[0].checkers.push(black(), black());
+  // Red 6-point
+  initialBoardLayout.points[5].checkers.push(red(), red(), red(), red(), red());
+  // Red 8-point
+  initialBoardLayout.points[7].checkers.push(red(), red(), red());
+  // Black 13-point
+  initialBoardLayout.points[11].checkers.push(black(), black(), black(), black(), black());
+  // Red 13-point
+  initialBoardLayout.points[12].checkers.push(red(), red(), red(), red(), red());
+  // Black 8-point
+  initialBoardLayout.points[16].checkers.push(black(), black(), black());
+  // Black 6-point
+  initialBoardLayout.points[18].checkers.push(black(), black(), black(), black(), black());
+  // Red 24-point
+  initialBoardLayout.points[23].checkers.push(red(), red());
+
+  return initialBoardLayout;
 }
 
 export function findDestinationIndex(

@@ -1,14 +1,14 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { moveChecker, registerCheckerContainerBox } from './actions';
-import initialBoardLayout from './initialBoardLayout';
 import { BoardModel } from '../models/BoardModel';
+import { createInitialBoardLayout } from '../utils';
 
 interface BoardState {
   board: BoardModel;
 }
 
-const defaultState: BoardState = { board: initialBoardLayout };
+const defaultState: BoardState = { board: createInitialBoardLayout() };
 
 export const boardReducer = createReducer(defaultState, (builder) => {
   builder

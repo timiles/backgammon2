@@ -1,6 +1,6 @@
 import Player from './Player';
 
 export interface CheckerModel {
-  id: number;
+  id: string;
   player: Player;
 }

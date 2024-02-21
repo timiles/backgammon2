@@ -21,7 +21,7 @@ export const keyPress = createAction<
 
 export const moveChecker = createAction<
   {
-    id: number;
+    id: string;
     player: Player;
     sourceIndex: CheckerSourceIndex;
     destinationIndex: number;
