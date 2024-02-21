@@ -15,9 +15,9 @@ import Player from './models/Player';
 import { CheckerSourceIndex } from './types';
 
 export function canMoveChecker(
-  player: Player,
-  dice: DieModel[],
   board: BoardModel,
+  dice: DieModel[],
+  player: Player,
   sourceIndex: CheckerSourceIndex,
   destinationIndex?: number,
 ): boolean {
@@ -26,7 +26,13 @@ export function canMoveChecker(
     return false;
   }
 
-  if (destinationIndex != null) {
+  const source = sourceIndex === 'bar' ? board.bar[player] : board.points[sourceIndex];
+  if (!source.checkers.some((x) => x.player === player)) {
+    // Player doesn't have checkers on requested source
+    return false;
+  }
+
+  if (destinationIndex !== undefined) {
     if (destinationIndex === sourceIndex) {
       // Can't move to the same point
       return false;

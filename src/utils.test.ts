@@ -19,22 +19,32 @@ describe('utils', () => {
     ];
 
     it('returns true when inspecting checker that has valid moves', () => {
-      const canMove = canMoveChecker(Player.Black, dice, board, 0);
+      const canMove = canMoveChecker(board, dice, Player.Black, 0);
       expect(canMove).toBe(true);
     });
 
+    it('returns false when inspecting point that has opponent checkers', () => {
+      const canMove = canMoveChecker(board, dice, Player.Red, 0);
+      expect(canMove).toBe(false);
+    });
+
+    it('returns false when inspecting point that has no checkers', () => {
+      const canMove = canMoveChecker(board, dice, Player.Black, 3);
+      expect(canMove).toBe(false);
+    });
+
     it('returns true when moving to empty point', () => {
-      const canMove = canMoveChecker(Player.Black, dice, board, 0, 6);
+      const canMove = canMoveChecker(board, dice, Player.Black, 0, 6);
       expect(canMove).toBe(true);
     });
 
     it('returns false when moving to point owned by opponent', () => {
-      const canMove = canMoveChecker(Player.Black, dice, board, 0, 5);
+      const canMove = canMoveChecker(board, dice, Player.Black, 0, 5);
       expect(canMove).toBe(false);
     });
 
     it('returns false when moving invalid distance as per dice', () => {
-      const canMove = canMoveChecker(Player.Black, dice, board, 0, 4);
+      const canMove = canMoveChecker(board, dice, Player.Black, 0, 4);
       expect(canMove).toBe(false);
     });
 
@@ -44,22 +54,22 @@ describe('utils', () => {
       board.bar[Player.Black].checkers.push(checker);
 
       it('returns true when moving checker from bar', () => {
-        const canMove = canMoveChecker(Player.Black, dice, board, 'bar');
+        const canMove = canMoveChecker(board, dice, Player.Black, 'bar');
         expect(canMove).toBe(true);
       });
 
       it('returns true when moving checker from bar to empty point', () => {
-        const canMove = canMoveChecker(Player.Black, dice, board, 'bar', 4);
+        const canMove = canMoveChecker(board, dice, Player.Black, 'bar', 4);
         expect(canMove).toBe(true);
       });
 
       it('returns false when moving checker from bar to point owned by opponent', () => {
-        const canMove = canMoveChecker(Player.Black, dice, board, 'bar', 5);
+        const canMove = canMoveChecker(board, dice, Player.Black, 'bar', 5);
         expect(canMove).toBe(false);
       });
 
       it('returns false when moving checker on board', () => {
-        const canMove = canMoveChecker(Player.Black, dice, board, 0);
+        const canMove = canMoveChecker(board, dice, Player.Black, 0);
         expect(canMove).toBe(false);
       });
     });

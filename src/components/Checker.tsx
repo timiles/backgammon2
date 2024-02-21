@@ -33,11 +33,11 @@ export default function Checker(props: IProps) {
   useEffect(() => {
     let handlers: GestureResponderHandlers | null = null;
 
-    if (player === currentPlayer && canMoveChecker(player, dice, board, index)) {
+    if (player === currentPlayer && canMoveChecker(board, dice, player, index)) {
       const findDestinationId = (x: number, y: number) => findDestinationIndex(board.points, x, y);
 
       const canMoveToDestination = (destinationIndex: number) =>
-        destinationIndex >= 0 && canMoveChecker(player, dice, board, index, destinationIndex);
+        destinationIndex >= 0 && canMoveChecker(board, dice, player, index, destinationIndex);
 
       const handleMoveStart = () => onMoving(true);
 
