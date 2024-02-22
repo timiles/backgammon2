@@ -1,10 +1,10 @@
 import { CheckerContainerModel } from './models/CheckerContainerModel';
-import { DieModel } from './models/DieModel';
 import Player from './models/Player';
 import {
   canMoveChecker,
   createInitialBoardLayout,
   findDestinationIndex,
+  createDice,
   getDistance,
   getOtherPlayer,
   getRandomDieValue,
@@ -13,10 +13,7 @@ import {
 describe('utils', () => {
   describe('canMoveChecker', () => {
     const board = createInitialBoardLayout();
-    const dice: DieModel[] = [
-      { value: 6, remainingMoves: 1 },
-      { value: 5, remainingMoves: 1 },
-    ];
+    const dice = createDice([6, 5]);
 
     it('returns true when inspecting checker that has valid moves', () => {
       const canMove = canMoveChecker(board, dice, Player.Black, 0);
@@ -72,6 +69,34 @@ describe('utils', () => {
         const canMove = canMoveChecker(board, dice, Player.Black, 0);
         expect(canMove).toBe(false);
       });
+    });
+  });
+
+  describe('createDice', () => {
+    it('creates dice as expected', () => {
+      const dice = createDice([6, 5]);
+      expect(dice.length).toBe(2);
+
+      const [die1, die2] = dice;
+
+      expect(die1.value).toBe(6);
+      expect(die1.remainingMoves).toBe(1);
+
+      expect(die2.value).toBe(5);
+      expect(die2.remainingMoves).toBe(1);
+    });
+
+    it('handles doubles', () => {
+      const dice = createDice([6, 6]);
+      expect(dice.length).toBe(2);
+
+      const [die1, die2] = dice;
+
+      expect(die1.value).toBe(6);
+      expect(die1.remainingMoves).toBe(2);
+
+      expect(die2.value).toBe(6);
+      expect(die2.remainingMoves).toBe(2);
     });
   });
 

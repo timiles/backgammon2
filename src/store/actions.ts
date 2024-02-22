@@ -52,7 +52,7 @@ export const resetInitialDice = createAction<void, 'RESET_INITIAL_DICE'>('RESET_
 export const rollDice = createAction<
   {
     player: Player;
-    dieValues: DieValue[];
+    dieValues: [DieValue, DieValue];
   },
   'ROLL_DICE'
 >('ROLL_DICE');

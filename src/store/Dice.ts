@@ -11,7 +11,7 @@ import {
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
-import { getDistance, getOtherPlayer } from '../utils';
+import { createDice, getDistance, getOtherPlayer } from '../utils';
 
 interface DiceState {
   dice: DieModel[][];
@@ -45,10 +45,7 @@ export const diceReducer = createReducer(defaultState, (builder) => {
     .addCase(rollDice, (state, action) => {
       const { player, dieValues } = action.payload;
 
-      // If the values are the same, player gets double moves
-      const remainingMoves = dieValues[0] === dieValues[1] ? 2 : 1;
-
-      state.dice[player] = dieValues.map((x) => ({ value: x, remainingMoves }));
+      state.dice[player] = createDice(dieValues);
     })
     .addCase(moveChecker, (state, action) => {
       const { player, sourceIndex, destinationIndex, isLastMove } = action.payload;

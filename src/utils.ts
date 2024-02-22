@@ -56,6 +56,16 @@ export function canMoveChecker(
   return true;
 }
 
+export function createDice([dieValue1, dieValue2]: [DieValue, DieValue]): [DieModel, DieModel] {
+  // If the values are the same, player gets double moves
+  const remainingMoves = dieValue1 === dieValue2 ? 2 : 1;
+
+  return [
+    { value: dieValue1, remainingMoves },
+    { value: dieValue2, remainingMoves },
+  ];
+}
+
 export function createGestureResponderHandlers<T>(
   getLocationId: (x: number, y: number) => T,
   canMoveToLocationId: (locationId: T) => boolean,
