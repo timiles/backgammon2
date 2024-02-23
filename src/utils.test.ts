@@ -1,4 +1,6 @@
-import { CheckerContainerModel } from './models/CheckerContainerModel';
+import { BarPointIndex } from './constants';
+import { BoardModel } from './models/BoardModel';
+import { BoxModel } from './models/BoxModel';
 import Player from './models/Player';
 import {
   canMoveChecker,
@@ -10,63 +12,75 @@ import {
   getRandomDieValue,
 } from './utils';
 
+function moveCheckersFromIndexToIndex(
+  board: BoardModel,
+  player: Player,
+  fromIndex: number,
+  toIndex: number,
+  numberOfCheckers?: number,
+): void {
+  const source = board.points[player][fromIndex];
+  const destination = board.points[player][toIndex];
+
+  const checkers = source.checkers.splice(0, numberOfCheckers ?? source.checkers.length);
+  destination.checkers.push(...checkers);
+}
+
 describe('utils', () => {
   describe('canMoveChecker', () => {
-    const board = createInitialBoardLayout();
-    const dice = createDice([6, 5]);
-
-    it('returns true when inspecting checker that has valid moves', () => {
-      const canMove = canMoveChecker(board, dice, Player.Black, 0);
-      expect(canMove).toBe(true);
-    });
-
-    it('returns false when inspecting point that has opponent checkers', () => {
-      const canMove = canMoveChecker(board, dice, Player.Red, 0);
-      expect(canMove).toBe(false);
-    });
-
-    it('returns false when inspecting point that has no checkers', () => {
-      const canMove = canMoveChecker(board, dice, Player.Black, 3);
-      expect(canMove).toBe(false);
-    });
-
-    it('returns true when moving to empty point', () => {
-      const canMove = canMoveChecker(board, dice, Player.Black, 0, 6);
-      expect(canMove).toBe(true);
-    });
-
-    it('returns false when moving to point owned by opponent', () => {
-      const canMove = canMoveChecker(board, dice, Player.Black, 0, 5);
-      expect(canMove).toBe(false);
-    });
-
-    it('returns false when moving invalid distance as per dice', () => {
-      const canMove = canMoveChecker(board, dice, Player.Black, 0, 4);
-      expect(canMove).toBe(false);
-    });
-
-    describe('when Black has checker on bar', () => {
+    describe('from initial board', () => {
       const board = createInitialBoardLayout();
-      const [checker] = board.points[0].checkers.splice(0, 1);
-      board.bar[Player.Black].checkers.push(checker);
+      const dice = createDice([6, 5]);
+
+      it('returns true when inspecting checker that has valid moves', () => {
+        const canMove = canMoveChecker(board, dice, Player.Red, 24);
+        expect(canMove).toBe(true);
+      });
+
+      it('returns false when inspecting point that has no checkers', () => {
+        const canMove = canMoveChecker(board, dice, Player.Red, 3);
+        expect(canMove).toBe(false);
+      });
+
+      it('returns true when moving to empty point', () => {
+        const canMove = canMoveChecker(board, dice, Player.Red, 24, 18);
+        expect(canMove).toBe(true);
+      });
+
+      it('returns false when moving to point owned by opponent', () => {
+        const canMove = canMoveChecker(board, dice, Player.Red, 24, 19);
+        expect(canMove).toBe(false);
+      });
+
+      it('returns false when moving invalid distance as per dice', () => {
+        const canMove = canMoveChecker(board, dice, Player.Red, 24, 20);
+        expect(canMove).toBe(false);
+      });
+    });
+
+    describe('when Red has checker on bar', () => {
+      const board = createInitialBoardLayout();
+      moveCheckersFromIndexToIndex(board, Player.Red, 24, BarPointIndex, 1);
+
+      const dice = createDice([6, 5]);
 
       it('returns true when moving checker from bar', () => {
-        const canMove = canMoveChecker(board, dice, Player.Black, 'bar');
+        const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex);
         expect(canMove).toBe(true);
       });
 
       it('returns true when moving checker from bar to empty point', () => {
-        const canMove = canMoveChecker(board, dice, Player.Black, 'bar', 4);
+        const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex, 20);
         expect(canMove).toBe(true);
       });
 
       it('returns false when moving checker from bar to point owned by opponent', () => {
-        const canMove = canMoveChecker(board, dice, Player.Black, 'bar', 5);
+        const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex, 19);
         expect(canMove).toBe(false);
       });
 
       it('returns false when moving checker on board', () => {
-        const canMove = canMoveChecker(board, dice, Player.Black, 0);
+        const canMove = canMoveChecker(board, dice, Player.Red, 24);
         expect(canMove).toBe(false);
       });
     });
@@ -101,25 +115,37 @@ describe('utils', () => {
   });
 
   describe('findDestinationIndex', () => {
-    const points: CheckerContainerModel[] = [
-      { box: { left: 0, right: 10, top: 0, bottom: 10 }, checkers: [] },
-      { box: { left: 10, right: 20, top: 0, bottom: 10 }, checkers: [] },
-      { box: { left: 0, right: 10, top: 10, bottom: 20 }, checkers: [] },
-      { box: { left: 10, right: 20, top: 10, bottom: 20 }, checkers: [] },
+    const boxes: (BoxModel | undefined)[] = [
+      undefined,
+      { left: 0, right: 10, top: 0, bottom: 10 },
+      { left: 10, right: 20, top: 0, bottom: 10 },
+      { left: 0, right: 10, top: 10, bottom: 20 },
+      { left: 10, right: 20, top: 10, bottom: 20 },
+      // ...
     ];
 
     it('returns index of box that contains location', () => {
-      const index = findDestinationIndex(points, 15, 5);
-      expect(index).toBe(1);
+      const index = findDestinationIndex(Player.Red, boxes, 15, 5);
+      expect(index).toBe(2);
+    });
+
+    it(`returns other player's index of box that contains location`, () => {
+      const index = findDestinationIndex(Player.Black, boxes, 15, 5);
+      expect(index).toBe(23);
     });
 
     it('returns -1 when location is on edge', () => {
-      const index = findDestinationIndex(points, 0, 10);
+      const index = findDestinationIndex(Player.Red, boxes, 0, 10);
       expect(index).toBe(-1);
     });
 
-    it('returns -1 when location is out of bounds', () => {
-      const index = findDestinationIndex(points, 30, 30);
+    it('returns -1 when location is out of bounds (Red)', () => {
+      const index = findDestinationIndex(Player.Red, boxes, 30, 30);
+      expect(index).toBe(-1);
+    });
+
+    it('returns -1 when location is out of bounds (Black)', () => {
+      const index = findDestinationIndex(Player.Black, boxes, 30, 30);
       expect(index).toBe(-1);
     });
   });
@@ -137,23 +163,13 @@ describe('utils', () => {
   });
 
   describe('getDistance', () => {
-    it('handles Black player from bar', () => {
-      const distance = getDistance(Player.Black, 'bar', 4);
+    it('handles player from bar', () => {
+      const distance = getDistance(BarPointIndex, 20);
       expect(distance).toBe(5);
     });
 
-    it('handles Black player from board', () => {
-      const distance = getDistance(Player.Black, 12, 15);
-      expect(distance).toBe(3);
-    });
-
-    it('handles Red player from bar', () => {
-      const distance = getDistance(Player.Red, 'bar', 19);
-      expect(distance).toBe(5);
-    });
-
-    it('handles Red player from board', () => {
-      const distance = getDistance(Player.Red, 15, 12);
+    it('handles player from board', () => {
+      const distance = getDistance(15, 12);
       expect(distance).toBe(3);
     });
   });

@@ -6,28 +6,27 @@ import {
   PanResponderGestureState,
 } from 'react-native';
 
+import { BarPointIndex } from './constants';
 import { BoardModel } from './models/BoardModel';
-import { CheckerContainerModel } from './models/CheckerContainerModel';
-import { CheckerModel } from './models/CheckerModel';
+import { BoxModel } from './models/BoxModel';
 import { DieModel } from './models/DieModel';
 import { DieValue } from './models/DieValue';
 import Player from './models/Player';
-import { CheckerSourceIndex } from './types';
+import { BoxDimensions } from './types';
 
 export function canMoveChecker(
   board: BoardModel,
   dice: DieModel[],
   player: Player,
-  sourceIndex: CheckerSourceIndex,
+  sourceIndex: number,
   destinationIndex?: number,
 ): boolean {
-  if (board.bar[player].checkers.length > 0 && sourceIndex !== 'bar') {
+  if (board.points[player][BarPointIndex].checkers.length > 0 && sourceIndex !== BarPointIndex) {
     // Player has checkers on the bar, and this is not their bar
     return false;
   }
 
-  const source = sourceIndex === 'bar' ? board.bar[player] : board.points[sourceIndex];
-  if (!source.checkers.some((x) => x.player === player)) {
+  if (board.points[player][sourceIndex].checkers.length === 0) {
     // Player doesn't have checkers on requested source
     return false;
   }
@@ -39,14 +38,13 @@ export function canMoveChecker(
     }
 
     const otherPlayer = getOtherPlayer(player);
-    if (
-      board.points[destinationIndex].checkers.filter((x) => x.player === otherPlayer).length > 1
-    ) {
+    const otherIndex = getOtherPlayersIndex(destinationIndex);
+    if (board.points[otherPlayer][otherIndex].checkers.length > 1) {
       // Destination is blocked by other player
       return false;
     }
 
-    const distance = getDistance(player, sourceIndex, destinationIndex);
+    const distance = getDistance(sourceIndex, destinationIndex);
     if (!dice.some((x) => x.value === distance && x.remainingMoves > 0)) {
       // Don't have the dice roll available
       return false;
@@ -114,68 +112,62 @@ export function createGestureResponderHandlers<T>(
 }
 
 export function createInitialBoardLayout(): BoardModel {
-  function black(): CheckerModel {
-    return { id: nanoid(), player: Player.Black };
+  function repeat<T>(itemCreator: () => T, times: number): T[] {
+    return new Array(times).fill(0).map(() => itemCreator());
   }
 
-  function red(): CheckerModel {
-    return { id: nanoid(), player: Player.Red };
+  function createCheckers(board: BoardModel, player: Player) {
+    board.points[player][6].checkers.push(...repeat(() => ({ id: nanoid() }), 5));
+    board.points[player][8].checkers.push(...repeat(() => ({ id: nanoid() }), 3));
+    board.points[player][13].checkers.push(...repeat(() => ({ id: nanoid() }), 5));
+    board.points[player][24].checkers.push(...repeat(() => ({ id: nanoid() }), 2));
   }
 
   const initialBoardLayout: BoardModel = {
-    points: new Array(24).fill(0).map(() => ({ checkers: [] })),
-    bar: [{ checkers: [] }, { checkers: [] }],
+    boxes: [],
+    points: [repeat(() => ({ checkers: [] }), 26), repeat(() => ({ checkers: [] }), 26)],
   };
 
-  // Black 24-point (Red 1-point)
-  initialBoardLayout.points[0].checkers.push(black(), black());
-  // Red 6-point
-  initialBoardLayout.points[5].checkers.push(red(), red(), red(), red(), red());
-  // Red 8-point
-  initialBoardLayout.points[7].checkers.push(red(), red(), red());
-  // Black 13-point
-  initialBoardLayout.points[11].checkers.push(black(), black(), black(), black(), black());
-  // Red 13-point
-  initialBoardLayout.points[12].checkers.push(red(), red(), red(), red(), red());
-  // Black 8-point
-  initialBoardLayout.points[16].checkers.push(black(), black(), black());
-  // Black 6-point
-  initialBoardLayout.points[18].checkers.push(black(), black(), black(), black(), black());
-  // Red 24-point
-  initialBoardLayout.points[23].checkers.push(red(), red());
+  createCheckers(initialBoardLayout, Player.Red);
+  createCheckers(initialBoardLayout, Player.Black);
 
   return initialBoardLayout;
 }
 
 export function findDestinationIndex(
-  points: CheckerContainerModel[],
+  player: Player,
+  boxes: (BoxModel | undefined)[],
   locationX: number,
   locationY: number,
 ): number {
-  return (
-    points
-      // Expect all boxes to be defined - if not, something bad has happened and we deserve to crash
-      .map(({ box }) => box!)
-      .findIndex(
-        ({ left, right, top, bottom }) =>
-          left < locationX && locationX < right && top < locationY && locationY < bottom,
-      )
+  const index = boxes.findIndex(
+    (box) =>
+      box !== undefined &&
+      box.left < locationX &&
+      locationX < box.right &&
+      box.top < locationY &&
+      locationY < box.bottom,
   );
+  if (index < 0) {
+    return index;
+  }
+  return player === Player.Red ? index : getOtherPlayersIndex(index);
+}
+
+export function getCheckerSize(boxDimensions: BoxDimensions, numberOfCheckers: number): number {
+  return Math.min(boxDimensions.width - 10, (boxDimensions.height - 10) / numberOfCheckers);
 }
 
 export function getOtherPlayer(player: Player): Player {
   return ((player + 1) % 2) as Player;
 }
 
-export function getDistance(
-  player: Player,
-  sourceIndex: CheckerSourceIndex,
-  destinationIndex: number,
-) {
-  if (sourceIndex === 'bar') {
-    return player === Player.Red ? 24 - destinationIndex : destinationIndex + 1;
-  }
-  return (destinationIndex - sourceIndex) * (player === Player.Red ? -1 : 1);
+export function getOtherPlayersIndex(index: number): number {
+  return 25 - index;
+}
+
+export function getDistance(sourceIndex: number, destinationIndex: number) {
+  return sourceIndex - destinationIndex;
 }
 
 export function getRandomDieValue(): DieValue {

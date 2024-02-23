@@ -2,18 +2,15 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
+import { BarPointIndex } from '../constants';
 import { BoxModel } from '../models/BoxModel';
 import { registerCheckerContainerBox } from '../store/actions';
 import { BoxDimensions } from '../types';
 
-interface IPointProps {
-  index: 'bar' | number;
-}
-
 /**
  * This hook measures the container referenced by the returned ref, and registers it in the store
  */
-export default function useCheckerContainerBox(props: IPointProps): {
+export default function useCheckerContainerBox(index: number): {
   ref: RefObject<View>;
   dimensions: BoxDimensions | undefined;
 } {
@@ -33,8 +30,7 @@ export default function useCheckerContainerBox(props: IPointProps): {
           left: pageX,
         };
 
-        const { index } = props;
-        if (index !== 'bar') {
+        if (index !== BarPointIndex) {
           dispatch(registerCheckerContainerBox({ index, box }));
         }
 

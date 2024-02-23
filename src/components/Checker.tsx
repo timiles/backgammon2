@@ -3,22 +3,22 @@ import { Animated, GestureResponderHandlers } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import colors from '../colors';
-import { CheckerModel } from '../models/CheckerModel';
 import Player from '../models/Player';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
 import styles from '../styles';
-import { CheckerSourceIndex } from '../types';
 import { canMoveChecker, createGestureResponderHandlers, findDestinationIndex } from '../utils';
 
-interface IProps extends CheckerModel {
-  index: CheckerSourceIndex;
+interface IProps {
+  checkerId: string;
+  player: Player;
+  index: number;
   onMoving: (isMoving: boolean) => void;
   size: number;
 }
 
 export default function Checker(props: IProps) {
-  const { id, player, index, onMoving, size } = props;
+  const { checkerId, player, index, onMoving, size } = props;
 
   const board = useSelector((state: RootState) => state.board.present.board);
   const dice = useSelector((state: RootState) => state.dice.present.dice[player]);
@@ -34,7 +34,8 @@ export default function Checker(props: IProps) {
     let handlers: GestureResponderHandlers | null = null;
 
     if (player === currentPlayer && canMoveChecker(board, dice, player, index)) {
-      const findDestinationId = (x: number, y: number) => findDestinationIndex(board.points, x, y);
+      const findDestinationId = (x: number, y: number) =>
+        findDestinationIndex(player, board.boxes, x, y);
 
       const canMoveToDestination = (destinationIndex: number) =>
         destinationIndex >= 0 && canMoveChecker(board, dice, player, index, destinationIndex);
@@ -44,7 +45,7 @@ export default function Checker(props: IProps) {
       const handleMoveSuccess = (destinationIndex: number) => {
         dispatch(
           moveChecker({
-            id,
+            checkerId,
             player,
             sourceIndex: index,
             destinationIndex,

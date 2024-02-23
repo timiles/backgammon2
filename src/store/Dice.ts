@@ -52,7 +52,7 @@ export const diceReducer = createReducer(defaultState, (builder) => {
 
       const [die1, die2] = state.dice[player];
 
-      const distance = getDistance(player, sourceIndex, destinationIndex);
+      const distance = getDistance(sourceIndex, destinationIndex);
 
       if (die1.value === distance && die1.remainingMoves > 0) {
         die1.remainingMoves -= 1;
