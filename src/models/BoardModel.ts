@@ -3,7 +3,7 @@ import { CheckerContainerModel } from './CheckerContainerModel';
 
 export interface BoardModel {
   /**
-   * Boxes use Red's indexes to identify each point
+   * Boxes use Red's indexes to identify each point, and 0 for the off board area
    */
   boxes: BoxModel[];
 

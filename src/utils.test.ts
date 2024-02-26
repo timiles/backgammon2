@@ -1,4 +1,4 @@
-import { BarPointIndex } from './constants';
+import { BarPointIndex, OffPointIndex } from './constants';
 import { BoardModel } from './models/BoardModel';
 import { BoxModel } from './models/BoxModel';
 import Player from './models/Player';
@@ -56,6 +56,11 @@ describe('utils', () => {
         const canMove = canMoveChecker(board, dice, Player.Red, 24, 20);
         expect(canMove).toBe(false);
       });
+
+      it('returns false when trying to bear off too early', () => {
+        const canMove = canMoveChecker(board, dice, Player.Black, 6, OffPointIndex);
+        expect(canMove).toBe(false);
+      });
     });
 
     describe('when Red has checker on bar', () => {
@@ -81,6 +86,40 @@ describe('utils', () => {
 
       it('returns false when moving checker on board', () => {
         const canMove = canMoveChecker(board, dice, Player.Red, 24);
+        expect(canMove).toBe(false);
+      });
+    });
+
+    describe('when Red is bearing off', () => {
+      const board = createInitialBoardLayout();
+      // This will leave Red with just 5 checkers on 5-point and 2 checkers on 4-point.
+      // Black still has 2 checkers on Red's 1-point.
+      moveCheckersFromIndexToIndex(board, Player.Red, 6, 5);
+      moveCheckersFromIndexToIndex(board, Player.Red, 24, 4);
+      moveCheckersFromIndexToIndex(board, Player.Red, 8, OffPointIndex);
+      moveCheckersFromIndexToIndex(board, Player.Red, 13, OffPointIndex);
+
+      it('returns true when moving checker off with exact dice roll', () => {
+        const dice = createDice([5, 3]);
+        const canMove = canMoveChecker(board, dice, Player.Red, 5, OffPointIndex);
+        expect(canMove).toBe(true);
+      });
+
+      it('returns true when moving checker off with higher dice roll', () => {
+        const dice = createDice([6, 3]);
+        const canMove = canMoveChecker(board, dice, Player.Red, 5, OffPointIndex);
+        expect(canMove).toBe(true);
+      });
+
+      it('returns false when higher dice roll can be used better', () => {
+        const dice = createDice([6, 3]);
+        const canMove = canMoveChecker(board, dice, Player.Red, 4, OffPointIndex);
+        expect(canMove).toBe(false);
+      });
+
+      it('returns false when trying to move more than the available dice roll', () => {
+        const dice = createDice([2, 1]);
+        const canMove = canMoveChecker(board, dice, Player.Red, 4, OffPointIndex);
         expect(canMove).toBe(false);
       });
     });
@@ -171,6 +210,11 @@ describe('utils', () => {
     it('handles player from board', () => {
       const distance = getDistance(15, 12);
       expect(distance).toBe(3);
+    });
+
+    it('handles player bearing off', () => {
+      const distance = getDistance(1, OffPointIndex);
+      expect(distance).toBe(1);
     });
   });
 

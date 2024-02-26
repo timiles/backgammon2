@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { moveChecker, registerCheckerContainerBox } from './actions';
-import { BarPointIndex } from '../constants';
+import { BarPointIndex, OffPointIndex } from '../constants';
 import { BoardModel } from '../models/BoardModel';
 import { createInitialBoardLayout, getOtherPlayer, getOtherPlayersIndex } from '../utils';
 
@@ -16,7 +16,16 @@ export const boardReducer = createReducer(defaultState, (builder) => {
     .addCase(registerCheckerContainerBox, (state, action) => {
       const { index, box } = action.payload;
 
-      state.board.boxes[index] = box;
+      const currentBox = state.board.boxes[index];
+      if (index === OffPointIndex && currentBox !== undefined) {
+        // Expand existing box to cover both areas
+        currentBox.top = Math.min(currentBox.top, box.top);
+        currentBox.left = Math.min(currentBox.left, box.left);
+        currentBox.right = Math.max(currentBox.right, box.right);
+        currentBox.bottom = Math.max(currentBox.bottom, box.bottom);
+      } else {
+        state.board.boxes[index] = box;
+      }
     })
     .addCase(moveChecker, (state, action) => {
       const { checkerId, player, sourceIndex, destinationIndex } = action.payload;

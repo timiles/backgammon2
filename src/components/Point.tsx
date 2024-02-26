@@ -39,18 +39,12 @@ export default function Point(props: IProps) {
   const checkerSize = dimensions ? getCheckerSize(dimensions, checkers.length) : undefined;
 
   const colorStyle = redIndex % 2 === 0 ? styles.evenPointColor : styles.oddPointColor;
-  const pointContainerStyle =
-    side === 'top' ? styles.topPointContainer : styles.bottomPointContainer;
-  const checkerContainerStyle =
-    side === 'top' ? styles.topPointCheckerContainer : styles.bottomPointCheckerContainer;
+  const containerStyle = side === 'top' ? styles.topContainer : styles.bottomContainer;
 
   return (
-    <View style={[styles.boardSection, colorStyle, pointContainerStyle, movingCheckerSourceStyle]}>
+    <View style={[styles.boardSection, colorStyle, containerStyle, movingCheckerSourceStyle]}>
       <PointLabel redIndex={redIndex} side={side} />
-      <View
-        ref={ref}
-        style={[styles.checkerContainer, checkerContainerStyle, movingCheckerSourceStyle]}
-      >
+      <View ref={ref} style={[styles.checkerContainer, containerStyle, movingCheckerSourceStyle]}>
         {checkerSize !== undefined &&
           checkers.map(({ id }) => (
             <Checker

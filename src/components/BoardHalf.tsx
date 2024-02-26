@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
 import Bar from './Bar';
-import Home from './Home';
+import OffBoard from './OffBoard';
 import Point from './Point';
 import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
 import Player from '../models/Player';
@@ -19,10 +19,10 @@ export default function BoardHalf(props: IProps) {
 
   // Top side:    13|14|15|16|17|18|25|19|20|21|22|23|24|
   // Bottom side: 12|11|10| 9| 8| 7|  | 6| 5| 4| 3| 2| 1|
-  const { startingPointIndex, direction, barOwner } =
+  const { startingPointIndex, direction, barOwner, offOwner } =
     side === 'top'
-      ? { startingPointIndex: 13, direction: 1, barOwner: Player.Red }
-      : { startingPointIndex: 12, direction: -1, barOwner: Player.Black };
+      ? { startingPointIndex: 13, direction: 1, barOwner: Player.Red, offOwner: Player.Black }
+      : { startingPointIndex: 12, direction: -1, barOwner: Player.Black, offOwner: Player.Red };
 
   const leftHandPoints: JSX.Element[] = [];
   const rightHandPoints: JSX.Element[] = [];
@@ -52,7 +52,7 @@ export default function BoardHalf(props: IProps) {
       {leftHandPoints}
       <Bar owner={barOwner} onCheckerMoving={handleCheckerMoving} />
       {rightHandPoints}
-      <Home />
+      <OffBoard owner={offOwner} side={side} />
     </View>
   );
 }

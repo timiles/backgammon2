@@ -50,14 +50,15 @@ export const diceReducer = createReducer(defaultState, (builder) => {
     .addCase(moveChecker, (state, action) => {
       const { player, sourceIndex, destinationIndex, isLastMove } = action.payload;
 
-      const [die1, die2] = state.dice[player];
-
       const distance = getDistance(sourceIndex, destinationIndex);
 
-      if (die1.value === distance && die1.remainingMoves > 0) {
-        die1.remainingMoves -= 1;
-      } else {
-        die2.remainingMoves -= 1;
+      const remainingDice = state.dice[player].filter((d) => d.remainingMoves > 0);
+      const usedDie =
+        remainingDice.find((d) => d.value === distance) ??
+        // When bearing off, the die used could exceed the distance
+        remainingDice.find((d) => d.value > distance);
+      if (usedDie) {
+        usedDie.remainingMoves -= 1;
       }
 
       if (isLastMove) {

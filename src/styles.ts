@@ -46,11 +46,11 @@ export default StyleSheet.create({
     flex: 1,
   } as ViewStyle,
 
-  topPointContainer: {
+  topContainer: {
     flexDirection: 'column',
   } as ViewStyle,
 
-  bottomPointContainer: {
+  bottomContainer: {
     flexDirection: 'column-reverse',
   } as ViewStyle,
 
@@ -64,14 +64,6 @@ export default StyleSheet.create({
 
   barColor: {
     backgroundColor: 'brown',
-  } as ViewStyle,
-
-  topPointCheckerContainer: {
-    justifyContent: 'flex-start',
-  } as ViewStyle,
-
-  bottomPointCheckerContainer: {
-    justifyContent: 'flex-end',
   } as ViewStyle,
 
   barCheckerContainer: {
@@ -98,11 +90,19 @@ export default StyleSheet.create({
     userSelect: 'none',
   } as TextStyle,
 
-  home: {
+  offBoard: {
     backgroundColor: 'white',
     borderColor: 'brown',
     borderLeftWidth: 5,
     paddingHorizontal: 0,
+  } as ViewStyle,
+
+  topOffBoardChecker: {
+    marginTop: 1,
+  } as ViewStyle,
+
+  bottomOffBoardChecker: {
+    marginBottom: 1,
   } as ViewStyle,
 
   checkerContainer: {
@@ -113,6 +113,14 @@ export default StyleSheet.create({
 
   checker: {
     flexShrink: 1,
+  } as ViewStyle,
+
+  redChecker: {
+    backgroundColor: colors.redPlayer,
+  } as ViewStyle,
+
+  blackChecker: {
+    backgroundColor: colors.blackPlayer,
   } as ViewStyle,
 
   movingCheckerSource: {
