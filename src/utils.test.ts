@@ -10,6 +10,7 @@ import {
   getDistance,
   getOtherPlayer,
   getRandomDieValue,
+  getPipCount,
 } from './utils';
 
 function moveCheckersFromIndexToIndex(
@@ -215,6 +216,25 @@ describe('utils', () => {
     it('handles player bearing off', () => {
       const distance = getDistance(1, OffPointIndex);
       expect(distance).toBe(1);
+    });
+  });
+
+  describe('getPipCount', () => {
+    it('initial board pip count is 167', () => {
+      const board = createInitialBoardLayout();
+      const redPipCount = getPipCount(board, Player.Red);
+      expect(redPipCount).toBe(167);
+      const blackPipCount = getPipCount(board, Player.Black);
+      expect(blackPipCount).toBe(167);
+    });
+
+    it('after moving Red checker, Red pip count is reduced', () => {
+      const board = createInitialBoardLayout();
+      moveCheckersFromIndexToIndex(board, Player.Red, 24, 20, 1);
+      const redPipCount = getPipCount(board, Player.Red);
+      expect(redPipCount).toBe(163);
+      const blackPipCount = getPipCount(board, Player.Black);
+      expect(blackPipCount).toBe(167);
     });
   });
 

@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import OffBoardCheckers from './OffBoardCheckers';
@@ -21,12 +21,19 @@ export default function OffBoard(props: IProps) {
     (state: RootState) => state.board.present.board.points[owner][OffPointIndex],
   );
 
+  const pipCount = useSelector((state: RootState) => state.board.present.board.pipCounts[owner]);
+
   const { ref, dimensions } = useCheckerContainerBox(OffPointIndex);
 
   const containerStyle = side === 'top' ? styles.topContainer : styles.bottomContainer;
+  const labelStyle = [
+    side === 'top' ? styles.upsideDown : null,
+    owner === Player.Red ? styles.redPlayer : styles.blackPlayer,
+  ];
 
   return (
-    <View style={[styles.boardSection, styles.offBoard]}>
+    <View style={[styles.boardSection, styles.offBoard, containerStyle]}>
+      <Text style={[styles.pipCountLabel, labelStyle]}>{pipCount}</Text>
       <View ref={ref} style={[styles.checkerContainer, containerStyle]}>
         {dimensions && (
           <OffBoardCheckers

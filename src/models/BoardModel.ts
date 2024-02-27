@@ -15,4 +15,6 @@ export interface BoardModel {
    * Index 25 is the player's bar.
    */
   points: [CheckerContainerModel[], CheckerContainerModel[]];
+
+  pipCounts: [number, number];
 }

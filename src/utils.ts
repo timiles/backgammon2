@@ -164,10 +164,15 @@ export function createInitialBoardLayout(): BoardModel {
   const initialBoardLayout: BoardModel = {
     boxes: [],
     points: [repeat(() => ({ checkers: [] }), 26), repeat(() => ({ checkers: [] }), 26)],
+    pipCounts: [0, 0],
   };
 
   createCheckers(initialBoardLayout, Player.Red);
   createCheckers(initialBoardLayout, Player.Black);
+  initialBoardLayout.pipCounts = [
+    getPipCount(initialBoardLayout, Player.Red),
+    getPipCount(initialBoardLayout, Player.Black),
+  ];
 
   return initialBoardLayout;
 }
@@ -206,6 +211,12 @@ export function getOtherPlayersIndex(index: number): number {
 
 export function getDistance(sourceIndex: number, destinationIndex: number) {
   return sourceIndex - destinationIndex;
+}
+
+export function getPipCount(board: BoardModel, player: Player): number {
+  return board.points[player]
+    .map((point, index) => point.checkers.length * index)
+    .reduce((a, b) => a + b, 0);
 }
 
 export function getRandomDieValue(): DieValue {

@@ -3,7 +3,12 @@ import { createReducer } from '@reduxjs/toolkit';
 import { moveChecker, registerCheckerContainerBox } from './actions';
 import { BarPointIndex, OffPointIndex } from '../constants';
 import { BoardModel } from '../models/BoardModel';
-import { createInitialBoardLayout, getOtherPlayer, getOtherPlayersIndex } from '../utils';
+import {
+  createInitialBoardLayout,
+  getOtherPlayer,
+  getOtherPlayersIndex,
+  getPipCount,
+} from '../utils';
 
 interface BoardState {
   board: BoardModel;
@@ -37,6 +42,8 @@ export const boardReducer = createReducer(defaultState, (builder) => {
       if (otherPlayersCheckers.length === 1) {
         const [blot] = otherPlayersCheckers.splice(0, 1);
         state.board.points[otherPlayer][BarPointIndex].checkers.push(blot);
+
+        state.board.pipCounts[otherPlayer] = getPipCount(state.board, otherPlayer);
       }
 
       // Move checker
@@ -44,5 +51,7 @@ export const boardReducer = createReducer(defaultState, (builder) => {
       const checkerIndex = sourcePointCheckers.findIndex(({ id }) => id === checkerId);
       const [checker] = sourcePointCheckers.splice(checkerIndex, 1);
       state.board.points[player][destinationIndex].checkers.push(checker);
+
+      state.board.pipCounts[player] = getPipCount(state.board, player);
     });
 });

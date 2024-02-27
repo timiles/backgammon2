@@ -105,6 +105,13 @@ export default StyleSheet.create({
     marginBottom: 1,
   } as ViewStyle,
 
+  pipCountLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    userSelect: 'none',
+  } as TextStyle,
+
   checkerContainer: {
     flex: 1,
     alignItems: 'center',
