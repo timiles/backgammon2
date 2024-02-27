@@ -25,6 +25,7 @@ export const moveChecker = createAction<
     sourceIndex: number;
     destinationIndex: number;
     isLastMove: boolean;
+    isWinningMove: boolean;
   },
   'MOVE_CHECKER'
 >('MOVE_CHECKER');

@@ -3,6 +3,7 @@ import { Animated, GestureResponderHandlers } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import colors from '../colors';
+import { OffPointIndex } from '../constants';
 import Player from '../models/Player';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
@@ -50,6 +51,7 @@ export default function Checker(props: IProps) {
             sourceIndex: index,
             destinationIndex,
             isLastMove: dice[0].remainingMoves + dice[1].remainingMoves === 1,
+            isWinningMove: board.pipCounts[player] === index && destinationIndex === OffPointIndex,
           }),
         );
       };

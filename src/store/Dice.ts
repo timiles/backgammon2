@@ -48,7 +48,7 @@ export const diceReducer = createReducer(defaultState, (builder) => {
       state.dice[player] = createDice(dieValues);
     })
     .addCase(moveChecker, (state, action) => {
-      const { player, sourceIndex, destinationIndex, isLastMove } = action.payload;
+      const { player, sourceIndex, destinationIndex, isLastMove, isWinningMove } = action.payload;
 
       const distance = getDistance(sourceIndex, destinationIndex);
 
@@ -61,7 +61,7 @@ export const diceReducer = createReducer(defaultState, (builder) => {
         usedDie.remainingMoves -= 1;
       }
 
-      if (isLastMove) {
+      if (isLastMove && !isWinningMove) {
         state.dice[getOtherPlayer(player)] = [];
       }
     })

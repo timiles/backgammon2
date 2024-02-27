@@ -18,9 +18,9 @@ export const playerReducer = createReducer(defaultState, (builder) => {
       state.currentPlayer = winner;
     })
     .addCase(moveChecker, (state, action) => {
-      const { player, isLastMove } = action.payload;
+      const { player, isLastMove, isWinningMove } = action.payload;
 
-      const currentPlayer = !isLastMove ? player : getOtherPlayer(player);
+      const currentPlayer = !isLastMove || isWinningMove ? player : getOtherPlayer(player);
 
       // For undo/redo, we need to return a new state with each move even if Player didn't change
       return { ...state, currentPlayer };

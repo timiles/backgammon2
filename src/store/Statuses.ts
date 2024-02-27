@@ -29,9 +29,12 @@ export const statusReducer = createReducer(defaultState, (builder) => {
       state.statuses[getOtherPlayer(winner)] = `${Player[winner]} wins the initial roll.`;
     })
     .addCase(moveChecker, (state, action) => {
-      const { player, isLastMove } = action.payload;
+      const { player, isLastMove, isWinningMove } = action.payload;
 
-      if (isLastMove) {
+      if (isWinningMove) {
+        state.statuses[player] = 'You win!';
+        state.statuses[getOtherPlayer(player)] = `${Player[player]} wins!`;
+      } else if (isLastMove) {
         state.statuses[player] = '';
         state.statuses[getOtherPlayer(player)] = 'Your turn to roll.';
       }
