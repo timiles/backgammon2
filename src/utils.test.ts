@@ -190,18 +190,6 @@ describe('utils', () => {
     });
   });
 
-  describe('getOtherPlayer', () => {
-    it('returns Black when passed Red', () => {
-      const otherPlayer = getOtherPlayer(Player.Red);
-      expect(otherPlayer).toBe(Player.Black);
-    });
-
-    it('returns Red when passed Black', () => {
-      const otherPlayer = getOtherPlayer(Player.Black);
-      expect(otherPlayer).toBe(Player.Red);
-    });
-  });
-
   describe('getDistance', () => {
     it('handles player from bar', () => {
       const distance = getDistance(BarPointIndex, 20);
@@ -216,6 +204,18 @@ describe('utils', () => {
     it('handles player bearing off', () => {
       const distance = getDistance(1, OffPointIndex);
       expect(distance).toBe(1);
+    });
+  });
+
+  describe('getOtherPlayer', () => {
+    it('returns Black when passed Red', () => {
+      const otherPlayer = getOtherPlayer(Player.Red);
+      expect(otherPlayer).toBe(Player.Black);
+    });
+
+    it('returns Red when passed Black', () => {
+      const otherPlayer = getOtherPlayer(Player.Black);
+      expect(otherPlayer).toBe(Player.Red);
     });
   });
 

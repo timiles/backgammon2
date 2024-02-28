@@ -31,62 +31,64 @@ export function canMoveChecker(
     return false;
   }
 
-  if (destinationIndex !== undefined) {
-    if (destinationIndex === OffPointIndex) {
-      // Check if this player has any checkers on bar or on points outside of their home board
-      if (board.points[player][BarPointIndex].checkers.length > 0) {
+  if (destinationIndex === undefined) {
+    return true;
+  }
+
+  if (destinationIndex === OffPointIndex) {
+    // Check if this player has any checkers on bar or on points outside of their home board
+    if (board.points[player][BarPointIndex].checkers.length > 0) {
+      return false;
+    }
+
+    for (let index = 7; index <= 24; index += 1) {
+      if (board.points[player][index].checkers.length > 0) {
         return false;
       }
+    }
 
-      for (let index = 7; index <= 24; index += 1) {
-        if (board.points[player][index].checkers.length > 0) {
+    // Now also check the dice roll was enough to bear off
+    const distance = getDistance(sourceIndex, destinationIndex);
+
+    const remainingDice = dice.filter((d) => d.remainingMoves > 0);
+
+    if (remainingDice.some((d) => d.value === distance)) {
+      // Exact dice roll is available
+      return true;
+    }
+
+    if (remainingDice.some((d) => d.value > distance)) {
+      // A higher dice roll could be used, so check further away points in the home board
+      // in case the dice roll must be used on them first
+      for (let pointIndex = sourceIndex + 1; pointIndex <= 6; pointIndex += 1) {
+        if (canMoveChecker(board, dice, player, pointIndex)) {
           return false;
         }
       }
-
-      // Now also check the dice roll was enough to bear off
-      const distance = getDistance(sourceIndex, destinationIndex);
-
-      const remainingDice = dice.filter((d) => d.remainingMoves > 0);
-
-      if (remainingDice.some((d) => d.value === distance)) {
-        // Exact dice roll is available
-        return true;
-      }
-
-      if (remainingDice.some((d) => d.value > distance)) {
-        // A higher dice roll could be used, so check further away points in the home board
-        // in case the dice roll must be used on them first
-        for (let pointIndex = sourceIndex + 1; pointIndex <= 6; pointIndex += 1) {
-          if (canMoveChecker(board, dice, player, pointIndex)) {
-            return false;
-          }
-        }
-        // None found, safe to use dice for this move
-        return true;
-      }
-
-      // Don't have the dice roll available
-      return false;
+      // None found, safe to use dice for this move
+      return true;
     }
 
-    if (destinationIndex === sourceIndex) {
-      // Can't move to the same point
-      return false;
-    }
+    // Don't have the dice roll available
+    return false;
+  }
 
-    const otherPlayer = getOtherPlayer(player);
-    const otherIndex = getOtherPlayersIndex(destinationIndex);
-    if (board.points[otherPlayer][otherIndex].checkers.length > 1) {
-      // Destination is blocked by other player
-      return false;
-    }
+  if (destinationIndex === sourceIndex) {
+    // Can't move to the same point
+    return false;
+  }
 
-    const distance = getDistance(sourceIndex, destinationIndex);
-    if (!dice.some((x) => x.value === distance && x.remainingMoves > 0)) {
-      // Don't have the dice roll available
-      return false;
-    }
+  const otherPlayer = getOtherPlayer(player);
+  const otherIndex = getOtherPlayersIndex(destinationIndex);
+  if (board.points[otherPlayer][otherIndex].checkers.length > 1) {
+    // Destination is blocked by other player
+    return false;
+  }
+
+  const distance = getDistance(sourceIndex, destinationIndex);
+  if (!dice.some((x) => x.value === distance && x.remainingMoves > 0)) {
+    // Don't have the dice roll available
+    return false;
   }
 
   return true;
@@ -201,16 +203,16 @@ export function getCheckerSize(boxDimensions: BoxDimensions, numberOfCheckers: n
   return Math.min(boxDimensions.width - 10, (boxDimensions.height - 10) / numberOfCheckers);
 }
 
+export function getDistance(sourceIndex: number, destinationIndex: number) {
+  return sourceIndex - destinationIndex;
+}
+
 export function getOtherPlayer(player: Player): Player {
   return ((player + 1) % 2) as Player;
 }
 
 export function getOtherPlayersIndex(index: number): number {
   return 25 - index;
-}
-
-export function getDistance(sourceIndex: number, destinationIndex: number) {
-  return sourceIndex - destinationIndex;
 }
 
 export function getPipCount(board: BoardModel, player: Player): number {
