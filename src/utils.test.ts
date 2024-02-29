@@ -1,6 +1,7 @@
 import { BarPointIndex, OffPointIndex } from './constants';
 import { BoardModel } from './models/BoardModel';
 import { BoxModel } from './models/BoxModel';
+import { DieModel } from './models/DieModel';
 import Player from './models/Player';
 import {
   canMoveChecker,
@@ -8,6 +9,7 @@ import {
   findDestinationIndex,
   createDice,
   getDistance,
+  getNextDice,
   getOtherPlayer,
   getRandomDieValue,
   getPipCount,
@@ -58,8 +60,13 @@ describe('utils', () => {
         expect(canMove).toBe(false);
       });
 
-      it('returns false when trying to bear off too early', () => {
+      it('returns false when trying to bear off too early (explicit)', () => {
         const canMove = canMoveChecker(board, dice, Player.Black, 6, OffPointIndex);
+        expect(canMove).toBe(false);
+      });
+
+      it('returns false when trying to bear off too early (implicit)', () => {
+        const canMove = canMoveChecker(board, dice, Player.Black, 6);
         expect(canMove).toBe(false);
       });
     });
@@ -82,6 +89,12 @@ describe('utils', () => {
 
       it('returns false when moving checker from bar to point owned by opponent', () => {
         const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex, 19);
+        expect(canMove).toBe(false);
+      });
+
+      it('returns false for checker from bar when no valid dice', () => {
+        const doubleSix = createDice([6, 6]);
+        const canMove = canMoveChecker(board, doubleSix, Player.Red, BarPointIndex);
         expect(canMove).toBe(false);
       });
 
@@ -109,6 +122,12 @@ describe('utils', () => {
       it('returns true when moving checker off with higher dice roll', () => {
         const dice = createDice([6, 3]);
         const canMove = canMoveChecker(board, dice, Player.Red, 5, OffPointIndex);
+        expect(canMove).toBe(true);
+      });
+
+      it('returns true when moving checker with higher dice roll', () => {
+        const dice = createDice([6, 6]);
+        const canMove = canMoveChecker(board, dice, Player.Red, 5);
         expect(canMove).toBe(true);
       });
 
@@ -204,6 +223,50 @@ describe('utils', () => {
     it('handles player bearing off', () => {
       const distance = getDistance(1, OffPointIndex);
       expect(distance).toBe(1);
+    });
+  });
+
+  describe('getNextDice', () => {
+    it('reduces die matching distance moved', () => {
+      const dice = createDice([3, 4]);
+      const nextDice = getNextDice(dice, 3);
+
+      const expectedNextDice: DieModel[] = [
+        { value: 3, remainingMoves: 0 },
+        { value: 4, remainingMoves: 1 },
+      ];
+      expect(nextDice).toStrictEqual(expectedNextDice);
+    });
+
+    it('reduces die exceeding distance when neither die matches', () => {
+      const dice = createDice([2, 4]);
+      const nextDice = getNextDice(dice, 3);
+
+      const expectedNextDice: DieModel[] = [
+        { value: 2, remainingMoves: 1 },
+        { value: 4, remainingMoves: 0 },
+      ];
+      expect(nextDice).toStrictEqual(expectedNextDice);
+    });
+
+    it('ignores die with no remaining moves', () => {
+      const dice = createDice([3, 3]);
+      dice[0].remainingMoves = 0;
+
+      const nextDice = getNextDice(dice, 3);
+
+      const expectedNextDice: DieModel[] = [
+        { value: 3, remainingMoves: 0 },
+        { value: 3, remainingMoves: 1 },
+      ];
+      expect(nextDice).toStrictEqual(expectedNextDice);
+    });
+
+    it('does not mutate original dice', () => {
+      const dice = createDice([3, 4]);
+      getNextDice(dice, 3);
+
+      expect(dice).toStrictEqual(createDice([3, 4]));
     });
   });
 

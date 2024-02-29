@@ -1,4 +1,5 @@
 import { nanoid } from '@reduxjs/toolkit';
+import { produce } from 'immer';
 import {
   Animated,
   GestureResponderHandlers,
@@ -32,7 +33,14 @@ export function canMoveChecker(
   }
 
   if (destinationIndex === undefined) {
-    return true;
+    // Check at least one die yields a valid destination
+    const possibleDestinationIndexes = dice
+      .filter((d) => d.remainingMoves > 0)
+      .map(({ value }) => Math.max(sourceIndex - value, OffPointIndex));
+
+    return possibleDestinationIndexes.some((possibleDestinationIndex) =>
+      canMoveChecker(board, dice, player, sourceIndex, possibleDestinationIndex),
+    );
   }
 
   if (destinationIndex === OffPointIndex) {
@@ -92,6 +100,19 @@ export function canMoveChecker(
   }
 
   return true;
+}
+
+export function canMoveAnyChecker(board: BoardModel, dice: DieModel[], player: Player): boolean {
+  if (dice.every((d) => d.remainingMoves === 0)) {
+    return false;
+  }
+
+  for (let index = 1; index <= BarPointIndex; index += 1) {
+    if (canMoveChecker(board, dice, player, index)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function createDice([dieValue1, dieValue2]: [DieValue, DieValue]): [DieModel, DieModel] {
@@ -207,6 +228,47 @@ export function getDistance(sourceIndex: number, destinationIndex: number) {
   return sourceIndex - destinationIndex;
 }
 
+export function getNextBoard(
+  board: BoardModel,
+  player: Player,
+  checkerId: string,
+  sourceIndex: number,
+  destinationIndex: number,
+): BoardModel {
+  return produce(board, (draftBoard) => {
+    // If we've hit other player's blot, put it on the bar
+    const otherPlayer = getOtherPlayer(player);
+    const otherIndex = getOtherPlayersIndex(destinationIndex);
+    const { checkers: otherPlayersCheckers } = draftBoard.points[otherPlayer][otherIndex];
+    if (otherPlayersCheckers.length === 1) {
+      const [blot] = otherPlayersCheckers.splice(0, 1);
+      draftBoard.points[otherPlayer][BarPointIndex].checkers.push(blot);
+
+      draftBoard.pipCounts[otherPlayer] = getPipCount(draftBoard, otherPlayer);
+    }
+
+    // Move checker
+    const { checkers: sourcePointCheckers } = draftBoard.points[player][sourceIndex];
+    const checkerIndex = sourcePointCheckers.findIndex(({ id }) => id === checkerId);
+    const [checker] = sourcePointCheckers.splice(checkerIndex, 1);
+    draftBoard.points[player][destinationIndex].checkers.push(checker);
+
+    draftBoard.pipCounts[player] = getPipCount(draftBoard, player);
+  });
+}
+
+export function getNextDice(dice: DieModel[], distanceMoved: number): DieModel[] {
+  return produce(dice, (draftDice) => {
+    const usedDie =
+      draftDice.find((d) => d.remainingMoves > 0 && d.value === distanceMoved) ??
+      // When bearing off, the die used could exceed the distance
+      draftDice.find((d) => d.remainingMoves > 0 && d.value > distanceMoved);
+    if (usedDie) {
+      usedDie.remainingMoves -= 1;
+    }
+  });
+}
+
 export function getOtherPlayer(player: Player): Player {
   return ((player + 1) % 2) as Player;
 }
@@ -223,4 +285,8 @@ export function getPipCount(board: BoardModel, player: Player): number {
 
 export function getRandomDieValue(): DieValue {
   return Math.ceil(Math.random() * 6) as DieValue;
+}
+
+export function getRemainingMoves(dice: DieModel[]): number {
+  return dice.map((d) => d.remainingMoves).reduce((a, b) => a + b, 0);
 }

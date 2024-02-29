@@ -11,7 +11,7 @@ import {
 import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
-import { createDice, getDistance, getOtherPlayer } from '../utils';
+import { getOtherPlayer } from '../utils';
 
 interface DiceState {
   dice: DieModel[][];
@@ -43,25 +43,22 @@ export const diceReducer = createReducer(defaultState, (builder) => {
       state.isInitialRoll = false;
     })
     .addCase(rollDice, (state, action) => {
-      const { player, dieValues } = action.payload;
+      const { player, dice, playerCanMove } = action.payload;
 
-      state.dice[player] = createDice(dieValues);
-    })
-    .addCase(moveChecker, (state, action) => {
-      const { player, sourceIndex, destinationIndex, isLastMove, isWinningMove } = action.payload;
-
-      const distance = getDistance(sourceIndex, destinationIndex);
-
-      const remainingDice = state.dice[player].filter((d) => d.remainingMoves > 0);
-      const usedDie =
-        remainingDice.find((d) => d.value === distance) ??
-        // When bearing off, the die used could exceed the distance
-        remainingDice.find((d) => d.value > distance);
-      if (usedDie) {
-        usedDie.remainingMoves -= 1;
+      if (!playerCanMove) {
+        dice[0].remainingMoves = 0;
+        dice[1].remainingMoves = 0;
+        state.dice[getOtherPlayer(player)] = [];
       }
 
-      if (isLastMove && !isWinningMove) {
+      state.dice[player] = dice;
+    })
+    .addCase(moveChecker, (state, action) => {
+      const { player, nextDice, playerCanMoveAgain } = action.payload;
+
+      state.dice[player] = nextDice;
+
+      if (!playerCanMoveAgain) {
         state.dice[getOtherPlayer(player)] = [];
       }
     })

@@ -2,7 +2,13 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { initialDiceWinner, moveChecker, rollDice, rollInitialDie } from './actions';
 import Player from '../models/Player';
-import { getOtherPlayer } from '../utils';
+import { getOtherPlayer, getRemainingMoves } from '../utils';
+
+const STATUSES = {
+  YOUR_TURN_TO_ROLL: 'Your turn to roll.',
+  YOUR_MOVE: 'Your move.',
+  YOU_CANNOT_MOVE: 'You cannot move.',
+};
 
 interface StatusesState {
   statuses: string[];
@@ -29,19 +35,36 @@ export const statusReducer = createReducer(defaultState, (builder) => {
       state.statuses[getOtherPlayer(winner)] = `${Player[winner]} wins the initial roll.`;
     })
     .addCase(moveChecker, (state, action) => {
-      const { player, isLastMove, isWinningMove } = action.payload;
+      const { player, nextBoard, nextDice, playerCanMoveAgain } = action.payload;
 
-      if (isWinningMove) {
-        state.statuses[player] = 'You win!';
-        state.statuses[getOtherPlayer(player)] = `${Player[player]} wins!`;
-      } else if (isLastMove) {
-        state.statuses[player] = '';
-        state.statuses[getOtherPlayer(player)] = 'Your turn to roll.';
+      const nextStatuses = state.statuses.slice();
+
+      if (!playerCanMoveAgain) {
+        if (nextBoard.pipCounts[player] === 0) {
+          nextStatuses[player] = 'You win!';
+          nextStatuses[getOtherPlayer(player)] = `${Player[player]} wins!`;
+        } else {
+          nextStatuses[player] = getRemainingMoves(nextDice) > 0 ? STATUSES.YOU_CANNOT_MOVE : '';
+          nextStatuses[getOtherPlayer(player)] = STATUSES.YOUR_TURN_TO_ROLL;
+        }
       }
+
+      // For undo/redo, always return a new state even if nothing changed
+      return { statuses: nextStatuses };
     })
     .addCase(rollDice, (state, action) => {
-      const { player } = action.payload;
+      const { player, playerCanMove } = action.payload;
 
-      state.statuses[player] = 'Your move.';
+      const nextStatuses = ['', ''];
+
+      if (playerCanMove) {
+        nextStatuses[player] = STATUSES.YOUR_MOVE;
+      } else {
+        nextStatuses[player] = STATUSES.YOU_CANNOT_MOVE;
+        nextStatuses[getOtherPlayer(player)] = STATUSES.YOUR_TURN_TO_ROLL;
+      }
+
+      // For undo/redo, always return a new state
+      return { statuses: nextStatuses };
     });
 });

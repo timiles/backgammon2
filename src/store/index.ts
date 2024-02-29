@@ -16,10 +16,10 @@ const getDiceGroupByKey = (player: Player) => `Dice roll for Player ${player}`;
 type DiceState = ReturnType<typeof diceReducer.getInitialState>;
 const getDiceGroupBy: GroupByFunction<DiceState, Action> = (action: Action) => {
   if (moveChecker.match(action)) {
-    const { player, isLastMove } = action.payload;
+    const { player, playerCanMoveAgain } = action.payload;
 
     // If this was the Player's last move, we're now waiting for the next Player to roll
-    if (isLastMove) {
+    if (!playerCanMoveAgain) {
       return getDiceGroupByKey(getOtherPlayer(player));
     }
   }

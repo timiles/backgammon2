@@ -1,6 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { BoardModel } from '../models/BoardModel';
 import { BoxModel } from '../models/BoxModel';
+import { DieModel } from '../models/DieModel';
 import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
 
@@ -20,12 +22,10 @@ export const keyPress = createAction<
 
 export const moveChecker = createAction<
   {
-    checkerId: string;
     player: Player;
-    sourceIndex: number;
-    destinationIndex: number;
-    isLastMove: boolean;
-    isWinningMove: boolean;
+    nextBoard: BoardModel;
+    nextDice: DieModel[];
+    playerCanMoveAgain: boolean;
   },
   'MOVE_CHECKER'
 >('MOVE_CHECKER');
@@ -52,7 +52,8 @@ export const resetInitialDice = createAction<void, 'RESET_INITIAL_DICE'>('RESET_
 export const rollDice = createAction<
   {
     player: Player;
-    dieValues: [DieValue, DieValue];
+    dice: [DieModel, DieModel];
+    playerCanMove: boolean;
   },
   'ROLL_DICE'
 >('ROLL_DICE');

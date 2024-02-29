@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { initialDiceWinner, moveChecker } from './actions';
+import { initialDiceWinner, moveChecker, rollDice } from './actions';
 import Player from '../models/Player';
 import { getOtherPlayer } from '../utils';
 
@@ -18,11 +18,21 @@ export const playerReducer = createReducer(defaultState, (builder) => {
       state.currentPlayer = winner;
     })
     .addCase(moveChecker, (state, action) => {
-      const { player, isLastMove, isWinningMove } = action.payload;
+      const { nextBoard, player, playerCanMoveAgain } = action.payload;
 
-      const currentPlayer = !isLastMove || isWinningMove ? player : getOtherPlayer(player);
+      const nextPlayer =
+        // Check if player can move again, or has won
+        playerCanMoveAgain || nextBoard.pipCounts[player] === 0 ? player : getOtherPlayer(player);
 
       // For undo/redo, we need to return a new state with each move even if Player didn't change
-      return { ...state, currentPlayer };
+      return { ...state, currentPlayer: nextPlayer };
+    })
+    .addCase(rollDice, (state, action) => {
+      const { player, playerCanMove } = action.payload;
+
+      const nextPlayer = playerCanMove ? player : getOtherPlayer(player);
+
+      // For undo/redo, we need to return a new state with each roll even if Player didn't change
+      return { ...state, currentPlayer: nextPlayer };
     });
 });

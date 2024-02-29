@@ -3,12 +3,19 @@ import { Animated, GestureResponderHandlers } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import colors from '../colors';
-import { OffPointIndex } from '../constants';
 import Player from '../models/Player';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
 import styles from '../styles';
-import { canMoveChecker, createGestureResponderHandlers, findDestinationIndex } from '../utils';
+import {
+  canMoveAnyChecker,
+  canMoveChecker,
+  createGestureResponderHandlers,
+  findDestinationIndex,
+  getDistance,
+  getNextBoard,
+  getNextDice,
+} from '../utils';
 
 interface IProps {
   checkerId: string;
@@ -44,16 +51,13 @@ export default function Checker(props: IProps) {
       const handleMoveStart = () => onMoving(true);
 
       const handleMoveSuccess = (destinationIndex: number) => {
-        dispatch(
-          moveChecker({
-            checkerId,
-            player,
-            sourceIndex: index,
-            destinationIndex,
-            isLastMove: dice[0].remainingMoves + dice[1].remainingMoves === 1,
-            isWinningMove: board.pipCounts[player] === index && destinationIndex === OffPointIndex,
-          }),
-        );
+        const distance = getDistance(index, destinationIndex);
+        const nextDice = getNextDice(dice, distance);
+        const nextBoard = getNextBoard(board, player, checkerId, index, destinationIndex);
+
+        const playerCanMoveAgain = canMoveAnyChecker(nextBoard, nextDice, player);
+
+        dispatch(moveChecker({ player, nextBoard, nextDice, playerCanMoveAgain }));
       };
 
       const handleMoveEnd = () => onMoving(false);

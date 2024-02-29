@@ -6,7 +6,7 @@ import Player from '../models/Player';
 import { RootState } from '../store';
 import { initialDiceWinner, resetInitialDice, rollDice, rollInitialDie } from '../store/actions';
 import styles from '../styles';
-import { getOtherPlayer, getRandomDieValue } from '../utils';
+import { canMoveAnyChecker, createDice, getOtherPlayer, getRandomDieValue } from '../utils';
 
 interface IProps {
   player: Player;
@@ -17,6 +17,7 @@ export default function Dice(props: IProps) {
 
   const { dice, isInitialRoll } = useSelector((state: RootState) => state.dice.present);
   const { currentPlayer } = useSelector((state: RootState) => state.player.present);
+  const { board } = useSelector((state: RootState) => state.board.present);
 
   const dispatch = useDispatch();
 
@@ -47,7 +48,9 @@ export default function Dice(props: IProps) {
         }, 1000);
       }
     } else {
-      dispatch(rollDice({ player, dieValues: [getRandomDieValue(), getRandomDieValue()] }));
+      const newDice = createDice([getRandomDieValue(), getRandomDieValue()]);
+      const playerCanMove = canMoveAnyChecker(board, newDice, player);
+      dispatch(rollDice({ player, dice: newDice, playerCanMove }));
     }
   };
 
