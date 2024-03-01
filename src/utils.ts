@@ -11,9 +11,8 @@ import { BAR_POINT_INDEX, OFF_POINT_INDEX } from './constants';
 import { BoardModel } from './models/BoardModel';
 import { BoxModel } from './models/BoxModel';
 import { DieModel } from './models/DieModel';
-import { DieValue } from './models/DieValue';
 import Player from './models/Player';
-import { BoxDimensions } from './types';
+import { BoxDimensions, DieValue } from './types';
 
 export function canMoveChecker(
   board: BoardModel,

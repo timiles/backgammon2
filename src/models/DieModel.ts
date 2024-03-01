@@ -1,4 +1,4 @@
-import { DieValue } from './DieValue';
+import { DieValue } from '../types';
 
 export interface DieModel {
   value: DieValue;

@@ -9,8 +9,8 @@ import {
   rollInitialDie,
 } from './actions';
 import { DieModel } from '../models/DieModel';
-import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
+import { DieValue } from '../types';
 import { getOtherPlayer } from '../utils';
 
 interface DiceState {

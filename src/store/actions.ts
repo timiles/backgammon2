@@ -3,8 +3,8 @@ import { createAction } from '@reduxjs/toolkit';
 import { BoardModel } from '../models/BoardModel';
 import { BoxModel } from '../models/BoxModel';
 import { DieModel } from '../models/DieModel';
-import { DieValue } from '../models/DieValue';
 import Player from '../models/Player';
+import { DieValue } from '../types';
 
 export const initialDiceWinner = createAction<
   {
