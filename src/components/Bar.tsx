@@ -2,10 +2,9 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import Checker from './Checker';
-import { BAR_POINT_INDEX } from '../constants';
+import { BAR_POINT_INDEX, Player } from '../constants';
 import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
 import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
-import Player from '../models/Player';
 import { RootState } from '../store';
 import styles from '../styles';
 import { getCheckerSize } from '../utils';

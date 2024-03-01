@@ -1,6 +1,6 @@
 import { GestureResponderEvent, Pressable, View } from 'react-native';
 
-import Player from '../models/Player';
+import { Player } from '../constants';
 import styles from '../styles';
 
 interface IProps {

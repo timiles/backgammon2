@@ -1,7 +1,7 @@
 import { Pressable, Text } from 'react-native';
 
+import { Player } from '../constants';
 import { DieModel } from '../models/DieModel';
-import Player from '../models/Player';
 import styles from '../styles';
 
 interface IProps {

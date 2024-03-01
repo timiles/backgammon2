@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
+import { Player } from '../constants';
 import { CheckerModel } from '../models/CheckerModel';
-import Player from '../models/Player';
 import styles from '../styles';
 import { BoxDimensions, Side } from '../types';
 

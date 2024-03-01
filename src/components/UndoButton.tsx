@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
 import IconButton from './IconButton';
+import { Player } from '../constants';
 import UndoIcon from '../icons/UndoIcon';
-import Player from '../models/Player';
 import { RootState } from '../store';
 import { getOtherPlayer } from '../utils';
 

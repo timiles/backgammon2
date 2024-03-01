@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Dice from './Dice';
 import RedoButton from './RedoButton';
 import UndoButton from './UndoButton';
-import Player from '../models/Player';
+import { Player } from '../constants';
 import styles from '../styles';
 import { Side } from '../types';
 

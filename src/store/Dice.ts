@@ -8,8 +8,8 @@ import {
   rollDice,
   rollInitialDie,
 } from './actions';
+import { Player } from '../constants';
 import { DieModel } from '../models/DieModel';
-import Player from '../models/Player';
 import { DieValue } from '../types';
 import { getOtherPlayer } from '../utils';
 

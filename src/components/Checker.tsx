@@ -3,7 +3,7 @@ import { Animated, GestureResponderHandlers } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import colors from '../colors';
-import Player from '../models/Player';
+import { Player } from '../constants';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
 import styles from '../styles';

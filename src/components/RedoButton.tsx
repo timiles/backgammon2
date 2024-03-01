@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
 import IconButton from './IconButton';
+import { Player } from '../constants';
 import RedoIcon from '../icons/RedoIcon';
-import Player from '../models/Player';
 import { RootState } from '../store';
 
 interface IProps {

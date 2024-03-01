@@ -3,8 +3,8 @@ import { View } from 'react-native';
 import Bar from './Bar';
 import OffBoard from './OffBoard';
 import Point from './Point';
+import { Player } from '../constants';
 import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
-import Player from '../models/Player';
 import styles from '../styles';
 import { Side } from '../types';
 

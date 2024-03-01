@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import Player from '../models/Player';
+import { Player } from '../constants';
 import { RootState } from '../store';
 import styles from '../styles';
 import { Side } from '../types';

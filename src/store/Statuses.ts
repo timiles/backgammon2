@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { initialDiceWinner, moveChecker, rollDice, rollInitialDie } from './actions';
-import Player from '../models/Player';
+import { Player } from '../constants';
 import { getOtherPlayer, getRemainingMoves } from '../utils';
 
 const STATUSES = {

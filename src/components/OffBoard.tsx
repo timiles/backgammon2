@@ -2,9 +2,8 @@ import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import OffBoardCheckers from './OffBoardCheckers';
-import { OFF_POINT_INDEX } from '../constants';
+import { OFF_POINT_INDEX, Player } from '../constants';
 import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
-import Player from '../models/Player';
 import { RootState } from '../store';
 import styles from '../styles';
 import { Side } from '../types';

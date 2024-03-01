@@ -1,8 +1,7 @@
-import { BAR_POINT_INDEX, OFF_POINT_INDEX } from './constants';
+import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from './constants';
 import { BoardModel } from './models/BoardModel';
 import { BoxModel } from './models/BoxModel';
 import { DieModel } from './models/DieModel';
-import Player from './models/Player';
 import {
   canMoveChecker,
   createInitialBoardLayout,

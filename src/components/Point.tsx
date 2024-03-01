@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import Checker from './Checker';
 import { PointLabel } from './PointLabel';
+import { Player } from '../constants';
 import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
 import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
-import Player from '../models/Player';
 import { RootState } from '../store';
 import styles from '../styles';
 import { Side } from '../types';

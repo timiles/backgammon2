@@ -1,9 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { Player } from '../constants';
 import { BoardModel } from '../models/BoardModel';
 import { BoxModel } from '../models/BoxModel';
 import { DieModel } from '../models/DieModel';
-import Player from '../models/Player';
 import { DieValue } from '../types';
 
 export const initialDiceWinner = createAction<

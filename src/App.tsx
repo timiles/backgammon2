@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import BoardHalf from './components/BoardHalf';
 import ControlsArea from './components/ControlsArea';
 import Status from './components/Status';
-import Player from './models/Player';
+import { Player } from './constants';
 import styles from './styles';
 
 export default function App() {
