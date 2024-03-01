@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { ActionCreators as UndoActionCreators } from 'redux-undo';
+import { ActionCreators } from 'redux-undo';
 
 import IconButton from './IconButton';
 import RedoIcon from '../icons/RedoIcon';
@@ -20,7 +20,7 @@ export default function RedoButton(props: IProps) {
 
   const dispatch = useDispatch();
 
-  const redo = () => dispatch(UndoActionCreators.redo());
+  const redo = () => dispatch(ActionCreators.redo());
 
   if (showRedo) {
     return (

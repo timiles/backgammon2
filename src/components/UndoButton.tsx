@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { ActionCreators as UndoActionCreators } from 'redux-undo';
+import { ActionCreators } from 'redux-undo';
 
 import IconButton from './IconButton';
 import UndoIcon from '../icons/UndoIcon';
@@ -14,25 +14,22 @@ interface IProps {
 export default function UndoButton(props: IProps) {
   const { player } = props;
 
-  // Show if Player has ever rolled dice that wasn't the initial roll
-  const showUndo = useSelector((state: RootState) =>
-    [...state.dice.past, state.dice.present].some(
-      (x) => !x.isInitialRoll && x.dice[player].length > 0,
-    ),
-  );
+  const { past, present, future } = useSelector((state: RootState) => state.dice);
+  const { currentPlayer } = useSelector((state: RootState) => state.player.present);
 
-  // Can undo if: either this Player has dice that have remaining moves,
-  // or the other Player hasn't yet rolled their own dice
-  const canUndo = useSelector(
-    (state: RootState) =>
-      showUndo &&
-      (state.dice.present.dice[player].some((x) => x.remainingMoves > 0) ||
-        state.dice.present.dice[getOtherPlayer(player)].length === 0),
-  );
+  const hasRolledDice = present.dice.map((d) => d.length === 2);
+  const playerHasMoved = past.length > 0;
+  const playerHasUndone = future.length > 0;
+
+  const showUndo =
+    (playerHasMoved || playerHasUndone) &&
+    (player === currentPlayer ? hasRolledDice[player] : !hasRolledDice[getOtherPlayer(player)]);
+
+  const canUndo = showUndo && playerHasMoved;
 
   const dispatch = useDispatch();
 
-  const undo = () => dispatch(UndoActionCreators.undo());
+  const undo = () => dispatch(ActionCreators.undo());
 
   if (showUndo) {
     return (

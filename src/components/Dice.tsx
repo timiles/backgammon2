@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { ActionCreators } from 'redux-undo';
 
 import Die from './Die';
 import Player from '../models/Player';
@@ -45,12 +46,14 @@ export default function Dice(props: IProps) {
                 winner: thisPlayersDieValue > otherPlayersDie.value ? player : otherPlayer,
               });
           dispatch(action);
+          dispatch(ActionCreators.clearHistory());
         }, 1000);
       }
     } else {
       const newDice = createDice([getRandomDieValue(), getRandomDieValue()]);
       const playerCanMove = canMoveAnyChecker(board, newDice, player);
       dispatch(rollDice({ player, dice: newDice, playerCanMove }));
+      dispatch(ActionCreators.clearHistory());
     }
   };
 
