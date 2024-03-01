@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import Checker from './Checker';
-import { BarPointIndex } from '../constants';
+import { BAR_POINT_INDEX } from '../constants';
 import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
 import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
 import Player from '../models/Player';
@@ -21,10 +21,10 @@ export default function Bar(props: IProps) {
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
 
-  const { ref, dimensions } = useCheckerContainerBox(BarPointIndex);
+  const { ref, dimensions } = useCheckerContainerBox(BAR_POINT_INDEX);
 
   const { checkers } = useSelector(
-    (state: RootState) => state.board.present.board.points[owner][BarPointIndex],
+    (state: RootState) => state.board.present.board.points[owner][BAR_POINT_INDEX],
   );
 
   const checkerSize = dimensions ? getCheckerSize(dimensions, checkers.length) : undefined;
@@ -41,7 +41,7 @@ export default function Bar(props: IProps) {
               key={id}
               checkerId={id}
               player={owner}
-              index={BarPointIndex}
+              index={BAR_POINT_INDEX}
               onMoving={handleCheckerMoving}
               size={checkerSize}
             />

@@ -7,7 +7,7 @@ import {
   PanResponderGestureState,
 } from 'react-native';
 
-import { BarPointIndex, OffPointIndex } from './constants';
+import { BAR_POINT_INDEX, OFF_POINT_INDEX } from './constants';
 import { BoardModel } from './models/BoardModel';
 import { BoxModel } from './models/BoxModel';
 import { DieModel } from './models/DieModel';
@@ -22,7 +22,10 @@ export function canMoveChecker(
   sourceIndex: number,
   destinationIndex?: number,
 ): boolean {
-  if (board.points[player][BarPointIndex].checkers.length > 0 && sourceIndex !== BarPointIndex) {
+  if (
+    board.points[player][BAR_POINT_INDEX].checkers.length > 0 &&
+    sourceIndex !== BAR_POINT_INDEX
+  ) {
     // Player has checkers on the bar, and this is not their bar
     return false;
   }
@@ -36,16 +39,16 @@ export function canMoveChecker(
     // Check at least one die yields a valid destination
     const possibleDestinationIndexes = dice
       .filter((d) => d.remainingMoves > 0)
-      .map(({ value }) => Math.max(sourceIndex - value, OffPointIndex));
+      .map(({ value }) => Math.max(sourceIndex - value, OFF_POINT_INDEX));
 
     return possibleDestinationIndexes.some((possibleDestinationIndex) =>
       canMoveChecker(board, dice, player, sourceIndex, possibleDestinationIndex),
     );
   }
 
-  if (destinationIndex === OffPointIndex) {
+  if (destinationIndex === OFF_POINT_INDEX) {
     // Check if this player has any checkers on bar or on points outside of their home board
-    if (board.points[player][BarPointIndex].checkers.length > 0) {
+    if (board.points[player][BAR_POINT_INDEX].checkers.length > 0) {
       return false;
     }
 
@@ -107,7 +110,7 @@ export function canMoveAnyChecker(board: BoardModel, dice: DieModel[], player: P
     return false;
   }
 
-  for (let index = 1; index <= BarPointIndex; index += 1) {
+  for (let index = 1; index <= BAR_POINT_INDEX; index += 1) {
     if (canMoveChecker(board, dice, player, index)) {
       return true;
     }
@@ -214,7 +217,7 @@ export function findDestinationIndex(
       box.top < locationY &&
       locationY < box.bottom,
   );
-  if (index < 0 || index === OffPointIndex) {
+  if (index < 0 || index === OFF_POINT_INDEX) {
     return index;
   }
   return player === Player.Red ? index : getOtherPlayersIndex(index);
@@ -242,7 +245,7 @@ export function getNextBoard(
     const { checkers: otherPlayersCheckers } = draftBoard.points[otherPlayer][otherIndex];
     if (otherPlayersCheckers.length === 1) {
       const [blot] = otherPlayersCheckers.splice(0, 1);
-      draftBoard.points[otherPlayer][BarPointIndex].checkers.push(blot);
+      draftBoard.points[otherPlayer][BAR_POINT_INDEX].checkers.push(blot);
 
       draftBoard.pipCounts[otherPlayer] = getPipCount(draftBoard, otherPlayer);
     }

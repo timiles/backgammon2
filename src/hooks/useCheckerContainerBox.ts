@@ -2,7 +2,7 @@ import { RefObject, useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { BarPointIndex } from '../constants';
+import { BAR_POINT_INDEX } from '../constants';
 import { BoxModel } from '../models/BoxModel';
 import { registerCheckerContainerBox } from '../store/actions';
 import { BoxDimensions } from '../types';
@@ -30,7 +30,7 @@ export default function useCheckerContainerBox(index: number): {
           left: pageX,
         };
 
-        if (index !== BarPointIndex) {
+        if (index !== BAR_POINT_INDEX) {
           dispatch(registerCheckerContainerBox({ index, box }));
         }
 

@@ -1,4 +1,4 @@
-import { BarPointIndex, OffPointIndex } from './constants';
+import { BAR_POINT_INDEX, OFF_POINT_INDEX } from './constants';
 import { BoardModel } from './models/BoardModel';
 import { BoxModel } from './models/BoxModel';
 import { DieModel } from './models/DieModel';
@@ -61,7 +61,7 @@ describe('utils', () => {
       });
 
       it('returns false when trying to bear off too early (explicit)', () => {
-        const canMove = canMoveChecker(board, dice, Player.Black, 6, OffPointIndex);
+        const canMove = canMoveChecker(board, dice, Player.Black, 6, OFF_POINT_INDEX);
         expect(canMove).toBe(false);
       });
 
@@ -73,28 +73,28 @@ describe('utils', () => {
 
     describe('when Red has checker on bar', () => {
       const board = createInitialBoardLayout();
-      moveCheckersFromIndexToIndex(board, Player.Red, 24, BarPointIndex, 1);
+      moveCheckersFromIndexToIndex(board, Player.Red, 24, BAR_POINT_INDEX, 1);
 
       const dice = createDice([6, 5]);
 
       it('returns true when moving checker from bar', () => {
-        const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex);
+        const canMove = canMoveChecker(board, dice, Player.Red, BAR_POINT_INDEX);
         expect(canMove).toBe(true);
       });
 
       it('returns true when moving checker from bar to empty point', () => {
-        const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex, 20);
+        const canMove = canMoveChecker(board, dice, Player.Red, BAR_POINT_INDEX, 20);
         expect(canMove).toBe(true);
       });
 
       it('returns false when moving checker from bar to point owned by opponent', () => {
-        const canMove = canMoveChecker(board, dice, Player.Red, BarPointIndex, 19);
+        const canMove = canMoveChecker(board, dice, Player.Red, BAR_POINT_INDEX, 19);
         expect(canMove).toBe(false);
       });
 
       it('returns false for checker from bar when no valid dice', () => {
         const doubleSix = createDice([6, 6]);
-        const canMove = canMoveChecker(board, doubleSix, Player.Red, BarPointIndex);
+        const canMove = canMoveChecker(board, doubleSix, Player.Red, BAR_POINT_INDEX);
         expect(canMove).toBe(false);
       });
 
@@ -110,18 +110,18 @@ describe('utils', () => {
       // Black still has 2 checkers on Red's 1-point.
       moveCheckersFromIndexToIndex(board, Player.Red, 6, 5);
       moveCheckersFromIndexToIndex(board, Player.Red, 24, 4);
-      moveCheckersFromIndexToIndex(board, Player.Red, 8, OffPointIndex);
-      moveCheckersFromIndexToIndex(board, Player.Red, 13, OffPointIndex);
+      moveCheckersFromIndexToIndex(board, Player.Red, 8, OFF_POINT_INDEX);
+      moveCheckersFromIndexToIndex(board, Player.Red, 13, OFF_POINT_INDEX);
 
       it('returns true when moving checker off with exact dice roll', () => {
         const dice = createDice([5, 3]);
-        const canMove = canMoveChecker(board, dice, Player.Red, 5, OffPointIndex);
+        const canMove = canMoveChecker(board, dice, Player.Red, 5, OFF_POINT_INDEX);
         expect(canMove).toBe(true);
       });
 
       it('returns true when moving checker off with higher dice roll', () => {
         const dice = createDice([6, 3]);
-        const canMove = canMoveChecker(board, dice, Player.Red, 5, OffPointIndex);
+        const canMove = canMoveChecker(board, dice, Player.Red, 5, OFF_POINT_INDEX);
         expect(canMove).toBe(true);
       });
 
@@ -133,13 +133,13 @@ describe('utils', () => {
 
       it('returns false when higher dice roll can be used better', () => {
         const dice = createDice([6, 3]);
-        const canMove = canMoveChecker(board, dice, Player.Red, 4, OffPointIndex);
+        const canMove = canMoveChecker(board, dice, Player.Red, 4, OFF_POINT_INDEX);
         expect(canMove).toBe(false);
       });
 
       it('returns false when trying to move more than the available dice roll', () => {
         const dice = createDice([2, 1]);
-        const canMove = canMoveChecker(board, dice, Player.Red, 4, OffPointIndex);
+        const canMove = canMoveChecker(board, dice, Player.Red, 4, OFF_POINT_INDEX);
         expect(canMove).toBe(false);
       });
     });
@@ -211,7 +211,7 @@ describe('utils', () => {
 
   describe('getDistance', () => {
     it('handles player from bar', () => {
-      const distance = getDistance(BarPointIndex, 20);
+      const distance = getDistance(BAR_POINT_INDEX, 20);
       expect(distance).toBe(5);
     });
 
@@ -221,7 +221,7 @@ describe('utils', () => {
     });
 
     it('handles player bearing off', () => {
-      const distance = getDistance(1, OffPointIndex);
+      const distance = getDistance(1, OFF_POINT_INDEX);
       expect(distance).toBe(1);
     });
   });

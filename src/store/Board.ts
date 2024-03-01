@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { moveChecker, registerCheckerContainerBox } from './actions';
-import { OffPointIndex } from '../constants';
+import { OFF_POINT_INDEX } from '../constants';
 import { BoardModel } from '../models/BoardModel';
 import { createInitialBoardLayout } from '../utils';
 
@@ -17,7 +17,7 @@ export const boardReducer = createReducer(defaultState, (builder) => {
       const { index, box } = action.payload;
 
       const currentBox = state.board.boxes[index];
-      if (index === OffPointIndex && currentBox !== undefined) {
+      if (index === OFF_POINT_INDEX && currentBox !== undefined) {
         // Expand existing box to cover both areas
         currentBox.top = Math.min(currentBox.top, box.top);
         currentBox.left = Math.min(currentBox.left, box.left);
