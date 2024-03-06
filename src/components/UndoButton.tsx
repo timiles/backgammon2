@@ -25,21 +25,22 @@ export default function UndoButton(props: IProps) {
     (playerHasMoved || playerHasUndone) &&
     (player === currentPlayer ? hasRolledDice[player] : !hasRolledDice[getOtherPlayer(player)]);
 
-  const canUndo = showUndo && playerHasMoved;
-
   const dispatch = useDispatch();
+
+  if (!showUndo) {
+    return null;
+  }
+
+  const canUndo = showUndo && playerHasMoved;
 
   const undo = () => dispatch(ActionCreators.undo());
 
-  if (showUndo) {
-    return (
-      <IconButton
-        player={player}
-        onPress={undo}
-        disabled={!canUndo}
-        icon={<UndoIcon width={20} fill="white" />}
-      />
-    );
-  }
-  return null;
+  return (
+    <IconButton
+      player={player}
+      onPress={undo}
+      disabled={!canUndo}
+      icon={<UndoIcon width={20} fill="white" />}
+    />
+  );
 }

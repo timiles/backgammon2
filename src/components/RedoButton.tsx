@@ -20,12 +20,11 @@ export default function RedoButton(props: IProps) {
 
   const dispatch = useDispatch();
 
+  if (!showRedo) {
+    return null;
+  }
+
   const redo = () => dispatch(ActionCreators.redo());
 
-  if (showRedo) {
-    return (
-      <IconButton player={player} onPress={redo} icon={<RedoIcon width={20} fill="white" />} />
-    );
-  }
-  return null;
+  return <IconButton player={player} onPress={redo} icon={<RedoIcon width={20} fill="white" />} />;
 }
