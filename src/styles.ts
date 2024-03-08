@@ -11,6 +11,10 @@ export default StyleSheet.create({
     backgroundColor: 'lightblue',
   } as ViewStyle,
 
+  portraitWarning: {
+    textAlign: 'center',
+  },
+
   redPlayer: {
     color: colors.redPlayer,
   } as ViewStyle,

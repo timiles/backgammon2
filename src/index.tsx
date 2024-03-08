@@ -1,10 +1,14 @@
 import registerRootComponent from 'expo/build/launch/registerRootComponent';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Provider } from 'react-redux';
 
 import App from './App';
+import PortraitWarning from './components/PortraitWarning';
+import useScreenSize from './hooks/useScreenSize';
 import { store } from './store';
 import { keyPress } from './store/actions';
+
+const GOLDEN_RATIO = 1.618;
 
 function Root() {
   if (Platform.OS === 'web') {
@@ -13,21 +17,16 @@ function Root() {
     });
   }
 
+  const { width, height, isPortrait, isSmall } = useScreenSize();
+
   return (
     <Provider store={store}>
-      <View style={styles.mobileSize}>
+      {isPortrait && isSmall && <PortraitWarning />}
+      <View style={{ flex: 1, maxHeight: Math.min(height, width / GOLDEN_RATIO) }}>
         <App />
       </View>
     </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  mobileSize: {
-    flex: 1,
-    maxHeight: 411,
-    maxWidth: 731,
-  },
-});
 
 export default registerRootComponent(Root);

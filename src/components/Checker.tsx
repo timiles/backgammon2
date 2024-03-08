@@ -29,6 +29,7 @@ export default function Checker(props: IProps) {
   const { checkerId, player, index, onMoving, size } = props;
 
   const board = useSelector((state: RootState) => state.board.present.board);
+  const boxes = useSelector((state: RootState) => state.layout.boxes);
   const dice = useSelector((state: RootState) => state.dice.present.dice[player]);
   const currentPlayer = useSelector((state: RootState) => state.player.present.currentPlayer);
 
@@ -42,8 +43,7 @@ export default function Checker(props: IProps) {
     let handlers: GestureResponderHandlers | null = null;
 
     if (player === currentPlayer && canMoveChecker(board, dice, player, index)) {
-      const findDestinationId = (x: number, y: number) =>
-        findDestinationIndex(player, board.boxes, x, y);
+      const findDestinationId = (x: number, y: number) => findDestinationIndex(player, boxes, x, y);
 
       const canMoveToDestination = (destinationIndex: number) =>
         destinationIndex >= 0 && canMoveChecker(board, dice, player, index, destinationIndex);
@@ -73,7 +73,7 @@ export default function Checker(props: IProps) {
     }
 
     setGestureResponderHandlers(handlers);
-  }, [currentPlayer, board, dice]);
+  }, [currentPlayer, board, boxes, dice]);
 
   const color = player === Player.Red ? colors.redPlayer : colors.blackPlayer;
   const checkerLocationStyle = { transform: checkerLocation.getTranslateTransform() };

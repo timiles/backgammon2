@@ -23,7 +23,7 @@ export default function Point(props: IProps) {
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
 
-  const { ref, dimensions } = useCheckerContainerBox(redIndex);
+  const { ref, handleLayout, dimensions } = useCheckerContainerBox(redIndex);
 
   const { points } = useSelector((state: RootState) => state.board.present.board);
 
@@ -44,7 +44,11 @@ export default function Point(props: IProps) {
   return (
     <View style={[styles.boardSection, colorStyle, containerStyle, movingCheckerSourceStyle]}>
       <PointLabel redIndex={redIndex} side={side} />
-      <View ref={ref} style={[styles.checkerContainer, containerStyle, movingCheckerSourceStyle]}>
+      <View
+        ref={ref}
+        onLayout={handleLayout}
+        style={[styles.checkerContainer, containerStyle, movingCheckerSourceStyle]}
+      >
         {checkerSize !== undefined &&
           checkers.map(({ id }) => (
             <Checker

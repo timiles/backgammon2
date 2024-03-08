@@ -3,6 +3,7 @@ import undoable, { includeAction } from 'redux-undo';
 
 import { boardReducer } from './Board';
 import { diceReducer } from './Dice';
+import { layoutReducer } from './Layout';
 import { playerReducer } from './Player';
 import { statusReducer } from './Statuses';
 import { initialDiceWinner, moveChecker, rollDice } from './actions';
@@ -13,6 +14,7 @@ export const store = configureStore({
   reducer: {
     board: undoable(boardReducer, { filter: undoableFilter }),
     dice: undoable(diceReducer, { filter: undoableFilter }),
+    layout: layoutReducer,
     player: undoable(playerReducer, { filter: undoableFilter }),
     statuses: undoable(statusReducer, { filter: undoableFilter }),
   },

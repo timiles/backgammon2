@@ -20,7 +20,7 @@ export default function Bar(props: IProps) {
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
 
-  const { ref, dimensions } = useCheckerContainerBox(BAR_POINT_INDEX);
+  const { ref, handleLayout, dimensions } = useCheckerContainerBox(BAR_POINT_INDEX);
 
   const { checkers } = useSelector(
     (state: RootState) => state.board.present.board.points[owner][BAR_POINT_INDEX],
@@ -32,6 +32,7 @@ export default function Bar(props: IProps) {
     <View style={[styles.boardSection, styles.barColor, movingCheckerSourceStyle]}>
       <View
         ref={ref}
+        onLayout={handleLayout}
         style={[styles.checkerContainer, styles.barCheckerContainer, movingCheckerSourceStyle]}
       >
         {checkerSize !== undefined &&

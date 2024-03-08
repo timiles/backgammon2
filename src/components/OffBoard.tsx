@@ -22,7 +22,7 @@ export default function OffBoard(props: IProps) {
 
   const pipCount = useSelector((state: RootState) => state.board.present.board.pipCounts[owner]);
 
-  const { ref, dimensions } = useCheckerContainerBox(OFF_POINT_INDEX);
+  const { ref, handleLayout, dimensions } = useCheckerContainerBox(OFF_POINT_INDEX);
 
   const containerStyle = side === 'top' ? styles.topContainer : styles.bottomContainer;
   const labelStyle = [
@@ -33,7 +33,7 @@ export default function OffBoard(props: IProps) {
   return (
     <View style={[styles.boardSection, styles.offBoard, containerStyle]}>
       <Text style={[styles.pipCountLabel, labelStyle]}>{pipCount}</Text>
-      <View ref={ref} style={[styles.checkerContainer, containerStyle]}>
+      <View ref={ref} onLayout={handleLayout} style={[styles.checkerContainer, containerStyle]}>
         {dimensions && (
           <OffBoardCheckers
             owner={owner}

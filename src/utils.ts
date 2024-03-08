@@ -186,7 +186,6 @@ export function createInitialBoardLayout(): BoardModel {
   }
 
   const initialBoardLayout: BoardModel = {
-    boxes: [],
     points: [repeat(() => ({ checkers: [] }), 26), repeat(() => ({ checkers: [] }), 26)],
     pipCounts: [0, 0],
   };
@@ -222,7 +221,10 @@ export function findDestinationIndex(
 }
 
 export function getCheckerSize(boxDimensions: BoxDimensions, numberOfCheckers: number): number {
-  return Math.min(boxDimensions.width - 10, (boxDimensions.height - 10) / numberOfCheckers);
+  return Math.min(
+    boxDimensions.width - 10,
+    (boxDimensions.height - 10) / Math.max(5, numberOfCheckers),
+  );
 }
 
 export function getDistance(sourceIndex: number, destinationIndex: number) {
