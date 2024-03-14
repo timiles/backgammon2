@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 
 import { Player } from '../constants';
-import { CheckerModel } from '../models/CheckerModel';
-import styles from '../styles';
+import { CheckerModel } from '../models';
+import { styles } from '../styles';
 import { BoxDimensions, Side } from '../types';
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
   checkers: CheckerModel[];
 }
 
-export default function OffBoardCheckers(props: IProps) {
+export function OffBoardCheckers(props: IProps) {
   const { owner, side, checkers, containerDimensions } = props;
 
   const color = owner === Player.Red ? styles.redChecker : styles.blackChecker;

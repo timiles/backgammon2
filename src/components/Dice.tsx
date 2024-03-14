@@ -2,18 +2,18 @@ import { View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
-import Die from './Die';
+import { Die } from './Die';
 import { Player } from '../constants';
 import { RootState } from '../store';
 import { initialDiceWinner, resetInitialDice, rollDice, rollInitialDie } from '../store/actions';
-import styles from '../styles';
+import { styles } from '../styles';
 import { canMoveAnyChecker, createDice, getOtherPlayer, getRandomDieValue } from '../utils';
 
 interface IProps {
   player: Player;
 }
 
-export default function Dice(props: IProps) {
+export function Dice(props: IProps) {
   const { player } = props;
 
   const { dice, isInitialRoll } = useSelector((state: RootState) => state.dice.present);

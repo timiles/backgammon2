@@ -2,7 +2,7 @@ import { useWindowDimensions } from 'react-native';
 
 const MIN_WIDTH = 500;
 
-export default function useScreenSize() {
+export function useScreenSize() {
   const { width, height } = useWindowDimensions();
 
   const isPortrait = width < height;

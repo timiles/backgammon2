@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { registerCheckerContainerBox } from './actions';
 import { OFF_POINT_INDEX } from '../constants';
-import { BoxModel } from '../models/BoxModel';
+import { BoxModel } from '../models';
 
 interface LayoutState {
   /**

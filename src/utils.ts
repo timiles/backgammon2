@@ -8,9 +8,7 @@ import {
 } from 'react-native';
 
 import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from './constants';
-import { BoardModel } from './models/BoardModel';
-import { BoxModel } from './models/BoxModel';
-import { DieModel } from './models/DieModel';
+import { BoardModel, BoxModel, DieModel } from './models';
 import { BoxDimensions, DieValue } from './types';
 
 export function canMoveChecker(

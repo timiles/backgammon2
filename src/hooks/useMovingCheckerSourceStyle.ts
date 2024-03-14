@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
-import styles from '../styles';
+import { styles } from '../styles';
 
 /**
  * This hook provides a style to fix the z-index of the source of any moving checkers
  */
-export default function useMovingCheckerSourceStyle(
-  onCheckerMoving?: (isMoving: boolean) => void,
-): {
+export function useMovingCheckerSourceStyle(onCheckerMoving?: (isMoving: boolean) => void): {
   handleCheckerMoving: (isMoving: boolean) => void;
   movingCheckerSourceStyle: StyleProp<ViewStyle>;
 } {

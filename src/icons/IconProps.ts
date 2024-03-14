@@ -1,4 +1,4 @@
-export default interface IconProps {
+export interface IconProps {
   width: number;
   fill: string;
 }

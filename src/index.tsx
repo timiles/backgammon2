@@ -2,9 +2,9 @@ import registerRootComponent from 'expo/build/launch/registerRootComponent';
 import { Platform, View } from 'react-native';
 import { Provider } from 'react-redux';
 
-import App from './App';
-import PortraitWarning from './components/PortraitWarning';
-import useScreenSize from './hooks/useScreenSize';
+import { App } from './App';
+import { PortraitWarning } from './components';
+import { useScreenSize } from './hooks';
 import { store } from './store';
 import { keyPress } from './store/actions';
 

@@ -2,9 +2,9 @@ import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { Player } from '../constants';
-import useScreenSize from '../hooks/useScreenSize';
+import { useScreenSize } from '../hooks';
 import { RootState } from '../store';
-import styles from '../styles';
+import { styles } from '../styles';
 import { Side } from '../types';
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
   side: Side;
 }
 
-export default function Status(props: IProps) {
+export function Status(props: IProps) {
   const { player, side } = props;
 
   const { isSmall } = useScreenSize();

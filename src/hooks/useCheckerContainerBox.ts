@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { BAR_POINT_INDEX } from '../constants';
-import { BoxModel } from '../models/BoxModel';
+import { BoxModel } from '../models';
 import { registerCheckerContainerBox } from '../store/actions';
 import { BoxDimensions } from '../types';
 
@@ -12,7 +12,7 @@ import { BoxDimensions } from '../types';
  * The measurements are updated whenever changes to the DOM, orientation or window size
  * cause the referenced element to move or be resized.
  */
-export default function useCheckerContainerBox(index: number): {
+export function useCheckerContainerBox(index: number): {
   ref: RefObject<View>;
   handleLayout: () => void;
   dimensions: BoxDimensions | undefined;

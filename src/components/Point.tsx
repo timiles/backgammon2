@@ -1,14 +1,12 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import Checker from './Checker';
+import { Checker } from './Checker';
 import { PointLabel } from './PointLabel';
 import { Player } from '../constants';
-import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
-import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
-import useScreenSize from '../hooks/useScreenSize';
+import { useCheckerContainerBox, useMovingCheckerSourceStyle, useScreenSize } from '../hooks';
 import { RootState } from '../store';
-import styles from '../styles';
+import { styles } from '../styles';
 import { Side } from '../types';
 import { getCheckerSize, getOtherPlayersIndex } from '../utils';
 
@@ -18,7 +16,7 @@ interface IProps {
   onCheckerMoving: (isMoving: boolean) => void;
 }
 
-export default function Point(props: IProps) {
+export function Point(props: IProps) {
   const { redIndex, side, onCheckerMoving } = props;
 
   const { isSmall } = useScreenSize();

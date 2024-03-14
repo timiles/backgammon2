@@ -1,10 +1,10 @@
 import { View } from 'react-native';
 
-import Dice from './Dice';
-import RedoButton from './RedoButton';
-import UndoButton from './UndoButton';
+import { Dice } from './Dice';
+import { RedoButton } from './RedoButton';
+import { UndoButton } from './UndoButton';
 import { Player } from '../constants';
-import styles from '../styles';
+import { styles } from '../styles';
 import { Side } from '../types';
 
 interface IProps {
@@ -12,7 +12,7 @@ interface IProps {
   side: Side;
 }
 
-export default function ControlsArea(props: IProps) {
+export function ControlsArea(props: IProps) {
   const { player, side } = props;
   return (
     <View style={[styles.controlsArea, side === 'top' ? styles.upsideDown : null]}>

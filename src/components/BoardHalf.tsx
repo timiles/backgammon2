@@ -1,18 +1,18 @@
 import { View } from 'react-native';
 
-import Bar from './Bar';
-import OffBoard from './OffBoard';
-import Point from './Point';
+import { Bar } from './Bar';
+import { OffBoard } from './OffBoard';
+import { Point } from './Point';
 import { Player } from '../constants';
-import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
-import styles from '../styles';
+import { useMovingCheckerSourceStyle } from '../hooks';
+import { styles } from '../styles';
 import { Side } from '../types';
 
 interface IProps {
   side: Side;
 }
 
-export default function BoardHalf(props: IProps) {
+export function BoardHalf(props: IProps) {
   const { side } = props;
 
   const { handleCheckerMoving, movingCheckerSourceStyle } = useMovingCheckerSourceStyle();

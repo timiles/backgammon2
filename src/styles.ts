@@ -1,8 +1,8 @@
 import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
-import colors from './colors';
+import { colors } from './colors';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   app: {
     flex: 1,
     borderColor: 'gray',
@@ -231,3 +231,5 @@ export default StyleSheet.create({
     opacity: 0.2,
   } as ViewStyle,
 });
+
+export { styles };

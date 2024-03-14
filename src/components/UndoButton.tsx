@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
-import IconButton from './IconButton';
+import { IconButton } from './IconButton';
 import { Player } from '../constants';
-import UndoIcon from '../icons/UndoIcon';
+import { UndoIcon } from '../icons';
 import { RootState } from '../store';
 import { getOtherPlayer } from '../utils';
 
@@ -11,7 +11,7 @@ interface IProps {
   player: Player;
 }
 
-export default function UndoButton(props: IProps) {
+export function UndoButton(props: IProps) {
   const { player } = props;
 
   const { past, present, future } = useSelector((state: RootState) => state.dice);

@@ -1,12 +1,11 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import Checker from './Checker';
+import { Checker } from './Checker';
 import { BAR_POINT_INDEX, Player } from '../constants';
-import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
-import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
+import { useCheckerContainerBox, useMovingCheckerSourceStyle } from '../hooks';
 import { RootState } from '../store';
-import styles from '../styles';
+import { styles } from '../styles';
 import { getCheckerSize } from '../utils';
 
 interface IProps {
@@ -14,7 +13,7 @@ interface IProps {
   onCheckerMoving: (isMoving: boolean) => void;
 }
 
-export default function Bar(props: IProps) {
+export function Bar(props: IProps) {
   const { owner, onCheckerMoving } = props;
 
   const { handleCheckerMoving, movingCheckerSourceStyle } =

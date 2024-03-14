@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, GestureResponderHandlers } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import colors from '../colors';
+import { colors } from '../colors';
 import { Player } from '../constants';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
-import styles from '../styles';
+import { styles } from '../styles';
 import {
   canMoveAnyChecker,
   canMoveChecker,
@@ -25,7 +25,7 @@ interface IProps {
   size: number;
 }
 
-export default function Checker(props: IProps) {
+export function Checker(props: IProps) {
   const { checkerId, player, index, onMoving, size } = props;
 
   const board = useSelector((state: RootState) => state.board.present.board);

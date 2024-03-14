@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
-import IconButton from './IconButton';
+import { IconButton } from './IconButton';
 import { Player } from '../constants';
-import RedoIcon from '../icons/RedoIcon';
+import { RedoIcon } from '../icons';
 import { RootState } from '../store';
 
 interface IProps {
   player: Player;
 }
 
-export default function RedoButton(props: IProps) {
+export function RedoButton(props: IProps) {
   const { player } = props;
 
   const showRedo = useSelector(

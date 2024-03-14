@@ -1,11 +1,11 @@
 import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import OffBoardCheckers from './OffBoardCheckers';
+import { OffBoardCheckers } from './OffBoardCheckers';
 import { OFF_POINT_INDEX, Player } from '../constants';
-import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
+import { useCheckerContainerBox } from '../hooks';
 import { RootState } from '../store';
-import styles from '../styles';
+import { styles } from '../styles';
 import { Side } from '../types';
 
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
   side: Side;
 }
 
-export default function OffBoard(props: IProps) {
+export function OffBoard(props: IProps) {
   const { owner, side } = props;
 
   const { checkers } = useSelector(

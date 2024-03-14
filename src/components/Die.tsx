@@ -1,8 +1,8 @@
 import { Pressable, Text, View } from 'react-native';
 
 import { Player } from '../constants';
-import { DieModel } from '../models/DieModel';
-import styles from '../styles';
+import { DieModel } from '../models';
+import { styles } from '../styles';
 
 interface IProps {
   player: Player;
@@ -11,7 +11,7 @@ interface IProps {
   disabled?: boolean;
 }
 
-export default function Die(props: IProps) {
+export function Die(props: IProps) {
   const { player, die: dieModel, onPress, disabled } = props;
   const { value, remainingMoves } = dieModel || { value: '?', remainingMoves: 1 };
 

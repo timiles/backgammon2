@@ -9,7 +9,7 @@ import {
   rollInitialDie,
 } from './actions';
 import { Player } from '../constants';
-import { DieModel } from '../models/DieModel';
+import { DieModel } from '../models';
 import { DieValue } from '../types';
 import { getOtherPlayer } from '../utils';
 
