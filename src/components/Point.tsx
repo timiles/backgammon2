@@ -6,6 +6,7 @@ import { PointLabel } from './PointLabel';
 import { Player } from '../constants';
 import useCheckerContainerBox from '../hooks/useCheckerContainerBox';
 import useMovingCheckerSourceStyle from '../hooks/useMovingCheckerSourceStyle';
+import useScreenSize from '../hooks/useScreenSize';
 import { RootState } from '../store';
 import styles from '../styles';
 import { Side } from '../types';
@@ -19,6 +20,8 @@ interface IProps {
 
 export default function Point(props: IProps) {
   const { redIndex, side, onCheckerMoving } = props;
+
+  const { isSmall } = useScreenSize();
 
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
@@ -43,7 +46,7 @@ export default function Point(props: IProps) {
 
   return (
     <View style={[styles.boardSection, colorStyle, containerStyle, movingCheckerSourceStyle]}>
-      <PointLabel redIndex={redIndex} side={side} />
+      {!isSmall && <PointLabel redIndex={redIndex} side={side} />}
       <View
         ref={ref}
         onLayout={handleLayout}
