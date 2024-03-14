@@ -175,15 +175,10 @@ export default StyleSheet.create({
 
   die: {
     borderRadius: 5,
-    color: 'white',
     margin: 5,
     width: 30,
     height: 30,
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    userSelect: 'none',
-  } as TextStyle,
+  } as ViewStyle,
 
   redDie: {
     backgroundColor: colors.redPlayer,
@@ -199,13 +194,21 @@ export default StyleSheet.create({
     shadowRadius: 10,
   } as ViewStyle,
 
-  doubleDieText: {
-    fontSize: 10,
-  } as TextStyle,
-
   disabledDie: {
     opacity: 0.2,
   } as ViewStyle,
+
+  dieText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    userSelect: 'none',
+  } as TextStyle,
+
+  doubleDieText: {
+    fontSize: 10,
+  } as TextStyle,
 
   iconButton: {
     borderRadius: 20,
