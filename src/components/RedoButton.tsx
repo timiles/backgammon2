@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
@@ -18,12 +19,11 @@ export function RedoButton(props: IProps) {
   );
 
   const dispatch = useDispatch();
+  const redo = useCallback(() => dispatch(ActionCreators.redo()), []);
 
   if (!showRedo) {
     return null;
   }
-
-  const redo = () => dispatch(ActionCreators.redo());
 
   return <IconButton player={player} iconType="Redo" onPress={redo} />;
 }

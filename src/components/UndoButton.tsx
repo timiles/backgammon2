@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
@@ -25,14 +26,13 @@ export function UndoButton(props: IProps) {
     (player === currentPlayer ? hasRolledDice[player] : !hasRolledDice[getOtherPlayer(player)]);
 
   const dispatch = useDispatch();
+  const undo = useCallback(() => dispatch(ActionCreators.undo()), []);
 
   if (!showUndo) {
     return null;
   }
 
   const canUndo = showUndo && playerHasMoved;
-
-  const undo = () => dispatch(ActionCreators.undo());
 
   return <IconButton player={player} iconType="Undo" onPress={undo} disabled={!canUndo} />;
 }

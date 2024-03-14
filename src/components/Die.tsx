@@ -1,19 +1,20 @@
+import { memo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { Player } from '../constants';
-import { DieModel } from '../models';
 import { styles } from '../styles';
+import { DieValue } from '../types';
 
 interface IProps {
   player: Player;
-  die?: DieModel;
+  value: DieValue | undefined;
+  remainingMoves: number | undefined;
   onPress?: () => void;
   disabled?: boolean;
 }
 
-export function Die(props: IProps) {
-  const { player, die: dieModel, onPress, disabled } = props;
-  const { value, remainingMoves } = dieModel || { value: '?', remainingMoves: 1 };
+export const Die = memo(function (props: IProps) {
+  const { player, value = '?', remainingMoves = 1, onPress, disabled } = props;
 
   const colorStyle = player === Player.Red ? styles.redDie : styles.blackDie;
   const disabledStyle = remainingMoves === 0 || disabled ? styles.disabledDie : null;
@@ -29,4 +30,4 @@ export function Die(props: IProps) {
     </View>
   );
   return onPress && !disabled ? <Pressable onPress={onPress}>{die}</Pressable> : die;
-}
+});

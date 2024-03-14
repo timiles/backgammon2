@@ -63,13 +63,15 @@ export function Dice(props: IProps) {
     <View style={styles.diceContainer}>
       <Die
         player={player}
-        die={die2}
+        value={die2?.value}
+        remainingMoves={die2?.remainingMoves}
         onPress={die2 == null ? handlePress : undefined}
         disabled={isInitialRoll || player !== currentPlayer}
       />
       <Die
         player={player}
-        die={die1}
+        value={die1?.value}
+        remainingMoves={die1?.remainingMoves}
         onPress={die1 == null ? handlePress : undefined}
         disabled={!isInitialRoll && player !== currentPlayer}
       />

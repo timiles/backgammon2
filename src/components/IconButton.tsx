@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { GestureResponderEvent, Pressable, View } from 'react-native';
 
 import { Player } from '../constants';
@@ -11,7 +12,7 @@ interface IProps {
   disabled?: boolean;
 }
 
-export function IconButton(props: IProps) {
+export const IconButton = memo(function (props: IProps) {
   const { player, iconType, onPress, disabled } = props;
 
   const disabledStyle = disabled ? styles.disabledButton : null;
@@ -26,4 +27,4 @@ export function IconButton(props: IProps) {
       </View>
     </Pressable>
   );
-}
+});

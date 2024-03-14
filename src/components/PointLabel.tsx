@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { View, Text } from 'react-native';
 
 import { styles } from '../styles';
@@ -9,7 +10,7 @@ interface IProps {
   side: Side;
 }
 
-export function PointLabel(props: IProps) {
+export const PointLabel = memo(function (props: IProps) {
   const { redIndex, side } = props;
 
   const containerStyle =
@@ -23,4 +24,4 @@ export function PointLabel(props: IProps) {
       </Text>
     </View>
   );
-}
+});
