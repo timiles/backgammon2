@@ -161,6 +161,10 @@ export default StyleSheet.create({
     userSelect: 'none',
   } as TextStyle,
 
+  smallStatusText: {
+    fontSize: 15,
+  } as TextStyle,
+
   playerText: {
     fontWeight: 'bold',
   } as TextStyle,
