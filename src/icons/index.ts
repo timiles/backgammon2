@@ -1,2 +1,2 @@
-export { RedoIcon } from './RedoIcon';
-export { UndoIcon } from './UndoIcon';
+export { Icon } from './Icon';
+export { IconType } from './types';

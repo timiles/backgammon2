@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { colors } from '../colors';
 import { Player } from '../constants';
+import { Icon } from '../icons';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
 import { styles } from '../styles';
@@ -81,9 +82,7 @@ export function Checker(props: IProps) {
 
   return (
     <Animated.View style={checkerStyle} {...gestureResponderHandlers}>
-      <svg viewBox="0 0 100 100" width={size} xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="48" fill={color} />
-      </svg>
+      <Icon type="Checker" width={size} fill={color} />
     </Animated.View>
   );
 }

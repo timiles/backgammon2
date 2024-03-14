@@ -3,7 +3,6 @@ import { ActionCreators } from 'redux-undo';
 
 import { IconButton } from './IconButton';
 import { Player } from '../constants';
-import { RedoIcon } from '../icons';
 import { RootState } from '../store';
 
 interface IProps {
@@ -26,5 +25,5 @@ export function RedoButton(props: IProps) {
 
   const redo = () => dispatch(ActionCreators.redo());
 
-  return <IconButton player={player} onPress={redo} icon={<RedoIcon width={20} fill="white" />} />;
+  return <IconButton player={player} iconType="Redo" onPress={redo} />;
 }

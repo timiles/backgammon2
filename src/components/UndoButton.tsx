@@ -3,7 +3,6 @@ import { ActionCreators } from 'redux-undo';
 
 import { IconButton } from './IconButton';
 import { Player } from '../constants';
-import { UndoIcon } from '../icons';
 import { RootState } from '../store';
 import { getOtherPlayer } from '../utils';
 
@@ -35,12 +34,5 @@ export function UndoButton(props: IProps) {
 
   const undo = () => dispatch(ActionCreators.undo());
 
-  return (
-    <IconButton
-      player={player}
-      onPress={undo}
-      disabled={!canUndo}
-      icon={<UndoIcon width={20} fill="white" />}
-    />
-  );
+  return <IconButton player={player} iconType="Undo" onPress={undo} disabled={!canUndo} />;
 }
