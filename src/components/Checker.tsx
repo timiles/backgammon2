@@ -54,7 +54,7 @@ export function Checker(props: IProps) {
       const handleMoveSuccess = (destinationIndex: number) => {
         const distance = getDistance(index, destinationIndex);
         const nextDice = getNextDice(dice, distance);
-        const nextBoard = getNextBoard(board, player, checkerId, index, destinationIndex);
+        const nextBoard = getNextBoard(board, player, index, destinationIndex, checkerId);
 
         const playerCanMoveAgain = canMoveAnyChecker(nextBoard, nextDice, player);
 

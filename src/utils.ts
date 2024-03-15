@@ -232,9 +232,9 @@ export function getDistance(sourceIndex: number, destinationIndex: number) {
 export function getNextBoard(
   board: BoardModel,
   player: Player,
-  checkerId: string,
   sourceIndex: number,
   destinationIndex: number,
+  checkerId?: string,
 ): BoardModel {
   return produce(board, (draftBoard) => {
     // If we've hit other player's blot, put it on the bar
@@ -250,7 +250,8 @@ export function getNextBoard(
 
     // Move checker
     const { checkers: sourcePointCheckers } = draftBoard.points[player][sourceIndex];
-    const checkerIndex = sourcePointCheckers.findIndex(({ id }) => id === checkerId);
+    const checkerIndex =
+      checkerId !== undefined ? sourcePointCheckers.findIndex(({ id }) => id === checkerId) : 0;
     const [checker] = sourcePointCheckers.splice(checkerIndex, 1);
     draftBoard.points[player][destinationIndex].checkers.push(checker);
 
