@@ -2,7 +2,8 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { initialDiceWinner, moveChecker, rollDice, rollInitialDie } from './actions';
 import { Player } from '../constants';
-import { getOtherPlayer, getRemainingMoves } from '../utils';
+import { getRemainingMoves } from '../utils/diceUtils';
+import { getOtherPlayer } from '../utils/playerUtils';
 
 const STATUSES = {
   YOUR_TURN_TO_ROLL: 'Your turn to roll.',

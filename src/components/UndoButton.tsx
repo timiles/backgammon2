@@ -5,7 +5,7 @@ import { ActionCreators } from 'redux-undo';
 import { IconButton } from './IconButton';
 import { Player } from '../constants';
 import { RootState } from '../store';
-import { getOtherPlayer } from '../utils';
+import { getOtherPlayer } from '../utils/playerUtils';
 
 interface IProps {
   player: Player;

@@ -11,7 +11,7 @@ import {
 import { Player } from '../constants';
 import { DieModel } from '../models';
 import { DieValue } from '../types';
-import { getOtherPlayer } from '../utils';
+import { getOtherPlayer } from '../utils/playerUtils';
 
 interface DiceState {
   dice: DieModel[][];

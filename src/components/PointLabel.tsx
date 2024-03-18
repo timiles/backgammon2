@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 
 import { styles } from '../styles';
 import { Side } from '../types';
-import { getOtherPlayersIndex } from '../utils';
+import { getOtherPlayersIndex } from '../utils/playerUtils';
 
 interface IProps {
   redIndex: number;

@@ -6,7 +6,7 @@ import { BAR_POINT_INDEX, Player } from '../constants';
 import { useCheckerContainerBox, useMovingCheckerSourceStyle } from '../hooks';
 import { RootState } from '../store';
 import { styles } from '../styles';
-import { getCheckerSize } from '../utils';
+import { getCheckerSize } from '../utils/uiUtils';
 
 interface IProps {
   owner: Player;

@@ -7,7 +7,9 @@ import { Player } from '../constants';
 import { RootState } from '../store';
 import { initialDiceWinner, resetInitialDice, rollDice, rollInitialDie } from '../store/actions';
 import { styles } from '../styles';
-import { canMoveAnyChecker, createDice, getOtherPlayer, getRandomDieValue } from '../utils';
+import { canMoveAnyChecker } from '../utils/boardUtils';
+import { createDice, getRandomDieValue } from '../utils/diceUtils';
+import { getOtherPlayer } from '../utils/playerUtils';
 
 interface IProps {
   player: Player;

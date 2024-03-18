@@ -8,15 +8,9 @@ import { Icon } from '../icons';
 import { RootState } from '../store';
 import { moveChecker } from '../store/actions';
 import { styles } from '../styles';
-import {
-  canMoveAnyChecker,
-  canMoveChecker,
-  createGestureResponderHandlers,
-  findDestinationIndex,
-  getDistance,
-  getNextBoard,
-  getNextDice,
-} from '../utils';
+import { canMoveAnyChecker, canMoveChecker, getDistance, getNextBoard } from '../utils/boardUtils';
+import { getNextDice } from '../utils/diceUtils';
+import { createGestureResponderHandlers, findDestinationIndex } from '../utils/uiUtils';
 
 interface IProps {
   checkerId: string;

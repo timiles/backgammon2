@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { initialDiceWinner, moveChecker, rollDice } from './actions';
 import { Player } from '../constants';
-import { getOtherPlayer } from '../utils';
+import { getOtherPlayer } from '../utils/playerUtils';
 
 interface PlayerState {
   currentPlayer?: Player;

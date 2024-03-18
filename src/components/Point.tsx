@@ -8,7 +8,8 @@ import { useCheckerContainerBox, useMovingCheckerSourceStyle, useScreenSize } fr
 import { RootState } from '../store';
 import { styles } from '../styles';
 import { Side } from '../types';
-import { getCheckerSize, getOtherPlayersIndex } from '../utils';
+import { getOtherPlayersIndex } from '../utils/playerUtils';
+import { getCheckerSize } from '../utils/uiUtils';
 
 interface IProps {
   redIndex: number;

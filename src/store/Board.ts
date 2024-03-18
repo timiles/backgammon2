@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { moveChecker } from './actions';
 import { BoardModel } from '../models';
-import { createInitialBoardLayout } from '../utils';
+import { createInitialBoardLayout } from '../utils/boardUtils';
 
 interface BoardState {
   board: BoardModel;

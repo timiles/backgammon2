@@ -1,15 +1,9 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { produce } from 'immer';
-import {
-  Animated,
-  GestureResponderHandlers,
-  PanResponder,
-  PanResponderGestureState,
-} from 'react-native';
 
-import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from './constants';
-import { BoardModel, BoxModel, DieModel } from './models';
-import { BoxDimensions, DieValue } from './types';
+import { getOtherPlayer, getOtherPlayersIndex } from './playerUtils';
+import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
+import { BoardModel, DieModel } from '../models';
 
 export function canMoveChecker(
   board: BoardModel,
@@ -114,63 +108,6 @@ export function canMoveAnyChecker(board: BoardModel, dice: DieModel[], player: P
   return false;
 }
 
-export function createDice([dieValue1, dieValue2]: [DieValue, DieValue]): [DieModel, DieModel] {
-  // If the values are the same, player gets double moves
-  const remainingMoves = dieValue1 === dieValue2 ? 2 : 1;
-
-  return [
-    { value: dieValue1, remainingMoves },
-    { value: dieValue2, remainingMoves },
-  ];
-}
-
-export function createGestureResponderHandlers<T>(
-  getLocationId: (x: number, y: number) => T,
-  canMoveToLocationId: (locationId: T) => boolean,
-  currentLocation: Animated.ValueXY,
-  onMoveStart: () => void,
-  onMoveSuccess: (locationId: T) => void,
-  onMoveEnd: () => void,
-): GestureResponderHandlers {
-  const useNativeDriver = false;
-
-  const returnToOriginalLocation = () => {
-    // Otherwise animate back to starting position, then end
-    const config: Animated.SpringAnimationConfig = {
-      toValue: { x: 0, y: 0 },
-      friction: 5,
-      useNativeDriver,
-    };
-    Animated.spring(currentLocation, config).start(() => {
-      onMoveEnd();
-    });
-  };
-
-  return PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderStart: () => {
-      onMoveStart();
-    },
-    onPanResponderMove: Animated.event([null, { dx: currentLocation.x, dy: currentLocation.y }], {
-      useNativeDriver,
-    }),
-    onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
-      const { moveX, moveY } = gestureState;
-      const locationId = getLocationId(moveX, moveY);
-      if (canMoveToLocationId(locationId)) {
-        // If we can move, report success and end
-        onMoveSuccess(locationId);
-        onMoveEnd();
-      } else {
-        returnToOriginalLocation();
-      }
-    },
-    onPanResponderTerminate: () => {
-      returnToOriginalLocation();
-    },
-  }).panHandlers;
-}
-
 export function createInitialBoardLayout(): BoardModel {
   function repeat<T>(itemCreator: () => T, times: number): T[] {
     return new Array(times).fill(0).map(() => itemCreator());
@@ -196,33 +133,6 @@ export function createInitialBoardLayout(): BoardModel {
   ];
 
   return initialBoardLayout;
-}
-
-export function findDestinationIndex(
-  player: Player,
-  boxes: (BoxModel | undefined)[],
-  locationX: number,
-  locationY: number,
-): number {
-  const index = boxes.findIndex(
-    (box) =>
-      box !== undefined &&
-      box.left < locationX &&
-      locationX < box.right &&
-      box.top < locationY &&
-      locationY < box.bottom,
-  );
-  if (index < 0 || index === OFF_POINT_INDEX) {
-    return index;
-  }
-  return player === Player.Red ? index : getOtherPlayersIndex(index);
-}
-
-export function getCheckerSize(boxDimensions: BoxDimensions, numberOfCheckers: number): number {
-  return Math.min(
-    boxDimensions.width - 10,
-    (boxDimensions.height - 10) / Math.max(5, numberOfCheckers),
-  );
 }
 
 export function getDistance(sourceIndex: number, destinationIndex: number) {
@@ -259,36 +169,8 @@ export function getNextBoard(
   });
 }
 
-export function getNextDice(dice: DieModel[], distanceMoved: number): DieModel[] {
-  return produce(dice, (draftDice) => {
-    const usedDie =
-      draftDice.find((d) => d.remainingMoves > 0 && d.value === distanceMoved) ??
-      // When bearing off, the die used could exceed the distance
-      draftDice.find((d) => d.remainingMoves > 0 && d.value > distanceMoved);
-    if (usedDie) {
-      usedDie.remainingMoves -= 1;
-    }
-  });
-}
-
-export function getOtherPlayer(player: Player): Player {
-  return ((player + 1) % 2) as Player;
-}
-
-export function getOtherPlayersIndex(index: number): number {
-  return 25 - index;
-}
-
 export function getPipCount(board: BoardModel, player: Player): number {
   return board.points[player]
     .map((point, index) => point.checkers.length * index)
     .reduce((a, b) => a + b, 0);
-}
-
-export function getRandomDieValue(): DieValue {
-  return Math.ceil(Math.random() * 6) as DieValue;
-}
-
-export function getRemainingMoves(dice: DieModel[]): number {
-  return dice.map((d) => d.remainingMoves).reduce((a, b) => a + b, 0);
 }

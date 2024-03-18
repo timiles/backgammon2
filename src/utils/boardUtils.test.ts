@@ -1,16 +1,7 @@
-import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from './constants';
-import { BoardModel, BoxModel, DieModel } from './models';
-import {
-  canMoveChecker,
-  createInitialBoardLayout,
-  findDestinationIndex,
-  createDice,
-  getDistance,
-  getNextDice,
-  getOtherPlayer,
-  getRandomDieValue,
-  getPipCount,
-} from './utils';
+import { canMoveChecker, createInitialBoardLayout, getDistance, getPipCount } from './boardUtils';
+import { createDice } from './diceUtils';
+import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
+import { BoardModel } from '../models';
 
 function moveCheckersFromIndexToIndex(
   board: BoardModel,
@@ -26,7 +17,7 @@ function moveCheckersFromIndexToIndex(
   destination.checkers.push(...checkers);
 }
 
-describe('utils', () => {
+describe('boardUtils', () => {
   describe('canMoveChecker', () => {
     describe('from initial board', () => {
       const board = createInitialBoardLayout();
@@ -142,70 +133,6 @@ describe('utils', () => {
     });
   });
 
-  describe('createDice', () => {
-    it('creates dice as expected', () => {
-      const dice = createDice([6, 5]);
-      expect(dice.length).toBe(2);
-
-      const [die1, die2] = dice;
-
-      expect(die1.value).toBe(6);
-      expect(die1.remainingMoves).toBe(1);
-
-      expect(die2.value).toBe(5);
-      expect(die2.remainingMoves).toBe(1);
-    });
-
-    it('handles doubles', () => {
-      const dice = createDice([6, 6]);
-      expect(dice.length).toBe(2);
-
-      const [die1, die2] = dice;
-
-      expect(die1.value).toBe(6);
-      expect(die1.remainingMoves).toBe(2);
-
-      expect(die2.value).toBe(6);
-      expect(die2.remainingMoves).toBe(2);
-    });
-  });
-
-  describe('findDestinationIndex', () => {
-    const boxes: (BoxModel | undefined)[] = [
-      undefined,
-      { left: 0, right: 10, top: 0, bottom: 10 },
-      { left: 10, right: 20, top: 0, bottom: 10 },
-      { left: 0, right: 10, top: 10, bottom: 20 },
-      { left: 10, right: 20, top: 10, bottom: 20 },
-      // ...
-    ];
-
-    it('returns index of box that contains location', () => {
-      const index = findDestinationIndex(Player.Red, boxes, 15, 5);
-      expect(index).toBe(2);
-    });
-
-    it(`returns other player's index of box that contains location`, () => {
-      const index = findDestinationIndex(Player.Black, boxes, 15, 5);
-      expect(index).toBe(23);
-    });
-
-    it('returns -1 when location is on edge', () => {
-      const index = findDestinationIndex(Player.Red, boxes, 0, 10);
-      expect(index).toBe(-1);
-    });
-
-    it('returns -1 when location is out of bounds (Red)', () => {
-      const index = findDestinationIndex(Player.Red, boxes, 30, 30);
-      expect(index).toBe(-1);
-    });
-
-    it('returns -1 when location is out of bounds (Black)', () => {
-      const index = findDestinationIndex(Player.Black, boxes, 30, 30);
-      expect(index).toBe(-1);
-    });
-  });
-
   describe('getDistance', () => {
     it('handles player from bar', () => {
       const distance = getDistance(BAR_POINT_INDEX, 20);
@@ -220,62 +147,6 @@ describe('utils', () => {
     it('handles player bearing off', () => {
       const distance = getDistance(1, OFF_POINT_INDEX);
       expect(distance).toBe(1);
-    });
-  });
-
-  describe('getNextDice', () => {
-    it('reduces die matching distance moved', () => {
-      const dice = createDice([3, 4]);
-      const nextDice = getNextDice(dice, 3);
-
-      const expectedNextDice: DieModel[] = [
-        { value: 3, remainingMoves: 0 },
-        { value: 4, remainingMoves: 1 },
-      ];
-      expect(nextDice).toStrictEqual(expectedNextDice);
-    });
-
-    it('reduces die exceeding distance when neither die matches', () => {
-      const dice = createDice([2, 4]);
-      const nextDice = getNextDice(dice, 3);
-
-      const expectedNextDice: DieModel[] = [
-        { value: 2, remainingMoves: 1 },
-        { value: 4, remainingMoves: 0 },
-      ];
-      expect(nextDice).toStrictEqual(expectedNextDice);
-    });
-
-    it('ignores die with no remaining moves', () => {
-      const dice = createDice([3, 3]);
-      dice[0].remainingMoves = 0;
-
-      const nextDice = getNextDice(dice, 3);
-
-      const expectedNextDice: DieModel[] = [
-        { value: 3, remainingMoves: 0 },
-        { value: 3, remainingMoves: 1 },
-      ];
-      expect(nextDice).toStrictEqual(expectedNextDice);
-    });
-
-    it('does not mutate original dice', () => {
-      const dice = createDice([3, 4]);
-      getNextDice(dice, 3);
-
-      expect(dice).toStrictEqual(createDice([3, 4]));
-    });
-  });
-
-  describe('getOtherPlayer', () => {
-    it('returns Black when passed Red', () => {
-      const otherPlayer = getOtherPlayer(Player.Red);
-      expect(otherPlayer).toBe(Player.Black);
-    });
-
-    it('returns Red when passed Black', () => {
-      const otherPlayer = getOtherPlayer(Player.Black);
-      expect(otherPlayer).toBe(Player.Red);
     });
   });
 
@@ -295,14 +166,6 @@ describe('utils', () => {
       expect(redPipCount).toBe(163);
       const blackPipCount = getPipCount(board, Player.Black);
       expect(blackPipCount).toBe(167);
-    });
-  });
-
-  describe('getRandomDieValue', () => {
-    it('returns value in correct range', () => {
-      const value = getRandomDieValue();
-      expect(value).toBeGreaterThanOrEqual(1);
-      expect(value).toBeLessThanOrEqual(6);
     });
   });
 });
