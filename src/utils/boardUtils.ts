@@ -1,9 +1,12 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
+import { distinct } from './arrayUtils';
+import { getNextDice } from './diceUtils';
 import { getOtherPlayer, getOtherPlayersIndex } from './playerUtils';
 import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
 import { BoardModel, DieModel } from '../models';
+import { DieValue, Go, Move } from '../types';
 
 export function canMoveChecker(
   board: BoardModel,
@@ -133,6 +136,66 @@ export function createInitialBoardLayout(): BoardModel {
   ];
 
   return initialBoardLayout;
+}
+
+function* iteratePossibleMoves(
+  board: BoardModel,
+  dice: DieModel[],
+  player: Player,
+  startFromSourceIndex: number = BAR_POINT_INDEX,
+): Generator<Move[], void> {
+  for (let sourceIndex = startFromSourceIndex; sourceIndex > 0; sourceIndex -= 1) {
+    const remainingDieValues = dice
+      .filter((d) => d.remainingMoves > 0)
+      .map((d) => d.value)
+      .filter(distinct);
+    for (const dieValue of remainingDieValues) {
+      const destinationIndex = getDestinationIndex(sourceIndex, dieValue);
+
+      if (canMoveChecker(board, dice, player, sourceIndex, destinationIndex)) {
+        const distanceMoved = sourceIndex - destinationIndex;
+        const nextDice = getNextDice(dice, distanceMoved);
+
+        const move: Move = { sourceIndex, destinationIndex };
+
+        if (nextDice.every((d) => d.remainingMoves === 0)) {
+          // No dice left, we're done
+          yield [move];
+        } else {
+          const nextBoard = getNextBoard(board, player, sourceIndex, destinationIndex);
+
+          const iterator = iteratePossibleMoves(nextBoard, nextDice, player, sourceIndex);
+
+          let restOfMoves = iterator.next();
+          if (restOfMoves.done) {
+            // No more possible moves, we're done
+            yield [move];
+          } else {
+            while (!restOfMoves.done) {
+              // Concatenate rest of moves to this move
+              yield [move, ...restOfMoves.value];
+              restOfMoves = iterator.next();
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+export function getAllPossibleGoes(board: BoardModel, dice: DieModel[], player: Player) {
+  const goes: Go[] = [];
+  const iterator = iteratePossibleMoves(board, dice, player);
+  for (const moves of iterator) {
+    goes.push({ moves });
+  }
+
+  const maxNumberOfMoves = Math.max(...goes.map(({ moves }) => moves.length));
+  return goes.filter(({ moves }) => moves.length === maxNumberOfMoves);
+}
+
+function getDestinationIndex(sourceIndex: number, dieValue: DieValue): number {
+  return Math.max(sourceIndex - dieValue, OFF_POINT_INDEX);
 }
 
 export function getDistance(sourceIndex: number, destinationIndex: number) {

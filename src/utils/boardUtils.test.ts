@@ -1,7 +1,14 @@
-import { canMoveChecker, createInitialBoardLayout, getDistance, getPipCount } from './boardUtils';
+import {
+  canMoveChecker,
+  createInitialBoardLayout,
+  getAllPossibleGoes,
+  getDistance,
+  getPipCount,
+} from './boardUtils';
 import { createDice } from './diceUtils';
 import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
 import { BoardModel } from '../models';
+import { Go } from '../types';
 
 function moveCheckersFromIndexToIndex(
   board: BoardModel,
@@ -129,6 +136,271 @@ describe('boardUtils', () => {
         const dice = createDice([2, 1]);
         const canMove = canMoveChecker(board, dice, Player.Red, 4, OFF_POINT_INDEX);
         expect(canMove).toBe(false);
+      });
+    });
+  });
+
+  describe('getAllPossibleGoes', () => {
+    describe('from initial board', () => {
+      const board = createInitialBoardLayout();
+
+      it('returns all possible goes with 6 and 5', () => {
+        const dice = createDice([6, 5]);
+
+        const possibleGoes = getAllPossibleGoes(board, dice, Player.Red);
+
+        const expectedPossibleGoes: Go[] = [
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 18, destinationIndex: 13 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 13, destinationIndex: 8 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 8, destinationIndex: 3 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 8 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 3 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 7, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 8 },
+              { sourceIndex: 13, destinationIndex: 7 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 8 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 3 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 8, destinationIndex: 3 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+        ];
+
+        expect(possibleGoes).toStrictEqual(expectedPossibleGoes);
+      });
+
+      it('returns all possible moves with double 6', () => {
+        const dice = createDice([6, 6]);
+
+        const possibleGoes = getAllPossibleGoes(board, dice, Player.Red);
+
+        const expectedPossibleGoes: Go[] = [
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 24, destinationIndex: 18 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 13, destinationIndex: 7 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+        ];
+
+        expect(possibleGoes).toStrictEqual(expectedPossibleGoes);
+      });
+    });
+
+    describe('when Red has checker on bar', () => {
+      const board = createInitialBoardLayout();
+      moveCheckersFromIndexToIndex(board, Player.Red, 24, BAR_POINT_INDEX, 1);
+
+      it('returns all possible moves with 6 and 5', () => {
+        const dice = createDice([6, 5]);
+
+        const possibleGoes = getAllPossibleGoes(board, dice, Player.Red);
+
+        const expectedPossibleGoes: Go[] = [
+          {
+            moves: [
+              { sourceIndex: 25, destinationIndex: 20 },
+              { sourceIndex: 24, destinationIndex: 18 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 25, destinationIndex: 20 },
+              { sourceIndex: 20, destinationIndex: 14 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 25, destinationIndex: 20 },
+              { sourceIndex: 13, destinationIndex: 7 },
+            ],
+          },
+          {
+            moves: [
+              { sourceIndex: 25, destinationIndex: 20 },
+              { sourceIndex: 8, destinationIndex: 2 },
+            ],
+          },
+        ];
+
+        expect(possibleGoes).toStrictEqual(expectedPossibleGoes);
+      });
+
+      it('returns no possible moves with double 6', () => {
+        const dice = createDice([6, 6]);
+
+        const possibleGoes = getAllPossibleGoes(board, dice, Player.Red);
+
+        const expectedPossibleGoes: Go[] = [];
+
+        expect(possibleGoes).toStrictEqual(expectedPossibleGoes);
+      });
+    });
+
+    describe('when black has a prime', () => {
+      const board = createInitialBoardLayout();
+      // This creates a black prime across points 5 to 9 (ie red's points 16 to 20)
+      moveCheckersFromIndexToIndex(board, Player.Black, 24, 5);
+      moveCheckersFromIndexToIndex(board, Player.Black, 13, 7, 2);
+      moveCheckersFromIndexToIndex(board, Player.Black, 13, 9, 3);
+      // This leaves red checkers only at points 24 and 22
+      moveCheckersFromIndexToIndex(board, Player.Red, 13, 22);
+      moveCheckersFromIndexToIndex(board, Player.Red, 8, OFF_POINT_INDEX);
+      moveCheckersFromIndexToIndex(board, Player.Red, 6, OFF_POINT_INDEX);
+
+      it('when there is only one way to use both dice, returns only that go', () => {
+        const dice = createDice([6, 1]);
+
+        const possibleGoes = getAllPossibleGoes(board, dice, Player.Red);
+
+        const expectedPossibleGoes: Go[] = [
+          {
+            moves: [
+              { sourceIndex: 22, destinationIndex: 21 },
+              { sourceIndex: 21, destinationIndex: 15 },
+            ],
+          },
+        ];
+
+        expect(possibleGoes).toStrictEqual(expectedPossibleGoes);
+      });
+
+      it('when only one die can be used, returns only that move', () => {
+        const dice = createDice([4, 3]);
+
+        const possibleGoes = getAllPossibleGoes(board, dice, Player.Red);
+
+        const expectedPossibleGoes: Go[] = [{ moves: [{ sourceIndex: 24, destinationIndex: 21 }] }];
+
+        expect(possibleGoes).toStrictEqual(expectedPossibleGoes);
       });
     });
   });
