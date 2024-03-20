@@ -138,6 +138,32 @@ describe('boardUtils', () => {
         expect(canMove).toBe(false);
       });
     });
+
+    describe('when there is only one way to use both dice', () => {
+      const board = createInitialBoardLayout();
+      // This creates a black prime across points 5 to 9 (ie red's points 16 to 20)
+      moveCheckersFromIndexToIndex(board, Player.Black, 24, 5);
+      moveCheckersFromIndexToIndex(board, Player.Black, 13, 7, 2);
+      moveCheckersFromIndexToIndex(board, Player.Black, 13, 9, 3);
+      // This leaves red checkers only at points 24 and 22
+      moveCheckersFromIndexToIndex(board, Player.Red, 13, 22);
+      moveCheckersFromIndexToIndex(board, Player.Red, 8, OFF_POINT_INDEX);
+      moveCheckersFromIndexToIndex(board, Player.Red, 6, OFF_POINT_INDEX);
+
+      const dice = createDice([6, 1]);
+
+      it('does not allow moving from 24-point', () => {
+        // Red could use the 1 to move from 24 to 23, but then would not be able to use the 6
+        const canMove = canMoveChecker(board, dice, Player.Red, 24);
+        expect(canMove).toBe(false);
+      });
+
+      it('does allow moving from 22-point', () => {
+        // So Red must move from 22 to 21, then from 21 to 15
+        const canMove = canMoveChecker(board, dice, Player.Red, 22);
+        expect(canMove).toBe(true);
+      });
+    });
   });
 
   describe('getAllPossibleGoes', () => {

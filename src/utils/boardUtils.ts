@@ -8,12 +8,12 @@ import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
 import { BoardModel, DieModel } from '../models';
 import { DieValue, Go, Move } from '../types';
 
-export function canMoveChecker(
+function isMovePossible(
   board: BoardModel,
   dice: DieModel[],
   player: Player,
   sourceIndex: number,
-  destinationIndex?: number,
+  destinationIndex: number,
 ): boolean {
   if (
     board.points[player][BAR_POINT_INDEX].checkers.length > 0 &&
@@ -26,17 +26,6 @@ export function canMoveChecker(
   if (board.points[player][sourceIndex].checkers.length === 0) {
     // Player doesn't have checkers on requested source
     return false;
-  }
-
-  if (destinationIndex === undefined) {
-    // Check at least one die yields a valid destination
-    const possibleDestinationIndexes = dice
-      .filter((d) => d.remainingMoves > 0)
-      .map(({ value }) => Math.max(sourceIndex - value, OFF_POINT_INDEX));
-
-    return possibleDestinationIndexes.some((possibleDestinationIndex) =>
-      canMoveChecker(board, dice, player, sourceIndex, possibleDestinationIndex),
-    );
   }
 
   if (destinationIndex === OFF_POINT_INDEX) {
@@ -98,6 +87,65 @@ export function canMoveChecker(
   return true;
 }
 
+/**
+ * This function checks that the move is both possible and legal, ie uses both dice if possible
+ */
+export function canMoveChecker(
+  board: BoardModel,
+  dice: DieModel[],
+  player: Player,
+  sourceIndex: number,
+  destinationIndex?: number,
+): boolean {
+  const remainingDieValues = dice
+    .filter((d) => d.remainingMoves > 0)
+    .map((d) => d.value)
+    .filter(distinct);
+
+  if (remainingDieValues.length === 0) {
+    // No dice remaining
+    return false;
+  }
+
+  if (remainingDieValues.length === 1) {
+    // Only one distinct die value remaining, note this also handles doubles
+    const dest = destinationIndex ?? getDestinationIndex(sourceIndex, remainingDieValues[0]);
+    return isMovePossible(board, dice, player, sourceIndex, dest);
+  }
+
+  if (destinationIndex === undefined) {
+    // Check if any remaining dice value yields success
+    return remainingDieValues.some((dieValue) =>
+      canMoveChecker(board, dice, player, sourceIndex, getDestinationIndex(sourceIndex, dieValue)),
+    );
+  }
+
+  // Destination index is now known
+  if (!isMovePossible(board, dice, player, sourceIndex, destinationIndex)) {
+    return false;
+  }
+
+  // Move is possible - so let's check if other die will then be able to be used
+  const nextBoard = getNextBoard(board, player, sourceIndex, destinationIndex);
+  const nextDice = getNextDice(dice, getDistance(sourceIndex, destinationIndex));
+  if (canMoveAnyChecker(nextBoard, nextDice, player)) {
+    // Can use both dice from here, so this move is legal
+    return true;
+  }
+
+  // Other die cannot be used, so now we get all possible moves and see if any use both dice
+  for (const possibleMoves of iteratePossibleMoves(board, dice, player)) {
+    // Note that the doubles case has already been handled, so we only expect 1 or 2 possible moves
+    if (possibleMoves.length === 2) {
+      // Possible to use both dice, so this move is not legal
+      return false;
+    }
+  }
+
+  // Not possible to use both dice, so this move is legal
+  return true;
+}
+
 export function canMoveAnyChecker(board: BoardModel, dice: DieModel[], player: Player): boolean {
   if (dice.every((d) => d.remainingMoves === 0)) {
     return false;
@@ -152,7 +200,7 @@ function* iteratePossibleMoves(
     for (const dieValue of remainingDieValues) {
       const destinationIndex = getDestinationIndex(sourceIndex, dieValue);
 
-      if (canMoveChecker(board, dice, player, sourceIndex, destinationIndex)) {
+      if (isMovePossible(board, dice, player, sourceIndex, destinationIndex)) {
         const distanceMoved = sourceIndex - destinationIndex;
         const nextDice = getNextDice(dice, distanceMoved);
 
