@@ -40,7 +40,7 @@ export function Bar(props: IProps) {
               key={id}
               checkerId={id}
               player={owner}
-              index={BAR_POINT_INDEX}
+              pointIndex={BAR_POINT_INDEX}
               onMoving={handleCheckerMoving}
               size={checkerSize}
             />

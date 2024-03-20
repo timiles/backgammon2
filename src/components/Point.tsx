@@ -57,7 +57,7 @@ export function Point(props: IProps) {
               key={id}
               checkerId={id}
               player={player}
-              index={index}
+              pointIndex={index}
               onMoving={handleCheckerMoving}
               size={checkerSize}
             />

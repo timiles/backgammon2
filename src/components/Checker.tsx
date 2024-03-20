@@ -15,13 +15,13 @@ import { createGestureResponderHandlers, findDestinationIndex } from '../utils/u
 interface IProps {
   checkerId: string;
   player: Player;
-  index: number;
+  pointIndex: number;
   onMoving: (isMoving: boolean) => void;
   size: number;
 }
 
 export function Checker(props: IProps) {
-  const { checkerId, player, index, onMoving, size } = props;
+  const { checkerId, player, pointIndex, onMoving, size } = props;
 
   const board = useSelector((state: RootState) => state.board.present.board);
   const boxes = useSelector((state: RootState) => state.layout.boxes);
@@ -37,18 +37,18 @@ export function Checker(props: IProps) {
   useEffect(() => {
     let handlers: GestureResponderHandlers | null = null;
 
-    if (player === currentPlayer && canMoveChecker(board, dice, player, index)) {
+    if (player === currentPlayer && canMoveChecker(board, dice, player, pointIndex)) {
       const findDestinationId = (x: number, y: number) => findDestinationIndex(player, boxes, x, y);
 
       const canMoveToDestination = (destinationIndex: number) =>
-        destinationIndex >= 0 && canMoveChecker(board, dice, player, index, destinationIndex);
+        destinationIndex >= 0 && canMoveChecker(board, dice, player, pointIndex, destinationIndex);
 
       const handleMoveStart = () => onMoving(true);
 
       const handleMoveSuccess = (destinationIndex: number) => {
-        const distance = getDistance(index, destinationIndex);
+        const distance = getDistance(pointIndex, destinationIndex);
         const nextDice = getNextDice(dice, distance);
-        const nextBoard = getNextBoard(board, player, index, destinationIndex, checkerId);
+        const nextBoard = getNextBoard(board, player, pointIndex, destinationIndex, checkerId);
 
         const playerCanMoveAgain = canMoveAnyChecker(nextBoard, nextDice, player);
 
