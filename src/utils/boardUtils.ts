@@ -1,7 +1,7 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { produce } from 'immer';
 
-import { distinct } from './arrayUtils';
+import { distinct, repeat } from './arrayUtils';
 import { getNextDice } from './diceUtils';
 import { getOtherPlayer, getOtherPlayersIndex } from './playerUtils';
 import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
@@ -160,10 +160,6 @@ export function canMoveAnyChecker(board: BoardModel, dice: DieModel[], player: P
 }
 
 export function createInitialBoardLayout(): BoardModel {
-  function repeat<T>(itemCreator: () => T, times: number): T[] {
-    return new Array(times).fill(0).map(() => itemCreator());
-  }
-
   function createCheckers(board: BoardModel, player: Player) {
     board.points[player][6].checkers.push(...repeat(() => ({ id: nanoid() }), 5));
     board.points[player][8].checkers.push(...repeat(() => ({ id: nanoid() }), 3));
