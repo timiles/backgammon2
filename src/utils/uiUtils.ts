@@ -10,12 +10,12 @@ import { OFF_POINT_INDEX, Player } from '../constants';
 import { BoxModel } from '../models';
 import { BoxDimensions } from '../types';
 
-export function createGestureResponderHandlers<T>(
-  getLocationId: (x: number, y: number) => T,
-  canMoveToLocationId: (locationId: T) => boolean,
+export function createGestureResponderHandlers<TLocationId>(
+  getLocationId: (x: number, y: number) => TLocationId,
+  canMoveToLocationId: (locationId: TLocationId) => boolean,
   currentLocation: Animated.ValueXY,
   onMoveStart: () => void,
-  onMoveSuccess: (locationId: T) => void,
+  onMoveSuccess: (locationId: TLocationId) => void,
   onMoveEnd: () => void,
 ): GestureResponderHandlers {
   const useNativeDriver = false;
