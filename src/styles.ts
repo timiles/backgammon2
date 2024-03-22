@@ -3,14 +3,6 @@ import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { colors } from './colors';
 
 const styles = StyleSheet.create({
-  app: {
-    flex: 1,
-    borderColor: 'gray',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    backgroundColor: 'lightblue',
-  } as ViewStyle,
-
   portraitWarning: {
     textAlign: 'center',
   },
@@ -25,6 +17,14 @@ const styles = StyleSheet.create({
 
   upsideDown: {
     transform: [{ rotate: '180deg' }],
+  } as ViewStyle,
+
+  gameContainer: {
+    flex: 1,
+    borderColor: 'gray',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: 'lightblue',
   } as ViewStyle,
 
   game: {

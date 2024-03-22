@@ -1,12 +1,14 @@
 import { View } from 'react-native';
 
-import { BoardHalf, ControlsArea, Status } from './components';
-import { Player } from './constants';
-import { styles } from './styles';
+import { BoardHalf } from './BoardHalf';
+import { ControlsArea } from './ControlsArea';
+import { Status } from './Status';
+import { Player } from '../constants';
+import { styles } from '../styles';
 
-export function App() {
+export function GameContainer() {
   return (
-    <View style={styles.app}>
+    <View style={styles.gameContainer}>
       <Status player={Player.Black} side="top" />
       <View style={styles.game}>
         <ControlsArea player={Player.Black} side="top" />
