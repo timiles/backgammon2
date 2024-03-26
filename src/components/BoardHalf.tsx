@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Bar } from './Bar';
 import { OffBoard } from './OffBoard';
 import { Point } from './Point';
-import { Player } from '../constants';
+import { BOARD_LAYOUT } from '../constants';
 import { useMovingCheckerSourceStyle } from '../hooks';
 import { styles } from '../styles';
 import { Side } from '../types';
@@ -17,41 +17,17 @@ export function BoardHalf(props: IProps) {
 
   const { handleCheckerMoving, movingCheckerSourceStyle } = useMovingCheckerSourceStyle();
 
-  // Top side:    13|14|15|16|17|18|25|19|20|21|22|23|24|
-  // Bottom side: 12|11|10| 9| 8| 7|  | 6| 5| 4| 3| 2| 1|
-  const { startingPointIndex, direction, barOwner, offOwner } =
-    side === 'top'
-      ? { startingPointIndex: 13, direction: 1, barOwner: Player.Red, offOwner: Player.Black }
-      : { startingPointIndex: 12, direction: -1, barOwner: Player.Black, offOwner: Player.Red };
-
-  const leftHandPoints: JSX.Element[] = [];
-  const rightHandPoints: JSX.Element[] = [];
-  for (let i = 0; i < 6; i += 1) {
-    const leftHandPointIndex = startingPointIndex + i * direction;
-    const rightHandPointIndex = leftHandPointIndex + 6 * direction;
-    leftHandPoints.push(
-      <Point
-        key={i}
-        redIndex={leftHandPointIndex}
-        side={side}
-        onCheckerMoving={handleCheckerMoving}
-      />,
-    );
-    rightHandPoints.push(
-      <Point
-        key={i}
-        redIndex={rightHandPointIndex}
-        side={side}
-        onCheckerMoving={handleCheckerMoving}
-      />,
-    );
-  }
+  const { leftHandPointIndexes, rightHandPointIndexes, barOwner, offOwner } = BOARD_LAYOUT[side];
 
   return (
     <View style={[styles.boardHalf, movingCheckerSourceStyle]}>
-      {leftHandPoints}
+      {leftHandPointIndexes.map((i) => (
+        <Point key={i} redIndex={i} side={side} onCheckerMoving={handleCheckerMoving} />
+      ))}
       <Bar owner={barOwner} onCheckerMoving={handleCheckerMoving} />
-      {rightHandPoints}
+      {rightHandPointIndexes.map((i) => (
+        <Point key={i} redIndex={i} side={side} onCheckerMoving={handleCheckerMoving} />
+      ))}
       <OffBoard owner={offOwner} side={side} />
     </View>
   );

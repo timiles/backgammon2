@@ -18,7 +18,7 @@ export function OffBoardCheckers(props: IProps) {
   const color = owner === Player.Red ? styles.redChecker : styles.blackChecker;
   const topBottomStyle = side === 'top' ? styles.topOffBoardChecker : styles.bottomOffBoardChecker;
 
-  const width = containerDimensions.width - 10;
+  const width = containerDimensions.width - 20;
   const height = containerDimensions.height / 15 - 1;
 
   return checkers.map(({ id }) => (

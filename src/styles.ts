@@ -36,7 +36,15 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexDirection: 'column',
     borderColor: 'brown',
-    borderWidth: 5,
+    borderLeftWidth: 5,
+  } as ViewStyle,
+
+  boardColor: {
+    backgroundColor: 'brown',
+  } as ViewStyle,
+
+  boardEdge: {
+    flexDirection: 'row',
   } as ViewStyle,
 
   boardHalf: {
@@ -66,18 +74,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#999',
   } as ViewStyle,
 
-  barColor: {
-    backgroundColor: 'brown',
-  } as ViewStyle,
-
   barCheckerContainer: {
     justifyContent: 'center',
   } as ViewStyle,
 
   pointLabelContainer: {
+    flex: 1,
+    flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 2,
-    backgroundColor: 'brown',
   } as ViewStyle,
 
   topPointLabelContainer: {
@@ -94,11 +99,11 @@ const styles = StyleSheet.create({
     userSelect: 'none',
   } as TextStyle,
 
-  offBoard: {
+  offBoardContainer: {
     backgroundColor: 'white',
     borderColor: 'brown',
     borderLeftWidth: 5,
-    paddingHorizontal: 0,
+    borderRightWidth: 5,
   } as ViewStyle,
 
   topOffBoardChecker: {

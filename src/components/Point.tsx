@@ -2,9 +2,8 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { Checker } from './Checker';
-import { PointLabel } from './PointLabel';
 import { Player } from '../constants';
-import { useCheckerContainerBox, useMovingCheckerSourceStyle, useScreenSize } from '../hooks';
+import { useCheckerContainerBox, useMovingCheckerSourceStyle } from '../hooks';
 import { RootState } from '../store';
 import { styles } from '../styles';
 import { Side } from '../types';
@@ -19,8 +18,6 @@ interface IProps {
 
 export function Point(props: IProps) {
   const { redIndex, side, onCheckerMoving } = props;
-
-  const { isSmall } = useScreenSize();
 
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
@@ -45,7 +42,6 @@ export function Point(props: IProps) {
 
   return (
     <View style={[styles.boardSection, colorStyle, containerStyle, movingCheckerSourceStyle]}>
-      {!isSmall && <PointLabel redIndex={redIndex} side={side} />}
       <View
         ref={ref}
         onLayout={handleLayout}

@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
-import { BoardHalf } from './BoardHalf';
+import { BoardEdge } from './BoardEdge';
+import { CheckersArea } from './CheckersArea';
 import { ControlsArea } from './ControlsArea';
 import { Status } from './Status';
 import { Player } from '../constants';
@@ -13,8 +14,9 @@ export function GameContainer() {
       <View style={styles.game}>
         <ControlsArea player={Player.Black} side="top" />
         <View style={styles.board}>
-          <BoardHalf side="top" />
-          <BoardHalf side="bottom" />
+          <BoardEdge side="top" />
+          <CheckersArea />
+          <BoardEdge side="bottom" />
         </View>
         <ControlsArea player={Player.Red} side="bottom" />
       </View>

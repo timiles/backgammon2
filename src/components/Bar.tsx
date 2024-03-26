@@ -28,7 +28,7 @@ export function Bar(props: IProps) {
   const checkerSize = dimensions ? getCheckerSize(dimensions, checkers.length) : undefined;
 
   return (
-    <View style={[styles.boardSection, styles.barColor, movingCheckerSourceStyle]}>
+    <View style={[styles.boardSection, styles.boardColor, movingCheckerSourceStyle]}>
       <View
         ref={ref}
         onLayout={handleLayout}
