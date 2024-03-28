@@ -20,8 +20,8 @@ function moveCheckersFromIndexToIndex(
   const source = board.points[player][fromIndex];
   const destination = board.points[player][toIndex];
 
-  const checkers = source.checkers.splice(0, numberOfCheckers ?? source.checkers.length);
-  destination.checkers.push(...checkers);
+  const checkerIds = source.checkerIds.splice(0, numberOfCheckers ?? source.checkerIds.length);
+  destination.checkerIds.push(...checkerIds);
 }
 
 describe('boardUtils', () => {

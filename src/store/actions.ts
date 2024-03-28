@@ -4,6 +4,13 @@ import { Player } from '../constants';
 import { BoardModel, BoxModel, DieModel } from '../models';
 import { DieValue } from '../types';
 
+export const renderBoard = createAction<
+  {
+    board: BoardModel;
+  },
+  'CREATE_GAME'
+>('CREATE_GAME');
+
 export const initialDiceWinner = createAction<
   {
     winner: Player;

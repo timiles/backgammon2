@@ -51,19 +51,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexBasis: 0,
     flexDirection: 'row',
-    zIndex: 0,
   } as ViewStyle,
 
   boardSection: {
     flex: 1,
-  } as ViewStyle,
-
-  topContainer: {
-    flexDirection: 'column',
-  } as ViewStyle,
-
-  bottomContainer: {
-    flexDirection: 'column-reverse',
   } as ViewStyle,
 
   oddPointColor: {
@@ -72,10 +63,6 @@ const styles = StyleSheet.create({
 
   evenPointColor: {
     backgroundColor: '#999',
-  } as ViewStyle,
-
-  barCheckerContainer: {
-    justifyContent: 'center',
   } as ViewStyle,
 
   pointLabelContainer: {
@@ -100,18 +87,11 @@ const styles = StyleSheet.create({
   } as TextStyle,
 
   offBoardContainer: {
+    flex: 1,
     backgroundColor: 'white',
     borderColor: 'brown',
     borderLeftWidth: 5,
     borderRightWidth: 5,
-  } as ViewStyle,
-
-  topOffBoardChecker: {
-    marginTop: 1,
-  } as ViewStyle,
-
-  bottomOffBoardChecker: {
-    marginBottom: 1,
   } as ViewStyle,
 
   pipCountLabel: {
@@ -121,14 +101,22 @@ const styles = StyleSheet.create({
     userSelect: 'none',
   } as TextStyle,
 
-  checkerContainer: {
+  checkersArea: {
     flex: 1,
-    alignItems: 'center',
-    zIndex: 0,
+    zIndex: 1,
   } as ViewStyle,
 
   checker: {
-    flexShrink: 1,
+    position: 'absolute',
+    zIndex: 1,
+  } as ViewStyle,
+
+  moveableChecker: {
+    zIndex: 2,
+  } as ViewStyle,
+
+  movingChecker: {
+    zIndex: 3,
   } as ViewStyle,
 
   redChecker: {
@@ -137,10 +125,6 @@ const styles = StyleSheet.create({
 
   blackChecker: {
     backgroundColor: colors.blackPlayer,
-  } as ViewStyle,
-
-  movingCheckerSource: {
-    zIndex: 1,
   } as ViewStyle,
 
   controlsArea: {

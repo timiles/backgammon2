@@ -16,26 +16,26 @@ function isMovePossible(
   destinationIndex: number,
 ): boolean {
   if (
-    board.points[player][BAR_POINT_INDEX].checkers.length > 0 &&
+    board.points[player][BAR_POINT_INDEX].checkerIds.length > 0 &&
     sourceIndex !== BAR_POINT_INDEX
   ) {
     // Player has checkers on the bar, and this is not their bar
     return false;
   }
 
-  if (board.points[player][sourceIndex].checkers.length === 0) {
+  if (board.points[player][sourceIndex].checkerIds.length === 0) {
     // Player doesn't have checkers on requested source
     return false;
   }
 
   if (destinationIndex === OFF_POINT_INDEX) {
     // Check if this player has any checkers on bar or on points outside of their home board
-    if (board.points[player][BAR_POINT_INDEX].checkers.length > 0) {
+    if (board.points[player][BAR_POINT_INDEX].checkerIds.length > 0) {
       return false;
     }
 
     for (let index = 7; index <= 24; index += 1) {
-      if (board.points[player][index].checkers.length > 0) {
+      if (board.points[player][index].checkerIds.length > 0) {
         return false;
       }
     }
@@ -73,7 +73,7 @@ function isMovePossible(
 
   const otherPlayer = getOtherPlayer(player);
   const otherIndex = getOtherPlayersIndex(destinationIndex);
-  if (board.points[otherPlayer][otherIndex].checkers.length > 1) {
+  if (board.points[otherPlayer][otherIndex].checkerIds.length > 1) {
     // Destination is blocked by other player
     return false;
   }
@@ -161,14 +161,14 @@ export function canMoveAnyChecker(board: BoardModel, dice: DieModel[], player: P
 
 export function createInitialBoardLayout(): BoardModel {
   function createCheckers(board: BoardModel, player: Player) {
-    board.points[player][6].checkers.push(...repeat(() => ({ id: nanoid() }), 5));
-    board.points[player][8].checkers.push(...repeat(() => ({ id: nanoid() }), 3));
-    board.points[player][13].checkers.push(...repeat(() => ({ id: nanoid() }), 5));
-    board.points[player][24].checkers.push(...repeat(() => ({ id: nanoid() }), 2));
+    board.points[player][6].checkerIds.push(...repeat(() => nanoid(), 5));
+    board.points[player][8].checkerIds.push(...repeat(() => nanoid(), 3));
+    board.points[player][13].checkerIds.push(...repeat(() => nanoid(), 5));
+    board.points[player][24].checkerIds.push(...repeat(() => nanoid(), 2));
   }
 
   const initialBoardLayout: BoardModel = {
-    points: [repeat(() => ({ checkers: [] }), 26), repeat(() => ({ checkers: [] }), 26)],
+    points: [repeat(() => ({ checkerIds: [] }), 26), repeat(() => ({ checkerIds: [] }), 26)],
     pipCounts: [0, 0],
   };
 
@@ -257,20 +257,20 @@ export function getNextBoard(
     // If we've hit other player's blot, put it on the bar
     const otherPlayer = getOtherPlayer(player);
     const otherIndex = getOtherPlayersIndex(destinationIndex);
-    const { checkers: otherPlayersCheckers } = draftBoard.points[otherPlayer][otherIndex];
-    if (otherPlayersCheckers.length === 1) {
-      const [blot] = otherPlayersCheckers.splice(0, 1);
-      draftBoard.points[otherPlayer][BAR_POINT_INDEX].checkers.push(blot);
+    const { checkerIds: otherPlayersCheckerIds } = draftBoard.points[otherPlayer][otherIndex];
+    if (otherPlayersCheckerIds.length === 1) {
+      const [blot] = otherPlayersCheckerIds.splice(0, 1);
+      draftBoard.points[otherPlayer][BAR_POINT_INDEX].checkerIds.push(blot);
 
       draftBoard.pipCounts[otherPlayer] = getPipCount(draftBoard, otherPlayer);
     }
 
     // Move checker
-    const { checkers: sourcePointCheckers } = draftBoard.points[player][sourceIndex];
+    const { checkerIds: sourcePointCheckerIds } = draftBoard.points[player][sourceIndex];
     const checkerIndex =
-      checkerId !== undefined ? sourcePointCheckers.findIndex(({ id }) => id === checkerId) : 0;
-    const [checker] = sourcePointCheckers.splice(checkerIndex, 1);
-    draftBoard.points[player][destinationIndex].checkers.push(checker);
+      checkerId !== undefined ? sourcePointCheckerIds.findIndex((id) => id === checkerId) : 0;
+    const [checker] = sourcePointCheckerIds.splice(checkerIndex, 1);
+    draftBoard.points[player][destinationIndex].checkerIds.push(checker);
 
     draftBoard.pipCounts[player] = getPipCount(draftBoard, player);
   });
@@ -278,6 +278,6 @@ export function getNextBoard(
 
 export function getPipCount(board: BoardModel, player: Player): number {
   return board.points[player]
-    .map((point, index) => point.checkers.length * index)
+    .map(({ checkerIds }, index) => checkerIds.length * index)
     .reduce((a, b) => a + b, 0);
 }

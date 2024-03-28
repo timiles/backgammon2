@@ -1,13 +1,17 @@
 import { RefObject, useRef } from 'react';
 import { View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { BoardHalf } from './BoardHalf';
+import { Checker } from './Checker';
 import { BoxModel } from '../models';
+import { RootState } from '../store';
 import { registerCheckersAreaBox } from '../store/actions';
 import { styles } from '../styles';
 
 export function CheckersArea() {
+  const { checkerSize, checkers } = useSelector((state: RootState) => state.layout);
+
   const dispatch = useDispatch();
 
   const ref = useRef<View>() as RefObject<View>;
@@ -23,9 +27,11 @@ export function CheckersArea() {
   };
 
   return (
-    <View style={styles.boardSection} ref={ref} onLayout={handleLayout}>
+    <View style={styles.checkersArea} ref={ref} onLayout={handleLayout}>
       <BoardHalf side="top" />
       <BoardHalf side="bottom" />
+      {checkerSize !== undefined &&
+        checkers.map((checker) => <Checker key={checker.id} {...checker} size={checkerSize} />)}
     </View>
   );
 }

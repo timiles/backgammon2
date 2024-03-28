@@ -1,5 +1,5 @@
 import { getOtherPlayer, getOtherPlayersIndex, getPlayersPointIndex } from './playerUtils';
-import { Player } from '../constants';
+import { BAR_POINT_INDEX, OFF_POINT_INDEX, Player } from '../constants';
 
 describe('playerUtils', () => {
   describe('getOtherPlayer', () => {
@@ -18,6 +18,16 @@ describe('playerUtils', () => {
     it('returns other players point index', () => {
       const otherIndex = getOtherPlayersIndex(8);
       expect(otherIndex).toBe(17);
+    });
+
+    it('returns bar index when passed bar index', () => {
+      const otherIndex = getOtherPlayersIndex(BAR_POINT_INDEX);
+      expect(otherIndex).toBe(BAR_POINT_INDEX);
+    });
+
+    it('returns off index when passed off index', () => {
+      const otherIndex = getOtherPlayersIndex(OFF_POINT_INDEX);
+      expect(otherIndex).toBe(OFF_POINT_INDEX);
     });
   });
 

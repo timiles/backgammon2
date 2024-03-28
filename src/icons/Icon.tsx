@@ -1,4 +1,5 @@
 import { CheckerIcon } from './CheckerIcon';
+import { OffCheckerIcon } from './OffCheckerIcon';
 import { RedoIcon } from './RedoIcon';
 import { UndoIcon } from './UndoIcon';
 import { IconProps, IconType } from './types';
@@ -11,6 +12,9 @@ function getComponent(type: IconType) {
   switch (type) {
     case 'Checker': {
       return CheckerIcon;
+    }
+    case 'OffChecker': {
+      return OffCheckerIcon;
     }
     case 'Redo': {
       return RedoIcon;
@@ -26,9 +30,9 @@ function getComponent(type: IconType) {
 }
 
 export function Icon(props: IProps) {
-  const { type, width, fill } = props;
+  const { type, width, height, fill } = props;
 
   const IconComponent = getComponent(type);
 
-  return <IconComponent width={width} fill={fill} />;
+  return <IconComponent width={width} height={height} fill={fill} />;
 }

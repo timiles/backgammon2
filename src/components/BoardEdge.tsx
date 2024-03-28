@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { View } from 'react-native';
 
+import { Bar } from './Bar';
 import { PipCount } from './PipCount';
 import { PointLabel } from './PointLabel';
 import { BOARD_LAYOUT } from '../constants';
@@ -21,7 +22,7 @@ export const BoardEdge = memo(function (props: IProps) {
       {leftHandPointIndexes.map((i) => (
         <PointLabel key={i} pointIndex={i} side={side} />
       ))}
-      <View style={[styles.boardSection, styles.boardColor]} />
+      <Bar />
       {rightHandPointIndexes.map((i) => (
         <PointLabel key={i} pointIndex={i} side={side} />
       ))}

@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
 import { IconButton } from './IconButton';
 import { Player } from '../constants';
 import { RootState } from '../store';
+import { renderBoard } from '../store/actions';
 
 interface IProps {
   player: Player;
@@ -13,17 +13,20 @@ interface IProps {
 export function RedoButton(props: IProps) {
   const { player } = props;
 
-  const showRedo = useSelector(
-    (state: RootState) =>
-      state.player.future.length > 0 && state.player.present.currentPlayer === player,
-  );
+  const futureBoard = useSelector((state: RootState) => state.board.future[0]?.board);
+
+  const { currentPlayer } = useSelector((state: RootState) => state.player.present);
 
   const dispatch = useDispatch();
-  const redo = useCallback(() => dispatch(ActionCreators.redo()), []);
 
-  if (!showRedo) {
+  if (!futureBoard || currentPlayer !== player) {
     return null;
   }
+
+  const redo = () => {
+    dispatch(ActionCreators.redo());
+    dispatch(renderBoard({ board: futureBoard }));
+  };
 
   return <IconButton player={player} iconType="Redo" onPress={redo} />;
 }

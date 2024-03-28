@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 
 import { IconButton } from './IconButton';
 import { Player } from '../constants';
 import { RootState } from '../store';
+import { renderBoard } from '../store/actions';
 import { getOtherPlayer } from '../utils/playerUtils';
 
 interface IProps {
@@ -14,6 +14,7 @@ interface IProps {
 export function UndoButton(props: IProps) {
   const { player } = props;
 
+  const pastBoard = useSelector((state: RootState) => state.board.past.at(-1)?.board);
   const { past, present, future } = useSelector((state: RootState) => state.dice);
   const { currentPlayer } = useSelector((state: RootState) => state.player.present);
 
@@ -26,11 +27,17 @@ export function UndoButton(props: IProps) {
     (player === currentPlayer ? hasRolledDice[player] : !hasRolledDice[getOtherPlayer(player)]);
 
   const dispatch = useDispatch();
-  const undo = useCallback(() => dispatch(ActionCreators.undo()), []);
 
   if (!showUndo) {
     return null;
   }
+
+  const undo = () => {
+    if (pastBoard) {
+      dispatch(ActionCreators.undo());
+      dispatch(renderBoard({ board: pastBoard }));
+    }
+  };
 
   const canUndo = showUndo && playerHasMoved;
 

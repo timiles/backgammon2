@@ -19,16 +19,13 @@ export function PipCount(props: IProps) {
 
   const pipCount = useSelector((state: RootState) => state.board.present.board.pipCounts[owner]);
 
-  const topBottomStyle = side === 'top' ? styles.topContainer : styles.bottomContainer;
   const labelStyle = [
     side === 'top' ? styles.upsideDown : null,
     owner === Player.Red ? styles.redPlayer : styles.blackPlayer,
   ];
 
-  const containerStyle = [styles.boardSection, styles.boardColor, topBottomStyle];
-
   return (
-    <View style={containerStyle}>
+    <View style={[styles.boardSection, styles.boardColor]}>
       {!isSmall && <Text style={[styles.pipCountLabel, labelStyle]}>{pipCount}</Text>}
     </View>
   );
