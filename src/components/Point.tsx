@@ -22,7 +22,7 @@ export function Point(props: IProps) {
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
 
-  const { ref, handleLayout, dimensions } = useCheckerContainerBox(redIndex);
+  const { ref, handleLayout, dimensions } = useCheckerContainerBox();
 
   const { points } = useSelector((state: RootState) => state.board.present.board);
 

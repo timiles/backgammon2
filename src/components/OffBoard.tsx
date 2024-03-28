@@ -20,7 +20,7 @@ export function OffBoard(props: IProps) {
     (state: RootState) => state.board.present.board.points[owner][OFF_POINT_INDEX],
   );
 
-  const { ref, handleLayout, dimensions } = useCheckerContainerBox(OFF_POINT_INDEX);
+  const { ref, handleLayout, dimensions } = useCheckerContainerBox();
 
   const topBottomStyle = side === 'top' ? styles.topContainer : styles.bottomContainer;
 

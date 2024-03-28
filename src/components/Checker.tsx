@@ -10,7 +10,8 @@ import { moveChecker } from '../store/actions';
 import { styles } from '../styles';
 import { canMoveAnyChecker, canMoveChecker, getDistance, getNextBoard } from '../utils/boardUtils';
 import { getNextDice } from '../utils/diceUtils';
-import { createGestureResponderHandlers, findDestinationIndex } from '../utils/uiUtils';
+import { getPlayersPointIndex } from '../utils/playerUtils';
+import { createGestureResponderHandlers, findPointIndex } from '../utils/uiUtils';
 
 interface IProps {
   checkerId: string;
@@ -24,7 +25,7 @@ export function Checker(props: IProps) {
   const { checkerId, player, pointIndex, onMoving, size } = props;
 
   const board = useSelector((state: RootState) => state.board.present.board);
-  const boxes = useSelector((state: RootState) => state.layout.boxes);
+  const { checkersAreaBox } = useSelector((state: RootState) => state.layout);
   const dice = useSelector((state: RootState) => state.dice.present.dice[player]);
   const currentPlayer = useSelector((state: RootState) => state.player.present.currentPlayer);
 
@@ -38,7 +39,15 @@ export function Checker(props: IProps) {
     let handlers: GestureResponderHandlers | null = null;
 
     if (player === currentPlayer && canMoveChecker(board, dice, player, pointIndex)) {
-      const findDestinationId = (x: number, y: number) => findDestinationIndex(player, boxes, x, y);
+      const getDestinationId = (x: number, y: number) => {
+        if (checkersAreaBox) {
+          const index = findPointIndex(checkersAreaBox, x, y);
+          if (index !== null) {
+            return getPlayersPointIndex(player, index);
+          }
+        }
+        return null;
+      };
 
       const canMoveToDestination = (destinationIndex: number) =>
         destinationIndex >= 0 && canMoveChecker(board, dice, player, pointIndex, destinationIndex);
@@ -58,7 +67,7 @@ export function Checker(props: IProps) {
       const handleMoveEnd = () => onMoving(false);
 
       handlers = createGestureResponderHandlers(
-        findDestinationId,
+        getDestinationId,
         canMoveToDestination,
         checkerLocation,
         handleMoveStart,
@@ -68,7 +77,7 @@ export function Checker(props: IProps) {
     }
 
     setGestureResponderHandlers(handlers);
-  }, [currentPlayer, board, boxes, dice]);
+  }, [currentPlayer, board, checkersAreaBox, dice]);
 
   const color = player === Player.Red ? colors.redPlayer : colors.blackPlayer;
   const checkerLocationStyle = { transform: checkerLocation.getTranslateTransform() };

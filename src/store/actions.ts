@@ -28,13 +28,12 @@ export const moveChecker = createAction<
   'MOVE_CHECKER'
 >('MOVE_CHECKER');
 
-export const registerCheckerContainerBox = createAction<
+export const registerCheckersAreaBox = createAction<
   {
-    index: number;
     box: BoxModel;
   },
-  'REGISTER_CHECKER_CONTAINER_BOX'
->('REGISTER_CHECKER_CONTAINER_BOX');
+  'REGISTER_CHECKERS_AREA_BOX'
+>('REGISTER_CHECKERS_AREA_BOX');
 
 export const rollInitialDie = createAction<
   {

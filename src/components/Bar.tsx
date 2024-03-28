@@ -19,7 +19,7 @@ export function Bar(props: IProps) {
   const { handleCheckerMoving, movingCheckerSourceStyle } =
     useMovingCheckerSourceStyle(onCheckerMoving);
 
-  const { ref, handleLayout, dimensions } = useCheckerContainerBox(BAR_POINT_INDEX);
+  const { ref, handleLayout, dimensions } = useCheckerContainerBox();
 
   const { checkers } = useSelector(
     (state: RootState) => state.board.present.board.points[owner][BAR_POINT_INDEX],

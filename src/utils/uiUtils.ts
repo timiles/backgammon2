@@ -5,13 +5,18 @@ import {
   PanResponderGestureState,
 } from 'react-native';
 
-import { getOtherPlayersIndex } from './playerUtils';
-import { OFF_POINT_INDEX, Player } from '../constants';
+import {
+  BAR_POINT_INDEX,
+  BAR_SECTION_INDEX,
+  BOARD_LAYOUT,
+  OFF_POINT_INDEX,
+  OFF_SECTION_INDEX,
+} from '../constants';
 import { BoxModel } from '../models';
-import { BoxDimensions } from '../types';
+import { BoxDimensions, Side } from '../types';
 
 export function createGestureResponderHandlers<TLocationId>(
-  getLocationId: (x: number, y: number) => TLocationId,
+  getLocationId: (x: number, y: number) => TLocationId | null,
   canMoveToLocationId: (locationId: TLocationId) => boolean,
   currentLocation: Animated.ValueXY,
   onMoveStart: () => void,
@@ -43,7 +48,7 @@ export function createGestureResponderHandlers<TLocationId>(
     onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
       const { moveX, moveY } = gestureState;
       const locationId = getLocationId(moveX, moveY);
-      if (canMoveToLocationId(locationId)) {
+      if (locationId !== null && canMoveToLocationId(locationId)) {
         // If we can move, report success and end
         onMoveSuccess(locationId);
         onMoveEnd();
@@ -57,24 +62,40 @@ export function createGestureResponderHandlers<TLocationId>(
   }).panHandlers;
 }
 
-export function findDestinationIndex(
-  player: Player,
-  boxes: (BoxModel | undefined)[],
+export function findPointIndex(
+  checkersAreaBox: BoxModel,
   locationX: number,
   locationY: number,
-): number {
-  const index = boxes.findIndex(
-    (box) =>
-      box !== undefined &&
-      box.left < locationX &&
-      locationX < box.right &&
-      box.top < locationY &&
-      locationY < box.bottom,
-  );
-  if (index < 0 || index === OFF_POINT_INDEX) {
-    return index;
+): number | null {
+  const { pageX, pageY, width, height } = checkersAreaBox;
+  if (
+    locationX < pageX ||
+    locationX > pageX + width ||
+    locationY < pageY ||
+    locationY > pageY + height
+  ) {
+    // Out of bounds
+    return null;
   }
-  return player === Player.Red ? index : getOtherPlayersIndex(index);
+
+  // There are 14 sections across the board horizontally
+  const sectionIndex = Math.floor(((locationX - pageX) / width) * 14);
+
+  if (sectionIndex === BAR_SECTION_INDEX) {
+    return BAR_POINT_INDEX;
+  }
+  if (sectionIndex === OFF_SECTION_INDEX) {
+    return OFF_POINT_INDEX;
+  }
+
+  const side: Side = locationY < pageY + height / 2 ? 'top' : 'bottom';
+
+  const { leftHandPointIndexes, rightHandPointIndexes } = BOARD_LAYOUT[side];
+
+  const pointIndex =
+    sectionIndex < 6 ? leftHandPointIndexes[sectionIndex] : rightHandPointIndexes[sectionIndex - 7];
+
+  return pointIndex;
 }
 
 export function getCheckerSize(boxDimensions: BoxDimensions, numberOfCheckers: number): number {
