@@ -3,9 +3,13 @@ import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { colors } from './colors';
 
 const styles = StyleSheet.create({
+  app: {
+    flex: 1,
+  } as ViewStyle,
+
   portraitWarning: {
     textAlign: 'center',
-  },
+  } as ViewStyle,
 
   redPlayer: {
     color: colors.redPlayer,
